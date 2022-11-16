@@ -2,12 +2,13 @@
 
 A sandbox project of OpenGL that was created in 2022.
 
-## Prerequisite
+## Prerequisites
 
 - Linux platform only.
 - C++17
 - CMake
 - Installed `xorg-dev`
+- OpenGL 4.5 compatibility graphic card (and its hardware drivers to your PC)
 
 ## To install required libraries.
 
