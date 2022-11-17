@@ -2,21 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-const GLchar *kVertexSource =
-        "#version 150 core\n" // GLSL 1.5
-        "in vec2 position;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(position, 0.0, 1.0);\n"
-        "}\n";
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-const GLchar *kFragmentSource =
-        "#version 150 core\n" // GLSL 1.5
-        "out vec4 outColor;\n"
-        "void main()\n"
-        "{\n"
-        "    outColor = vec4(1.0, 1.0, 1.0, 1.0);\n"
-        "}\n";
 
 /**
  * Error handling for GLFW initialization.
@@ -39,6 +28,31 @@ static void KeyCallback(
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+}
+
+static std::string LoadShaderSource_(const char *filename) {
+    std::ifstream input_file_stream;
+    input_file_stream.open(filename);
+    std::stringstream string_stream;
+    string_stream << input_file_stream.rdbuf();
+    return string_stream.str(); // この std::string はメモリセーフ？
+}
+
+static GLuint CreateShader_(GLenum shaderType, const GLchar *shaderSource) {
+    GLuint result = glCreateShader(shaderType);
+    glShaderSource(result, 1, &shaderSource, NULL);
+    glCompileShader(result);
+
+    GLint status;
+    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
+    if (!status) {
+        fprintf(stderr, "shader compile error.\n");
+        char buffer[512];
+        glGetShaderInfoLog(result, 512, NULL, buffer);
+        fprintf(stderr, "%s", buffer);
+    }
+
+    return result;
 }
 
 int main() {
@@ -99,33 +113,12 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices), kVertices, GL_STATIC_DRAW);
 
+    const std::string vertex_shader_source = LoadShaderSource_("shader/vertex_color.vert");
+    const std::string fragment_shader_source = LoadShaderSource_("shader/vertex_color.frag");
 
     // Vertex shader setup
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &kVertexSource, NULL);
-    glCompileShader(vertex_shader);
-
-    GLint status;
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &status);
-    if (!status) {
-        fprintf(stderr, "vertex shader compile error.\n");
-        char buffer[512];
-        glGetShaderInfoLog(vertex_shader, 512, NULL, buffer);
-        fprintf(stderr, "%s", buffer);
-    }
-
-    // Fragment shader setup
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &kFragmentSource, NULL);
-    glCompileShader(fragment_shader);
-
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &status);
-    if (!status) {
-        fprintf(stderr, "fragment shader compile error.\n");
-        char buffer[512];
-        glGetShaderInfoLog(vertex_shader, 512, NULL, buffer);
-        fprintf(stderr, "%s", buffer);
-    }
+    GLuint vertex_shader = CreateShader_(GL_VERTEX_SHADER, vertex_shader_source.c_str());
+    GLuint fragment_shader = CreateShader_(GL_FRAGMENT_SHADER, fragment_shader_source.c_str());
 
     // Combining shaders into a program.
     GLuint shader_program = glCreateProgram();

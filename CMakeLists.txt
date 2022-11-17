@@ -20,3 +20,6 @@ target_link_libraries(
         sandbox_opengl_22
         glfw
         glad)
+
+# Coping resource files into the build dir.
+file(COPY shader DESTINATION "${CMAKE_BINARY_DIR}")
