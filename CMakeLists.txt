@@ -34,4 +34,4 @@ target_link_libraries(
 
 
 # Coping resource files into the build dir.
-file(COPY shader DESTINATION "${CMAKE_BINARY_DIR}")
+file(INSTALL shader DESTINATION "${CMAKE_BINARY_DIR}")
