@@ -10,6 +10,9 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "game_util.h"
+#include "fps.h"
+
 
 /**
  * Error handling for GLFW initialization.
@@ -240,27 +243,35 @@ int main() {
     glUniformMatrix4fv(uniform_projection_mat, 1, GL_FALSE, glm::value_ptr(projection_mat));
 
     // View 行列を設定
-    const glm::mat4 view_mat = glm::lookAt(
-            glm::vec3(0.f, 1.f, 5.0f),
-            glm::vec3(0.f, 0.f, 0.f),
-            glm::vec3(0.f, 1.f, 0.f));
-    //const glm::mat4 view_mat = glm::mat4(1.0f);
     GLint uniform_view_mat = glGetUniformLocation(shader_program, "view");
-    glUniformMatrix4fv(uniform_view_mat, 1, GL_FALSE, glm::value_ptr(view_mat));
 
-    //glViewport(0, 0, 800, 600);
+    Fps *up_fps = new Fps();
+
+    float angle = 0;
 
     // Application loop
     while (!glfwWindowShouldClose(glfw_window)) {
+        up_fps->StartRecord();
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        angle += glm::pi<float>() * 0.25f * (float) up_fps->GetElapsedTime();
+
+        // View 行列を設定
+        const glm::mat4 view_mat = glm::lookAt(
+                glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 8.0f),
+                glm::vec3(0.f, 0.f, 0.f),
+                glm::vec3(0.f, 1.f, 0.f));
+        glUniformMatrix4fv(uniform_view_mat, 1, GL_FALSE, glm::value_ptr(view_mat));
+
 
         glBindVertexArray(vao);
         glUseProgram(shader_program);
 
         //glm::mat4 model_mat = glm::rotate(glm::pi<float>() / 2.0f, glm::vec3(0.f, 0.f, 1.f));
         glm::mat4 model_mat = glm::mat4(1.0f);
-        model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
+        //model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
         GLint uniform_model_mat = glGetUniformLocation(shader_program, "model");
         glUniformMatrix4fv(uniform_model_mat, 1, GL_FALSE, glm::value_ptr(model_mat));
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -270,15 +281,19 @@ int main() {
         glUseProgram(shader_program);
 
         model_mat = glm::mat4(1.0f);
-        model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
+        //model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
         //model_mat = glm::rotate(model_mat, glm::pi<float>() / 2.0f, glm::vec3(1.f, 0.f, 0.f));
-        model_mat = glm::scale(model_mat, glm::vec3(1.f, 1.f, 1.f));
+        model_mat = glm::scale(model_mat, glm::vec3(2.f, 2.f, 2.f));
         glUniformMatrix4fv(uniform_model_mat, 1, GL_FALSE, glm::value_ptr(model_mat));
         glDrawArrays(GL_LINES, 0, 22 * 2);
 
         glfwSwapBuffers(glfw_window);
         glfwPollEvents();
+
+        up_fps->EndRecord();
     }
+
+    SAFE_DELETE(up_fps);
 
     glDeleteProgram(shader_program);
     glDeleteShader(fragment_shader);
