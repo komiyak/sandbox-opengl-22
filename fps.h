@@ -1,7 +1,9 @@
-#ifndef CPP_GLFW3_SANDBOX_FPS_H
-#define CPP_GLFW3_SANDBOX_FPS_H
+#ifndef SANDBOX_OPENGL_22_FPS_H_
+#define SANDBOX_OPENGL_22_FPS_H_
 
-class Fps {
+#include "base_object.h"
+
+class Fps : public BaseObject {
 public:
     // Frame レンダリング開始時にコールする FPS カウンタ
     void StartRecord();
@@ -23,6 +25,8 @@ public:
             fps_(0), frame_count_(0), frame_begin_time_(0), frame_end_time_(0), frame_fps_time_(0),
             last_frame_elapsed_time_(0), started_(false) {}
 
+    void Finalize() override {}
+
 private:
     // 最新のFPS
     int fps_;
@@ -40,4 +44,4 @@ private:
     bool started_;
 };
 
-#endif //CPP_GLFW3_SANDBOX_FPS_H
+#endif //SANDBOX_OPENGL_22_FPS_H_

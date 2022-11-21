@@ -1,7 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -10,8 +6,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "game_util.h"
 #include "fps.h"
+
+#include "render_object.h"
+#include "shader.h"
 
 
 /**
@@ -35,31 +33,6 @@ static void KeyCallback(
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
-}
-
-static std::string LoadShaderSource_(const char *filename) {
-    std::ifstream input_file_stream;
-    input_file_stream.open(filename);
-    std::stringstream string_stream;
-    string_stream << input_file_stream.rdbuf();
-    return string_stream.str(); // この std::string はメモリセーフ？
-}
-
-static GLuint CreateShader_(GLenum shaderType, const GLchar *shaderSource) {
-    GLuint result = glCreateShader(shaderType);
-    glShaderSource(result, 1, &shaderSource, NULL);
-    glCompileShader(result);
-
-    GLint status;
-    glGetShaderiv(result, GL_COMPILE_STATUS, &status);
-    if (!status) {
-        fprintf(stderr, "shader compile error.\n");
-        char buffer[512];
-        glGetShaderInfoLog(result, 512, NULL, buffer);
-        fprintf(stderr, "%s", buffer);
-    }
-
-    return result;
 }
 
 int main() {
@@ -100,18 +73,6 @@ int main() {
     glfwSwapInterval(1);
 
 
-    // Create VAO
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-
-    // Create a VBO
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-
-    GLuint vboGrid;
-    glGenBuffers(1, &vboGrid);
 
     // 頂点
     // Note: Projection の説明を省くために、最初から device coordinates に対応した頂点座標としておく
@@ -120,10 +81,6 @@ int main() {
             0.5f, -0.5f, 0.0f,
             -0.5f, -0.5f, 0.0f,
     };
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices), kVertices, GL_STATIC_DRAW);
-
 
     const GLfloat kGridPlaneVertices[] = {
             -5.0f, 0.0f, -5.f,
@@ -194,56 +151,31 @@ int main() {
             5.0f, 0.0f, 5.0f,
     };
 
-    GLuint vaoGrid;
-    glGenVertexArrays(1, &vaoGrid);
-    glBindVertexArray(vaoGrid);
+    auto *up_grid = new RenderObject();
+    auto *up_triangle = new RenderObject();
 
-    glBindBuffer(GL_ARRAY_BUFFER, vboGrid);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(kGridPlaneVertices), kGridPlaneVertices, GL_STATIC_DRAW);
+    auto *up_shader = new Shader();
+    up_shader->LoadFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
 
-    const std::string vertex_shader_source = LoadShaderSource_("shader/vertex_color.vert");
-    const std::string fragment_shader_source = LoadShaderSource_("shader/vertex_color.frag");
+    up_grid->Initialize(
+            sizeof(kGridPlaneVertices),
+            (void *) kGridPlaneVertices,
+            GL_STATIC_DRAW,
+            GL_LINES,
+            22 * 2,
+            up_shader);
+    up_triangle->Initialize(
+            sizeof(kVertices),
+            (void *) kVertices,
+            GL_STATIC_DRAW,
+            GL_TRIANGLES,
+            3,
+            up_shader);
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    // Vertex shader setup
-    GLuint vertex_shader = CreateShader_(GL_VERTEX_SHADER, vertex_shader_source.c_str());
-    GLuint fragment_shader = CreateShader_(GL_FRAGMENT_SHADER, fragment_shader_source.c_str());
-
-    // Combining shaders into a program.
-    GLuint shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-    glBindFragDataLocation(shader_program, 0, "outColor");
-    glLinkProgram(shader_program);
-    glUseProgram(shader_program);
-
-    // Specify the layout of the vertex data
-    GLint pos_attrib = glGetAttribLocation(shader_program, "position");
-    glEnableVertexAttribArray(pos_attrib);
-    glVertexAttribPointer(pos_attrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-
-    glBindVertexArray(vaoGrid);
-    glBindBuffer(GL_ARRAY_BUFFER, vboGrid);
-
-    glBindFragDataLocation(shader_program, 0, "outColor");
-    glLinkProgram(shader_program);
-    glUseProgram(shader_program);
-
-    pos_attrib = glGetAttribLocation(shader_program, "position");
-    glEnableVertexAttribArray(pos_attrib);
-    glVertexAttribPointer(pos_attrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    //const glm::mat4 projection_mat = glm::mat4(1.0f);
-    GLint uniform_projection_mat = glGetUniformLocation(shader_program, "proj");
-    glUniformMatrix4fv(uniform_projection_mat, 1, GL_FALSE, glm::value_ptr(projection_mat));
-
-    // View 行列を設定
-    GLint uniform_view_mat = glGetUniformLocation(shader_program, "view");
+    glUniformMatrix4fv(up_shader->GetUniformLocationOfProjectionMatrix(), 1, GL_FALSE, glm::value_ptr(projection_mat));
 
     Fps *up_fps = new Fps();
 
@@ -260,32 +192,27 @@ int main() {
 
         // View 行列を設定
         const glm::mat4 view_mat = glm::lookAt(
-                glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 8.0f),
+                glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 12.0f),
                 glm::vec3(0.f, 0.f, 0.f),
                 glm::vec3(0.f, 1.f, 0.f));
-        glUniformMatrix4fv(uniform_view_mat, 1, GL_FALSE, glm::value_ptr(view_mat));
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfViewMatrix(), 1, GL_FALSE, glm::value_ptr(view_mat));
 
 
-        glBindVertexArray(vao);
-        glUseProgram(shader_program);
+        up_triangle->BindRender();
 
-        //glm::mat4 model_mat = glm::rotate(glm::pi<float>() / 2.0f, glm::vec3(0.f, 0.f, 1.f));
         glm::mat4 model_mat = glm::mat4(1.0f);
-        //model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
-        GLint uniform_model_mat = glGetUniformLocation(shader_program, "model");
-        glUniformMatrix4fv(uniform_model_mat, 1, GL_FALSE, glm::value_ptr(model_mat));
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMatrix(), 1, GL_FALSE, glm::value_ptr(model_mat));
+
+        up_triangle->Render();
 
 
-        glBindVertexArray(vaoGrid);
-        glUseProgram(shader_program);
+        up_grid->BindRender();
 
-        model_mat = glm::mat4(1.0f);
-        //model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.0f, -3.0f));
-        //model_mat = glm::rotate(model_mat, glm::pi<float>() / 2.0f, glm::vec3(1.f, 0.f, 0.f));
-        model_mat = glm::scale(model_mat, glm::vec3(2.f, 2.f, 2.f));
-        glUniformMatrix4fv(uniform_model_mat, 1, GL_FALSE, glm::value_ptr(model_mat));
-        glDrawArrays(GL_LINES, 0, 22 * 2);
+        glm::mat4 model_mat_2 = glm::mat4(1.0f);
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMatrix(), 1, GL_FALSE, glm::value_ptr(model_mat_2));
+
+        up_grid->Render();
+
 
         glfwSwapBuffers(glfw_window);
         glfwPollEvents();
@@ -293,16 +220,10 @@ int main() {
         up_fps->EndRecord();
     }
 
-    SAFE_DELETE(up_fps);
-
-    glDeleteProgram(shader_program);
-    glDeleteShader(fragment_shader);
-    glDeleteShader(vertex_shader);
-
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &vboGrid);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteVertexArrays(1, &vaoGrid);
+    FINALIZE_AND_DELETE(up_fps);
+    FINALIZE_AND_DELETE(up_grid);
+    FINALIZE_AND_DELETE(up_triangle);
+    FINALIZE_AND_DELETE(up_shader);
 
     glfwDestroyWindow(glfw_window);
     glfwTerminate();
