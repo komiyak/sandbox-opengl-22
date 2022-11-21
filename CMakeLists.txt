@@ -25,12 +25,15 @@ include_directories(
 
 add_executable(
         sandbox_opengl_22
-        main.cpp)
+        main.cpp
+        fps.cpp
+        png_load.cpp)
 
 target_link_libraries(
         sandbox_opengl_22
         glfw
-        glad)
+        glad
+        png)
 
 
 # Coping resource files into the build dir.
