@@ -8,22 +8,27 @@
 #include <glad/glad.h>
 #include "base_object.h"
 
+class VertexSpecification;
+
+class Shader;
+
 // 簡易的な頂点描画オブジェクト
 class VertexRenderObject : public BaseObject {
 public:
-    // vertex_size: 頂点データのサイズ
-    // vertex_data: 頂点データのポインタ
-    // position_attrib_location: 頂点データの位置 (position) の attrib location
-    // usage: VBO の役割
-    // draw_mode: Draw コマンドのモード
-    // draw_count: Draw コマンドで有効なプリミティブの数
+    // vertex_size 頂点データのサイズ
+    // p_vertex_data 頂点データのポインタ
+    // vertex_specification 頂点データの属性を説明する VertexSpecification オブジェクト
+    // usage VBO の役割
+    // draw_mode Draw コマンドのモード
+    // draw_count Draw コマンドで有効なプリミティブの数
     void Initialize(
             GLsizeiptr vertex_size,
-            const void *vertex_data,
+            const void *p_vertex_data,
+            const VertexSpecification &vertex_specification,
+            const Shader &shader,
             GLenum usage,
             GLenum draw_mode,
-            GLsizei draw_count,
-            GLint position_attrib_location);
+            GLsizei draw_count);
 
     void Finalize() override;
 

@@ -10,6 +10,7 @@
 
 #include "vertex_render_object.h"
 #include "shader.h"
+#include "position_vertex_specification.h"
 
 
 /**
@@ -157,20 +158,25 @@ int main() {
     auto *up_shader = new Shader();
     up_shader->LoadFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
 
+    auto *up_xyz_axis_shader = new Shader();
+    up_xyz_axis_shader->LoadFromFile("shader/vertex_color_xyz_axis.vert", "shader/vertex_color_xyz_axis.frag");
+
     up_grid->Initialize(
             sizeof(kGridPlaneVertices),
             (void *) kGridPlaneVertices,
+            PositionVertexSpecification{up_shader->GetPositionAttribLocation()},
+            *up_shader,
             GL_STATIC_DRAW,
             GL_LINES,
-            22 * 2,
-            up_shader->GetPositionAttribLocation());
+            22 * 2);
     up_triangle->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
+            PositionVertexSpecification{up_shader->GetPositionAttribLocation()},
+            *up_shader,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
-            3,
-            up_shader->GetPositionAttribLocation());
+            3);
 
 
     // Projection 行列を設定
@@ -219,7 +225,9 @@ int main() {
     FINALIZE_AND_DELETE(up_fps);
     FINALIZE_AND_DELETE(up_grid);
     FINALIZE_AND_DELETE(up_triangle);
+
     FINALIZE_AND_DELETE(up_shader);
+    FINALIZE_AND_DELETE(up_xyz_axis_shader);
 
     glfwDestroyWindow(glfw_window);
     glfwTerminate();

@@ -29,7 +29,8 @@ add_executable(
         vertex_render_object.cpp
         shader.cpp
         fps.cpp
-        png_load.cpp)
+        png_load.cpp
+        position_vertex_specification.cpp)
 
 target_link_libraries(
         sandbox_opengl_22

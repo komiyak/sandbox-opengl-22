@@ -16,7 +16,11 @@ public:
     void LoadFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath);
 
     [[nodiscard]] GLint GetPositionAttribLocation() const {
-        return glGetAttribLocation(program_object_, "position");
+        return position_attrib_location_;
+    }
+
+    [[nodiscard]] GLint GetColorAttribLocation() const {
+        return color_attrib_location_;
     }
 
     [[nodiscard]] GLint GetUniformLocationOfProjectionMat() const {
@@ -41,6 +45,11 @@ private:
     GLuint program_object_{};
     GLuint vertex_shader_{};
     GLuint fragment_shader_{};
+
+    // 'position' 属性変数の位置
+    GLint position_attrib_location_;
+    // 'color' 属性変数の位置
+    GLint color_attrib_location_;
 
     // TODO shader によって変化する部分なので、それに対応できるような構造に変更する
     GLint uniform_projection_mat_{};

@@ -5,6 +5,9 @@
 #include <glad/glad.h>
 #include "vertex_render_object.h"
 
+#include "vertex_specification.h"
+#include "shader.h"
+
 void VertexRenderObject::Draw() const {
     glBindVertexArray(vao_);
     glDrawArrays(draw_mode_, draw_count_first_, draw_count_);
@@ -12,11 +15,12 @@ void VertexRenderObject::Draw() const {
 
 void VertexRenderObject::Initialize(
         GLsizeiptr vertex_size,
-        const void *vertex_data,
+        const void *p_vertex_data,
+        const VertexSpecification &vertex_specification,
+        const Shader &shader,
         GLenum usage,
         GLenum draw_mode,
-        GLsizei draw_count,
-        GLint position_attrib_location) {
+        GLsizei draw_count) {
 
     draw_mode_ = draw_mode;
     draw_count_ = draw_count;
@@ -29,11 +33,11 @@ void VertexRenderObject::Initialize(
     // Create a VBO
     glGenBuffers(1, &vbo_);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    glBufferData(GL_ARRAY_BUFFER, vertex_size, vertex_data, usage);
+    glBufferData(GL_ARRAY_BUFFER, vertex_size, p_vertex_data, usage);
 
-    // Specify the layout of the vertex data
-    glEnableVertexAttribArray(position_attrib_location);
-    glVertexAttribPointer(position_attrib_location, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    // Specify the layout of the vertex data.
+    shader.Use();
+    vertex_specification.Specify();
 }
 
 void VertexRenderObject::Finalize() {

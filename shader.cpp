@@ -30,18 +30,16 @@ void Shader::LoadFromFile(const char *vertex_shader_filepath, const char *fragme
     glAttachShader(program_object_, fragment_shader_);
     glBindFragDataLocation(program_object_, 0, "outColor"); // outColor に色を出力する
     glLinkProgram(program_object_);
-    glUseProgram(program_object_);
-
-    // Specify the layout of the vertex data
-    GLint pos_attrib = glGetAttribLocation(program_object_, "position");
-    glEnableVertexAttribArray(pos_attrib);
-    glVertexAttribPointer(pos_attrib, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 
     // Get uniform locations
     uniform_projection_mat_ = glGetUniformLocation(program_object_, "proj");
     uniform_view_mat_ = glGetUniformLocation(program_object_, "view");
     uniform_model_mat_ = glGetUniformLocation(program_object_, "model");
+
+    // Get attrib locations (どうせ使うので事前に取り出しておく)
+    position_attrib_location_ = glGetAttribLocation(program_object_, "position");
+    color_attrib_location_ = glGetAttribLocation(program_object_, "color");
 }
 
 GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
