@@ -17,3 +17,14 @@ You should run the command once to start development the first time.
 ```sh
 ./install.sh
 ```
+
+## Abbreviated words
+
+These words can be abbreviated as another one.
+
+| Full | To abbreviate |
+| --- | --- |
+| Attribute | Attrib |
+| Matrix | Mat |
+| Vertex array object (OpenGL) | VAO, Vao |
+| Vertex buffer object (OpenGL) | VBO, Vbo |

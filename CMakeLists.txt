@@ -26,7 +26,7 @@ include_directories(
 add_executable(
         sandbox_opengl_22
         main.cpp
-        render_object.cpp
+        vertex_render_object.cpp
         shader.cpp
         fps.cpp
         png_load.cpp)

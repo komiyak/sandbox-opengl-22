@@ -39,9 +39,9 @@ void Shader::LoadFromFile(const char *vertex_shader_filepath, const char *fragme
 
 
     // Get uniform locations
-    uniform_projection_matrix_ = glGetUniformLocation(program_object_, "proj");
-    uniform_view_matrix_ = glGetUniformLocation(program_object_, "view");
-    uniform_model_matrix_ = glGetUniformLocation(program_object_, "model");
+    uniform_projection_mat_ = glGetUniformLocation(program_object_, "proj");
+    uniform_view_mat_ = glGetUniformLocation(program_object_, "view");
+    uniform_model_mat_ = glGetUniformLocation(program_object_, "model");
 }
 
 GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {

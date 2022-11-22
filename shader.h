@@ -19,16 +19,16 @@ public:
         return glGetAttribLocation(program_object_, "position");
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfProjectionMatrix() const {
-        return uniform_projection_matrix_;
+    [[nodiscard]] GLint GetUniformLocationOfProjectionMat() const {
+        return uniform_projection_mat_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfViewMatrix() const {
-        return uniform_view_matrix_;
+    [[nodiscard]] GLint GetUniformLocationOfViewMat() const {
+        return uniform_view_mat_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfModelMatrix() const {
-        return uniform_model_matrix_;
+    [[nodiscard]] GLint GetUniformLocationOfModelMat() const {
+        return uniform_model_mat_;
     }
 
     void Finalize() override;
@@ -43,9 +43,9 @@ private:
     GLuint fragment_shader_{};
 
     // TODO shader によって変化する部分なので、それに対応できるような構造に変更する
-    GLint uniform_projection_matrix_{};
-    GLint uniform_view_matrix_{};
-    GLint uniform_model_matrix_{};
+    GLint uniform_projection_mat_{};
+    GLint uniform_view_mat_{};
+    GLint uniform_model_mat_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_

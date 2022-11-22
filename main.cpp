@@ -8,7 +8,7 @@
 
 #include "fps.h"
 
-#include "render_object.h"
+#include "vertex_render_object.h"
 #include "shader.h"
 
 
@@ -151,8 +151,8 @@ int main() {
             5.0f, 0.0f, 5.0f,
     };
 
-    auto *up_grid = new RenderObject();
-    auto *up_triangle = new RenderObject();
+    auto *up_grid = new VertexRenderObject();
+    auto *up_triangle = new VertexRenderObject();
 
     auto *up_shader = new Shader();
     up_shader->LoadFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
@@ -163,19 +163,19 @@ int main() {
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2,
-            up_shader);
+            up_shader->GetPositionAttribLocation());
     up_triangle->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             3,
-            up_shader);
+            up_shader->GetPositionAttribLocation());
 
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    glUniformMatrix4fv(up_shader->GetUniformLocationOfProjectionMatrix(), 1, GL_FALSE, glm::value_ptr(projection_mat));
+    glUniformMatrix4fv(up_shader->GetUniformLocationOfProjectionMat(), 1, GL_FALSE, glm::value_ptr(projection_mat));
 
     Fps *up_fps = new Fps();
 
@@ -190,28 +190,24 @@ int main() {
 
         angle += glm::pi<float>() * 0.25f * (float) up_fps->GetElapsedTime();
 
+        up_shader->Use();
+
         // View 行列を設定
         const glm::mat4 view_mat = glm::lookAt(
                 glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 12.0f),
                 glm::vec3(0.f, 0.f, 0.f),
                 glm::vec3(0.f, 1.f, 0.f));
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfViewMatrix(), 1, GL_FALSE, glm::value_ptr(view_mat));
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfViewMat(), 1, GL_FALSE, glm::value_ptr(view_mat));
 
-
-        up_triangle->BindRender();
 
         glm::mat4 model_mat = glm::mat4(1.0f);
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMatrix(), 1, GL_FALSE, glm::value_ptr(model_mat));
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat));
+        up_triangle->Draw();
 
-        up_triangle->Render();
-
-
-        up_grid->BindRender();
 
         glm::mat4 model_mat_2 = glm::mat4(1.0f);
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMatrix(), 1, GL_FALSE, glm::value_ptr(model_mat_2));
-
-        up_grid->Render();
+        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat_2));
+        up_grid->Draw();
 
 
         glfwSwapBuffers(glfw_window);
