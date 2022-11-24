@@ -25,6 +25,7 @@ These words can be abbreviated as another one.
 | Full | To abbreviate |
 | --- | --- |
 | Attribute | Attrib |
+| Length | len |
 | Matrix | Mat |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
