@@ -1,0 +1,8 @@
+#ifndef SANDBOX_OPENGL_22_GAME_DEBUG_H_
+#define SANDBOX_OPENGL_22_GAME_DEBUG_H_
+
+#include "preference.h"
+
+#define GAME_DEBUG
+
+#endif //SANDBOX_OPENGL_22_GAME_DEBUG_H_

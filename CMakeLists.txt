@@ -30,7 +30,10 @@ add_executable(
         shader.cpp
         fps.cpp
         png_load.cpp
-        position_vertex_specification.cpp)
+        position_vertex_specification.cpp
+        color_vertex_specification.cpp
+        opengl_debug.cpp
+        cstring_util.cpp)
 
 target_link_libraries(
         sandbox_opengl_22

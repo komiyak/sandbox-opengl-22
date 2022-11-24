@@ -11,7 +11,9 @@
 #include "vertex_render_object.h"
 #include "shader.h"
 #include "position_vertex_specification.h"
+#include "color_vertex_specification.h"
 
+#include "opengl_debug.h"
 
 /**
  * Error handling for GLFW initialization.
@@ -36,6 +38,7 @@ static void KeyCallback(
     }
 }
 
+
 int main() {
     // The main window handle
     GLFWwindow *glfw_window;
@@ -47,9 +50,13 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfw_window = glfwCreateWindow(800, 600, "Simple OpenGL 3.2", NULL, NULL);
+    // Requiring OpenGL version
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
+    glfw_window = glfwCreateWindow(800, 600, "The sandbox of OpenGL", nullptr, nullptr);
     if (!glfw_window) {
         fprintf(stderr, "Error: Failed to make GLFW window.\n");
         glfwTerminate();
@@ -69,18 +76,33 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stdout, "Your GLAD supports to OpenGL version %d.%d.\n", GLVersion.major, GLVersion.minor);
+    fprintf(stdout, "Your computer supports to OpenGL %d.%d (Driver: %s).\n",
+            GLVersion.major,
+            GLVersion.minor,
+            glGetString(GL_VERSION));
+
+    // Enabling the debug context in OpenGL.
+    GLint gl_context_flags;
+    glGetIntegerv(GL_CONTEXT_FLAGS, &gl_context_flags);
+    if (gl_context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(opengl_debug::DebugMessageCallback, nullptr);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    }
+
 
     glfwSwapInterval(1);
-
+    glEnable(GL_DEPTH_TEST);
 
 
     // 頂点
     // Note: Projection の説明を省くために、最初から device coordinates に対応した頂点座標としておく
     const GLfloat kVertices[] = {
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
+            // x, y, z, r, g, b
+            0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
 
     const GLfloat kGridPlaneVertices[] = {
@@ -155,24 +177,26 @@ int main() {
     auto *up_grid = new VertexRenderObject();
     auto *up_triangle = new VertexRenderObject();
 
+    auto *up_grid_shader = new Shader();
+    up_grid_shader->LoadFromFile("shader/white_vertex.vert", "shader/white_vertex.frag");
+
     auto *up_shader = new Shader();
     up_shader->LoadFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
-
-    auto *up_xyz_axis_shader = new Shader();
-    up_xyz_axis_shader->LoadFromFile("shader/vertex_color_xyz_axis.vert", "shader/vertex_color_xyz_axis.frag");
 
     up_grid->Initialize(
             sizeof(kGridPlaneVertices),
             (void *) kGridPlaneVertices,
-            PositionVertexSpecification{up_shader->GetPositionAttribLocation()},
-            *up_shader,
+            PositionVertexSpecification{up_grid_shader->GetPositionAttribLocation()},
+            *up_grid_shader,
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2);
     up_triangle->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
-            PositionVertexSpecification{up_shader->GetPositionAttribLocation()},
+            ColorVertexSpecification{
+                    up_shader->GetPositionAttribLocation(),
+                    up_shader->GetColorAttribLocation()},
             *up_shader,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
@@ -181,7 +205,7 @@ int main() {
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    glUniformMatrix4fv(up_shader->GetUniformLocationOfProjectionMat(), 1, GL_FALSE, glm::value_ptr(projection_mat));
+    //glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfProjectionMat(), 1, GL_FALSE, glm::value_ptr(projection_mat));
 
     Fps *up_fps = new Fps();
 
@@ -192,27 +216,39 @@ int main() {
         up_fps->StartRecord();
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         angle += glm::pi<float>() * 0.25f * (float) up_fps->GetElapsedTime();
-
-        up_shader->Use();
 
         // View 行列を設定
         const glm::mat4 view_mat = glm::lookAt(
                 glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 12.0f),
                 glm::vec3(0.f, 0.f, 0.f),
                 glm::vec3(0.f, 1.f, 0.f));
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfViewMat(), 1, GL_FALSE, glm::value_ptr(view_mat));
+
+        up_shader->Use();
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfProjectionMat(), 1, GL_FALSE, glm::value_ptr(projection_mat));
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfViewMat(), 1, GL_FALSE, glm::value_ptr(view_mat));
+
+//        const glm::mat4 view_mat = glm::lookAt(
+//                glm::vec3(glm::cos(angle) * 8.0f, 1.f, glm::sin(angle) * 12.0f),
+//                glm::vec3(0.f, 0.f, 0.f),
+//                glm::vec3(0.f, 1.f, 0.f));
+//        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfViewMat(), 1, GL_FALSE, glm::value_ptr(view_mat));
 
 
         glm::mat4 model_mat = glm::mat4(1.0f);
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat));
+        model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.5f, 0.0f));
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat));
         up_triangle->Draw();
 
 
+        up_grid_shader->Use();
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfProjectionMat(), 1, GL_FALSE, glm::value_ptr(projection_mat));
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfViewMat(), 1, GL_FALSE, glm::value_ptr(view_mat));
+
         glm::mat4 model_mat_2 = glm::mat4(1.0f);
-        glUniformMatrix4fv(up_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat_2));
+        glUniformMatrix4fv(up_grid_shader->GetUniformLocationOfModelMat(), 1, GL_FALSE, glm::value_ptr(model_mat_2));
         up_grid->Draw();
 
 
@@ -226,8 +262,8 @@ int main() {
     FINALIZE_AND_DELETE(up_grid);
     FINALIZE_AND_DELETE(up_triangle);
 
+    FINALIZE_AND_DELETE(up_grid_shader);
     FINALIZE_AND_DELETE(up_shader);
-    FINALIZE_AND_DELETE(up_xyz_axis_shader);
 
     glfwDestroyWindow(glfw_window);
     glfwTerminate();

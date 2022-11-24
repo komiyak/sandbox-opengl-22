@@ -1,12 +1,16 @@
 #version 150 core
 
 in vec3 position;
+in vec3 color;
 
-uniform mat4 proj;
-uniform mat4 view;
-uniform mat4 model;
+out vec3 Color;
+
+uniform mat4 projection_mat;
+uniform mat4 view_mat;
+uniform mat4 model_mat;
 
 void main()
 {
-    gl_Position = proj * view * model * vec4(position, 1.0);
+    Color = color;
+    gl_Position = projection_mat * view_mat * model_mat * vec4(position, 1.0);
 }

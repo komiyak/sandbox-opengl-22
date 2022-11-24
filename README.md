@@ -28,3 +28,10 @@ These words can be abbreviated as another one.
 | Matrix | Mat |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
+
+## Shader files
+
+| Shader's name (and filename) | Description |
+| --- | --- |
+| vertex_color.frag/vert | A vertex with 6 data as Vertex(x, y, z) and Vertex color(r, g, b). |
+| white_vertex.frag/vert | A vertex with 3 data as Vertex(x, y, z). Rendering white color vertex (for debug maybe). |
