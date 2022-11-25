@@ -7,7 +7,7 @@ curl -LOsS https://komiyak-s3.s3.us-west-2.amazonaws.com/cqNJtk7L0XVD8kIV8SbE0BE
 # Unzipping and installing them
 mkdir -p external_lib
 unzip glfw-3.3.8.zip -d external_lib
-unzip glad.zip -d external_lib/glad-opengl-version-4-5
+unzip glad.zip -d external_lib/glad-opengl-version-4-6
 
 # Cleaning up zips
 rm glfw-3.3.8.zip

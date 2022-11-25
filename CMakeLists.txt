@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(
         external_lib/glfw-3.3.8
         external_lib/glfw-3.3.8-build)
-add_library(glad STATIC external_lib/glad-opengl-version-4-5/src/glad.c)
+add_library(glad STATIC external_lib/glad-opengl-version-4-6/src/glad.c)
 
 # Add glm library
 include(FetchContent)
@@ -20,7 +20,7 @@ FetchContent_MakeAvailable(glm)
 
 include_directories(
         external_lib/glfw-3.3.8/include
-        external_lib/glad-opengl-version-4-5/include
+        external_lib/glad-opengl-version-4-6/include
         ${glm_SOURCE_DIR})
 
 add_executable(
