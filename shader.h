@@ -1,19 +1,18 @@
-//
-// Created by komiyak on 22/11/21.
-//
-
 #ifndef SANDBOX_OPENGL_22_SHADER_H_
 #define SANDBOX_OPENGL_22_SHADER_H_
 
 #include <glad/glad.h>
 #include <string>
+
 #include "base_object.h"
 
 class Shader : public BaseObject {
 public:
-    void Use() const;
+    // glUseProgram() を発行
+    void UseProgram() const;
 
-    void LoadFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath);
+    // shader file をビルドし、shader を利用可能にする
+    void BuildFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath);
 
     [[nodiscard]] GLint GetPositionAttribLocation() const {
         return position_attrib_location_;
@@ -47,9 +46,9 @@ private:
     GLuint fragment_shader_{};
 
     // 'position' 属性変数の位置
-    GLint position_attrib_location_;
+    GLint position_attrib_location_{};
     // 'color' 属性変数の位置
-    GLint color_attrib_location_;
+    GLint color_attrib_location_{};
 
     // TODO shader によって変化する部分なので、それに対応できるような構造に変更する
     GLint uniform_projection_mat_{};

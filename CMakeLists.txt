@@ -28,6 +28,7 @@ add_executable(
         main.cpp
         vertex_render_object.cpp
         shader.cpp
+        basic_shader_uniform.cpp
         fps.cpp
         png_load.cpp
         position_vertex_specification.cpp

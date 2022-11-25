@@ -22,7 +22,7 @@ namespace opengl_debug {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedMacroInspection"
 
-#define OPENGL_DEBUG_CHECK_ERROR() opengl_debug::CheckError(__FILE__, __LINE__)
+#define OPENGL_DEBUG_CHECK() opengl_debug::CheckError(__FILE__, __LINE__)
 
 #pragma clang diagnostic pop
 
