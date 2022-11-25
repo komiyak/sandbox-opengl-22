@@ -104,6 +104,18 @@ int main() {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
 
+    const GLfloat kAxisVertices[] = {
+            // x, y, z, r, g, b
+            0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+
+            0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f,
+    };
+
     const GLfloat kGridPlaneVertices[] = {
             -5.0f, 0.0f, -5.f,
             -5.0f, 0.0f, 5.0f,
@@ -180,17 +192,24 @@ int main() {
     auto *up_shader = new Shader();
     up_shader->BuildFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
 
-    BasicShaderUniform triangle_shader_uniform{
-            up_grid_shader->GetUniformLocationOfProjectionMat(),
-            up_grid_shader->GetUniformLocationOfViewMat(),
-            up_grid_shader->GetUniformLocationOfModelMat()};
-
     BasicShaderUniform grid_shader_uniform{
             up_grid_shader->GetUniformLocationOfProjectionMat(),
             up_grid_shader->GetUniformLocationOfViewMat(),
             up_grid_shader->GetUniformLocationOfModelMat()};
 
+    BasicShaderUniform axis_shader_uniform{
+            up_shader->GetUniformLocationOfProjectionMat(),
+            up_shader->GetUniformLocationOfViewMat(),
+            up_shader->GetUniformLocationOfModelMat()};
+
+    BasicShaderUniform triangle_shader_uniform{
+            up_shader->GetUniformLocationOfProjectionMat(),
+            up_shader->GetUniformLocationOfViewMat(),
+            up_shader->GetUniformLocationOfModelMat()};
+
+
     auto *up_grid = new VertexRenderObject();
+    auto *up_axis = new VertexRenderObject();
     auto *up_triangle = new VertexRenderObject();
 
     up_grid->Initialize(
@@ -202,6 +221,17 @@ int main() {
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2);
+    up_axis->Initialize(
+            sizeof(kAxisVertices),
+            (void *) kAxisVertices,
+            ColorVertexSpecification{
+                    up_shader->GetPositionAttribLocation(),
+                    up_shader->GetColorAttribLocation()},
+            up_shader,
+            &axis_shader_uniform,
+            GL_STATIC_DRAW,
+            GL_LINES,
+            6);
     up_triangle->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
@@ -218,6 +248,7 @@ int main() {
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
     grid_shader_uniform.SetProjectionMat(projection_mat);
+    axis_shader_uniform.SetProjectionMat(projection_mat);
     triangle_shader_uniform.SetProjectionMat(projection_mat);
 
 
@@ -251,6 +282,10 @@ int main() {
         grid_shader_uniform.SetModelMat(glm::mat4(1.0f));
         up_grid->Render();
 
+        axis_shader_uniform.SetViewMat(view_mat);
+        axis_shader_uniform.SetModelMat(glm::mat4(1.0f));
+        up_axis->Render();
+
 
         glfwSwapBuffers(glfw_window);
         glfwPollEvents();
@@ -260,6 +295,7 @@ int main() {
 
     FINALIZE_AND_DELETE(up_fps);
     FINALIZE_AND_DELETE(up_grid);
+    FINALIZE_AND_DELETE(up_axis);
     FINALIZE_AND_DELETE(up_triangle);
 
     FINALIZE_AND_DELETE(up_grid_shader);
