@@ -42,6 +42,7 @@ target_link_libraries(
         glad
         png)
 
+add_subdirectory(google_tests)
 
 # Coping resource files into the build dir.
 file(INSTALL shader DESTINATION "${CMAKE_BINARY_DIR}")
