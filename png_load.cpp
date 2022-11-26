@@ -11,11 +11,14 @@ void PngLoad::LoadFile(const char *const p_file_name) {
     Initialize(PNG_IMAGE_VERSION);
 
     if (png_image_begin_read_from_file(&(png_image_), p_file_name)) {
-        png_image_.format = PNG_FORMAT_RGB;
+        png_image_.format = PNG_FORMAT_RGBA;// PNG_FORMAT_RGB;
         png_bytep_ = static_cast<png_bytep>(malloc(PNG_IMAGE_SIZE(png_image_)));
 
         if (png_image_finish_read(&png_image_, nullptr, png_bytep_, 0, nullptr)) {
             return; // Successful
+        } else {
+            fprintf(stderr, "Error png_load.");
+            fflush(stderr);
         }
     }
 }

@@ -12,7 +12,13 @@
 #include "shader.h"
 #include "position_vertex_specification.h"
 #include "color_vertex_specification.h"
+#include "texture_vertex_specification.h"
 #include "basic_shader_uniform.h"
+#include "texture_shader_uniform.h"
+#include "png_load.h"
+
+#include <png.h>
+#include <zlib.h>
 
 /**
  * Error handling for GLFW initialization.
@@ -53,8 +59,8 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
+
     glfw_window = glfwCreateWindow(800, 600, "The sandbox of OpenGL", nullptr, nullptr);
     if (!glfw_window) {
         fprintf(stderr, "Error: Failed to make GLFW window.\n");
@@ -79,6 +85,7 @@ int main() {
             GLVersion.major,
             GLVersion.minor,
             glGetString(GL_VERSION));
+
 
     // Enabling the debug context in OpenGL.
     GLint gl_context_flags;
@@ -185,12 +192,60 @@ int main() {
             5.0f, 0.0f, 5.0f,
     };
 
+    const GLfloat kGrassVertices[] = {
+            // x, y, z, s, t
+            -0.5f, -0.5f, 0.f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.f, 1.0f, 0.0f,
+    };
 
     auto *up_grid_shader = new Shader();
     up_grid_shader->BuildFromFile("shader/white_vertex.vert", "shader/white_vertex.frag");
 
     auto *up_shader = new Shader();
     up_shader->BuildFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
+
+    auto *up_texture_shader = new Shader();
+    up_texture_shader->BuildFromFile("shader/texture.vert", "shader/texture.frag");
+
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    png_image image;
+    memset(&image, 0, sizeof(image));
+    image.version = PNG_IMAGE_VERSION;
+
+    //if (png_image_begin_read_from_file(&image, "/home/komiyak/ws/sandbox-opengl-22/sample.png")) {
+    if (png_image_begin_read_from_file(&image, "/home/komiyak/ws/sandbox-opengl-22/texture/grass.png")) {
+        image.format = PNG_FORMAT_RGBA;
+        const png_bytep image_buffer = static_cast<png_bytep const>(malloc(PNG_IMAGE_SIZE(image)));
+        if (png_image_finish_read(&image, NULL, image_buffer, 0, NULL) != 0) {
+            glTexImage2D(
+                    GL_TEXTURE_2D,
+                    0,
+                    GL_RGBA,
+                    512,//2,//512, //png_load->GetImageSize().width,
+                    512,//2,//512, //png_load->GetImageSize().height,
+                    0,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,//GL_FLOAT,//GL_UNSIGNED_BYTE,
+                    image_buffer);//pixels);//image_buffer); //png_load->GetData());
+            OPENGL_DEBUG_CHECK();
+        }
+
+        if (image_buffer == NULL) {
+            png_image_free(&image);
+        } else {
+            free(image_buffer);
+        }
+    }
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     BasicShaderUniform grid_shader_uniform{
             up_grid_shader->GetUniformLocationOfProjectionMat(),
@@ -207,10 +262,21 @@ int main() {
             up_shader->GetUniformLocationOfViewMat(),
             up_shader->GetUniformLocationOfModelMat()};
 
+//    TextureShaderUniform grass_shader_uniform{
+//            up_texture_shader->GetUniformLocationOfProjectionMat(),
+//            up_texture_shader->GetUniformLocationOfViewMat(),
+//            up_texture_shader->GetUniformLocationOfModelMat(),
+//            up_texture_shader->GetUniformLocationOfTextureUnit()};
+    TextureShaderUniform grass_shader_uniform{
+            up_texture_shader->GetUniformLocationOfProjectionMat(),
+            up_texture_shader->GetUniformLocationOfViewMat(),
+            up_texture_shader->GetUniformLocationOfModelMat(),
+            up_texture_shader->GetUniformLocationOfTextureUnit()};
 
     auto *up_grid = new VertexRenderObject();
     auto *up_axis = new VertexRenderObject();
     auto *up_triangle = new VertexRenderObject();
+    auto *up_grass = new VertexRenderObject();
 
     up_grid->Initialize(
             sizeof(kGridPlaneVertices),
@@ -243,6 +309,17 @@ int main() {
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             3);
+    up_grass->Initialize(
+            sizeof(kGrassVertices),
+            (void *) kGrassVertices,
+            TextureVertexSpecification{
+                    up_texture_shader->GetPositionAttribLocation(),
+                    up_texture_shader->GetTexcoordAttribLocation()},
+            up_texture_shader,
+            &grass_shader_uniform,
+            GL_STATIC_DRAW,
+            GL_TRIANGLE_STRIP,
+            4);
 
 
     // Projection 行列を設定
@@ -250,7 +327,16 @@ int main() {
     grid_shader_uniform.SetProjectionMat(projection_mat);
     axis_shader_uniform.SetProjectionMat(projection_mat);
     triangle_shader_uniform.SetProjectionMat(projection_mat);
+    grass_shader_uniform.SetProjectionMat(projection_mat);
 
+    //PngLoad *png_load = new PngLoad();
+    //png_load->LoadFile("./texture/grass.png"); // ロードできてない？
+    //png_load->LoadFile("/home/komiyak/ws/sandbox/2022/opengl-blending/grass.png");
+
+
+    grass_shader_uniform.SetTextureUnit(0);
+
+    //png_load->Unload();
 
     Fps *up_fps = new Fps();
     float angle = 0;
@@ -259,7 +345,7 @@ int main() {
     while (!glfwWindowShouldClose(glfw_window)) {
         up_fps->StartRecord();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         angle += glm::pi<float>() * 0.25f * (float) up_fps->GetElapsedTime();
@@ -286,6 +372,13 @@ int main() {
         axis_shader_uniform.SetModelMat(glm::mat4(1.0f));
         up_axis->Render();
 
+        glm::mat4 grass_model_mat = glm::mat4(1.0f);
+        grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
+        grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
+        grass_shader_uniform.SetViewMat(view_mat);
+        grass_shader_uniform.SetModelMat(grass_model_mat);
+        up_grass->Render();
+
 
         glfwSwapBuffers(glfw_window);
         glfwPollEvents();
@@ -293,13 +386,19 @@ int main() {
         up_fps->EndRecord();
     }
 
+    //delete png_load;
+    glDeleteTextures(1, &texture);
+
     FINALIZE_AND_DELETE(up_fps);
+
     FINALIZE_AND_DELETE(up_grid);
     FINALIZE_AND_DELETE(up_axis);
     FINALIZE_AND_DELETE(up_triangle);
+    FINALIZE_AND_DELETE(up_grass);
 
     FINALIZE_AND_DELETE(up_grid_shader);
     FINALIZE_AND_DELETE(up_shader);
+    FINALIZE_AND_DELETE(up_texture_shader);
 
     glfwDestroyWindow(glfw_window);
     glfwTerminate();

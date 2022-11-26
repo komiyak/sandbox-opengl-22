@@ -4,6 +4,9 @@
 
 #include "opengl_debug.h"
 
+#include <execinfo.h>
+#include <unistd.h>
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "Simplify"
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
@@ -41,7 +44,13 @@ GLenum opengl_debug::CheckError(const char *file, int line) {
                 break;
             default:; // nothing
         }
-        std::cout << error << " | " << file << " (" << line << ")" << std::endl;
+        std::cout << "opengl_debug::CheckError | " << error << " | " << file << " (" << line << ")" << std::endl;
+
+        // For linux platform, to get and print stacktrace.
+        const int kBacktraceSize = 10;
+        void *backtrace_array[kBacktraceSize];
+        const int backtrace_size = backtrace(backtrace_array, kBacktraceSize);
+        backtrace_symbols_fd(backtrace_array, backtrace_size, STDOUT_FILENO);
     }
     return errorCode;
 }
@@ -58,31 +67,31 @@ GLenum opengl_debug::CheckError(const char *file, int line) {
     // ignore non-significant error/warning codes
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-    std::cout << "---------------" << std::endl;
+    std::cout << "opengl_debug::DebugMessageCallback" << std::endl;
     std::cout << "Debug message (" << id << "): " << message << std::endl;
 
     switch (source) {
         case GL_DEBUG_SOURCE_API:
-            std::cout << "Source: API";
+            std::cout << "  Source: API";
             break;
         case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-            std::cout << "Source: Window System";
+            std::cout << "  Source: Window System";
             break;
         case GL_DEBUG_SOURCE_SHADER_COMPILER:
-            std::cout << "Source: Shader Compiler";
+            std::cout << "  Source: Shader Compiler";
             break;
         case GL_DEBUG_SOURCE_THIRD_PARTY:
-            std::cout << "Source: Third Party";
+            std::cout << "  Source: Third Party";
             break;
         case GL_DEBUG_SOURCE_APPLICATION:
-            std::cout << "Source: Application";
+            std::cout << "  Source: Application";
             break;
         case GL_DEBUG_SOURCE_OTHER:
-            std::cout << "Source: Other";
+            std::cout << "  Source: Other";
             break;
         default:; // nothing
     }
-    std::cout << std::endl;
+    std::cout << ", ";
 
     switch (type) {
         case GL_DEBUG_TYPE_ERROR:
@@ -114,7 +123,7 @@ GLenum opengl_debug::CheckError(const char *file, int line) {
             break;
         default:; // nothing
     }
-    std::cout << std::endl;
+    std::cout << ", ";
 
     switch (severity) {
         case GL_DEBUG_SEVERITY_HIGH:
@@ -132,6 +141,13 @@ GLenum opengl_debug::CheckError(const char *file, int line) {
         default:; // nothing
     }
     std::cout << std::endl;
+
+    // For linux platform, to get and print stacktrace.
+    const int kBacktraceSize = 10;
+    void *backtrace_array[kBacktraceSize];
+    const int backtrace_size = backtrace(backtrace_array, kBacktraceSize);
+    backtrace_symbols_fd(backtrace_array, backtrace_size, STDOUT_FILENO);
+
     std::cout << std::endl;
 }
 

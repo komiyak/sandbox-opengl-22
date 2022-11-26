@@ -41,11 +41,13 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     uniform_projection_mat_ = glGetUniformLocation(program_object_, "projection_mat");
     uniform_view_mat_ = glGetUniformLocation(program_object_, "view_mat");
     uniform_model_mat_ = glGetUniformLocation(program_object_, "model_mat");
+    uniform_texture_unit_ = glGetUniformLocation(program_object_, "tex");
     OPENGL_DEBUG_CHECK();
 
     // Get attrib locations (どうせ使うので事前に取り出しておく)
     position_attrib_location_ = glGetAttribLocation(program_object_, "position");
     color_attrib_location_ = glGetAttribLocation(program_object_, "color");
+    texcoord_attrib_location_ = glGetAttribLocation(program_object_, "texcoord");
     OPENGL_DEBUG_CHECK();
 }
 

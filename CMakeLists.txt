@@ -3,6 +3,13 @@ project(sandbox_opengl_22)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# デバッグ時にエラー位置の特定のために backtrace_symbols() を利用するとき、
+# アドレスと一緒に関数名を表示するために有効にしている。
+# 必要がない場合は OFF にするべきらしい。簡易的な stacktrace 取得のために使用。
+# Note: デバッグ用のスタックトレース実装は自分で作る必要があるかもしれない。
+# Ref: https://gcc.gnu.org/onlinedocs/gcc-9.1.0/gcc/Link-Options.html#index-rdynamic
+set(CMAKE_CXX_FLAGS -rdynamic)
+
 
 add_subdirectory(
         external_lib/glfw-3.3.8
@@ -29,10 +36,12 @@ add_executable(
         vertex_render_object.cpp
         shader.cpp
         basic_shader_uniform.cpp
+        texture_shader_uniform.cpp
         fps.cpp
         png_load.cpp
         position_vertex_specification.cpp
         color_vertex_specification.cpp
+        texture_vertex_specification.cpp
         opengl_debug.cpp
         cstring_util.cpp)
 
@@ -46,3 +55,4 @@ add_subdirectory(google_tests)
 
 # Coping resource files into the build dir.
 file(INSTALL shader DESTINATION "${CMAKE_BINARY_DIR}")
+file(INSTALL texture DESTINATION "${CMAKE_BINARY_DIR}")
