@@ -18,7 +18,6 @@
 #include "png_load.h"
 
 #include <png.h>
-#include <zlib.h>
 
 /**
  * Error handling for GLFW initialization.
@@ -213,34 +212,20 @@ int main() {
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    png_image image;
-    memset(&image, 0, sizeof(image));
-    image.version = PNG_IMAGE_VERSION;
-
-    //if (png_image_begin_read_from_file(&image, "/home/komiyak/ws/sandbox-opengl-22/sample.png")) {
-    if (png_image_begin_read_from_file(&image, "/home/komiyak/ws/sandbox-opengl-22/texture/grass.png")) {
-        image.format = PNG_FORMAT_RGBA;
-        const png_bytep image_buffer = static_cast<png_bytep const>(malloc(PNG_IMAGE_SIZE(image)));
-        if (png_image_finish_read(&image, NULL, image_buffer, 0, NULL) != 0) {
-            glTexImage2D(
-                    GL_TEXTURE_2D,
-                    0,
-                    GL_RGBA,
-                    512,//2,//512, //png_load->GetImageSize().width,
-                    512,//2,//512, //png_load->GetImageSize().height,
-                    0,
-                    GL_RGBA,
-                    GL_UNSIGNED_BYTE,//GL_FLOAT,//GL_UNSIGNED_BYTE,
-                    image_buffer);//pixels);//image_buffer); //png_load->GetData());
-            OPENGL_DEBUG_CHECK();
-        }
-
-        if (image_buffer == NULL) {
-            png_image_free(&image);
-        } else {
-            free(image_buffer);
-        }
-    }
+    auto *up_png_load = new PngLoad();
+    up_png_load->LoadFile("./texture/grass.png", PNG_FORMAT_RGBA);
+    glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGBA,
+            up_png_load->GetImageSize().width,
+            up_png_load->GetImageSize().height,
+            0,
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            up_png_load->GetData());
+    FINALIZE_AND_DELETE(up_png_load);
+    OPENGL_DEBUG_CHECK();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -262,11 +247,6 @@ int main() {
             up_shader->GetUniformLocationOfViewMat(),
             up_shader->GetUniformLocationOfModelMat()};
 
-//    TextureShaderUniform grass_shader_uniform{
-//            up_texture_shader->GetUniformLocationOfProjectionMat(),
-//            up_texture_shader->GetUniformLocationOfViewMat(),
-//            up_texture_shader->GetUniformLocationOfModelMat(),
-//            up_texture_shader->GetUniformLocationOfTextureUnit()};
     TextureShaderUniform grass_shader_uniform{
             up_texture_shader->GetUniformLocationOfProjectionMat(),
             up_texture_shader->GetUniformLocationOfViewMat(),
@@ -329,14 +309,10 @@ int main() {
     triangle_shader_uniform.SetProjectionMat(projection_mat);
     grass_shader_uniform.SetProjectionMat(projection_mat);
 
-    //PngLoad *png_load = new PngLoad();
-    //png_load->LoadFile("./texture/grass.png"); // ロードできてない？
-    //png_load->LoadFile("/home/komiyak/ws/sandbox/2022/opengl-blending/grass.png");
 
-
+    // FIXME ?
     grass_shader_uniform.SetTextureUnit(0);
 
-    //png_load->Unload();
 
     Fps *up_fps = new Fps();
     float angle = 0;
@@ -386,7 +362,6 @@ int main() {
         up_fps->EndRecord();
     }
 
-    //delete png_load;
     glDeleteTextures(1, &texture);
 
     FINALIZE_AND_DELETE(up_fps);
