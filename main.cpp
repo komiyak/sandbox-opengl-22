@@ -8,7 +8,7 @@
 
 #include "preference.h"
 #include "opengl_debug.h"
-#include "fps.h"
+#include "frame.h"
 #include "vertex_render_object.h"
 #include "shader.h"
 #include "position_vertex_specification.h"
@@ -315,17 +315,17 @@ int main() {
     grass_shader_uniform.SetTextureUnit(0);
 
 
-    Fps *up_fps = new Fps();
+    Frame *up_frame = new Frame();
     float angle = 0;
 
     // Application loop
     while (!glfwWindowShouldClose(glfw_window)) {
-        up_fps->StartRecord();
+        up_frame->StartFrame();
 
         glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        angle += glm::pi<float>() * 0.25f * (float) up_fps->GetElapsedTime();
+        angle += glm::pi<float>() * 0.25f * (float) up_frame->GetDeltaTime();
 
         // View 行列を設定
         const glm::mat4 view_mat = glm::lookAt(
@@ -360,12 +360,12 @@ int main() {
         glfwSwapBuffers(glfw_window);
         glfwPollEvents();
 
-        up_fps->EndRecord();
+        up_frame->EndFrame();
     }
 
     glDeleteTextures(1, &texture);
 
-    FINALIZE_AND_DELETE(up_fps);
+    FINALIZE_AND_DELETE(up_frame);
 
     FINALIZE_AND_DELETE(up_grid);
     FINALIZE_AND_DELETE(up_axis);

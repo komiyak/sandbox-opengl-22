@@ -1,13 +1,9 @@
-//
-// Created by komiyak on 22/10/05.
-//
-
-#include <glad/glad.h>
+#include <glad/glad.h> // to need for GLFW the below include.
 #include <GLFW/glfw3.h>
 
-#include "fps.h"
+#include "frame.h"
 
-void Fps::StartRecord() {
+void Frame::StartFrame() {
     const double time = glfwGetTime();
 
     // 初回実行時の初期設定
@@ -28,7 +24,7 @@ void Fps::StartRecord() {
     frame_begin_time_ = time;
 }
 
-void Fps::EndRecord() {
+void Frame::EndFrame() {
     frame_end_time_ = glfwGetTime();
     frame_count_++;
 }

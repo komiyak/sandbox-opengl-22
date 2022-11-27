@@ -37,7 +37,7 @@ add_executable(
         shader.cpp
         basic_shader_uniform.cpp
         texture_shader_uniform.cpp
-        fps.cpp
+        frame.cpp
         png_load.cpp
         position_vertex_specification.cpp
         color_vertex_specification.cpp
