@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "opengl_debug.h"
+#include "preference.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"

@@ -2,7 +2,6 @@
 #define SANDBOX_OPENGL_22_OPENGL_DEBUG_H_
 
 #include <glad/glad.h>
-#include "preference.h"
 
 namespace opengl_debug {
     // glGetError() を実行し、エラーを検知した場合にログ出力を行う
@@ -18,7 +17,6 @@ namespace opengl_debug {
             const char *message,
             [[maybe_unused]] const void *userParam);
 }
-
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedMacroInspection"

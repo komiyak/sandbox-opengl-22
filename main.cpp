@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "preference.h"
 #include "opengl_debug.h"
 #include "fps.h"
 #include "vertex_render_object.h"
