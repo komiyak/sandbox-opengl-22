@@ -14,32 +14,32 @@ public:
     // shader file をビルドし、shader を利用可能にする
     void BuildFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath);
 
-    [[nodiscard]] GLint GetPositionAttribLocation() const {
-        return position_attrib_location_;
+    [[nodiscard]] GLint GetPositionAttribVariableLocation() const {
+        return position_attrib_variable_location_;
     }
 
-    [[nodiscard]] GLint GetColorAttribLocation() const {
-        return color_attrib_location_;
+    [[nodiscard]] GLint GetColorAttribVariableLocation() const {
+        return color_attrib_variable_location_;
     }
 
-    [[nodiscard]] GLint GetTexcoordAttribLocation() const {
-        return texcoord_attrib_location_;
+    [[nodiscard]] GLint GetTexcoordAttribVariableLocation() const {
+        return texcoord_attrib_variable_location_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfProjectionMat() const {
-        return uniform_projection_mat_;
+    [[nodiscard]] GLint GetProjectionMatUniformLocation() const {
+        return projection_mat_uniform_location_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfViewMat() const {
-        return uniform_view_mat_;
+    [[nodiscard]] GLint GetViewMatUniformLocation() const {
+        return view_mat_uniform_location_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfModelMat() const {
-        return uniform_model_mat_;
+    [[nodiscard]] GLint GetModelMatUniformLocation() const {
+        return model_mat_uniform_location_;
     }
 
-    [[nodiscard]] GLint GetUniformLocationOfTextureUnit() const {
-        return uniform_texture_unit_;
+    [[nodiscard]] GLint GetTextureUnitUniformLocation() const {
+        return texture_unit_uniform_location_;
     }
 
     void Finalize() override;
@@ -53,18 +53,20 @@ private:
     GLuint vertex_shader_{};
     GLuint fragment_shader_{};
 
+    // TODO shader によって変化する部分なので、それに対応できるような構造に変更したい
     // 'position' 属性変数の位置
-    GLint position_attrib_location_{};
+    GLint position_attrib_variable_location_{};
     // 'color' 属性変数の位置
-    GLint color_attrib_location_{};
+    GLint color_attrib_variable_location_{};
     // 'texcoord' 属性変数の位置
-    GLint texcoord_attrib_location_{};
+    GLint texcoord_attrib_variable_location_{};
 
-    // TODO shader によって変化する部分なので、それに対応できるような構造に変更する
-    GLint uniform_projection_mat_{};
-    GLint uniform_view_mat_{};
-    GLint uniform_model_mat_{};
-    GLint uniform_texture_unit_{};
+    // TODO shader によって変化する部分なので、それに対応できるような構造に変更したい
+    // uniform 変数の位置
+    GLint projection_mat_uniform_location_{};
+    GLint view_mat_uniform_location_{};
+    GLint model_mat_uniform_location_{};
+    GLint texture_unit_uniform_location_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_

@@ -233,26 +233,27 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
     BasicShaderUniform grid_shader_uniform{
-            up_grid_shader->GetUniformLocationOfProjectionMat(),
-            up_grid_shader->GetUniformLocationOfViewMat(),
-            up_grid_shader->GetUniformLocationOfModelMat()};
+            up_grid_shader->GetProjectionMatUniformLocation(),
+            up_grid_shader->GetViewMatUniformLocation(),
+            up_grid_shader->GetModelMatUniformLocation()};
 
     BasicShaderUniform axis_shader_uniform{
-            up_shader->GetUniformLocationOfProjectionMat(),
-            up_shader->GetUniformLocationOfViewMat(),
-            up_shader->GetUniformLocationOfModelMat()};
+            up_shader->GetProjectionMatUniformLocation(),
+            up_shader->GetViewMatUniformLocation(),
+            up_shader->GetModelMatUniformLocation()};
 
     BasicShaderUniform triangle_shader_uniform{
-            up_shader->GetUniformLocationOfProjectionMat(),
-            up_shader->GetUniformLocationOfViewMat(),
-            up_shader->GetUniformLocationOfModelMat()};
+            up_shader->GetProjectionMatUniformLocation(),
+            up_shader->GetViewMatUniformLocation(),
+            up_shader->GetModelMatUniformLocation()};
 
     TextureShaderUniform grass_shader_uniform{
-            up_texture_shader->GetUniformLocationOfProjectionMat(),
-            up_texture_shader->GetUniformLocationOfViewMat(),
-            up_texture_shader->GetUniformLocationOfModelMat(),
-            up_texture_shader->GetUniformLocationOfTextureUnit()};
+            up_texture_shader->GetProjectionMatUniformLocation(),
+            up_texture_shader->GetViewMatUniformLocation(),
+            up_texture_shader->GetModelMatUniformLocation(),
+            up_texture_shader->GetTextureUnitUniformLocation()};
 
     auto *up_grid = new VertexRenderObject();
     auto *up_axis = new VertexRenderObject();
@@ -262,7 +263,7 @@ int main() {
     up_grid->Initialize(
             sizeof(kGridPlaneVertices),
             (void *) kGridPlaneVertices,
-            PositionVertexSpecification{up_grid_shader->GetPositionAttribLocation()},
+            PositionVertexSpecification{up_grid_shader->GetPositionAttribVariableLocation()},
             up_grid_shader,
             &grid_shader_uniform,
             GL_STATIC_DRAW,
@@ -272,8 +273,8 @@ int main() {
             sizeof(kAxisVertices),
             (void *) kAxisVertices,
             ColorVertexSpecification{
-                    up_shader->GetPositionAttribLocation(),
-                    up_shader->GetColorAttribLocation()},
+                    up_shader->GetPositionAttribVariableLocation(),
+                    up_shader->GetColorAttribVariableLocation()},
             up_shader,
             &axis_shader_uniform,
             GL_STATIC_DRAW,
@@ -283,8 +284,8 @@ int main() {
             sizeof(kVertices),
             (void *) kVertices,
             ColorVertexSpecification{
-                    up_shader->GetPositionAttribLocation(),
-                    up_shader->GetColorAttribLocation()},
+                    up_shader->GetPositionAttribVariableLocation(),
+                    up_shader->GetColorAttribVariableLocation()},
             up_shader,
             &triangle_shader_uniform,
             GL_STATIC_DRAW,
@@ -294,8 +295,8 @@ int main() {
             sizeof(kGrassVertices),
             (void *) kGrassVertices,
             TextureVertexSpecification{
-                    up_texture_shader->GetPositionAttribLocation(),
-                    up_texture_shader->GetTexcoordAttribLocation()},
+                    up_texture_shader->GetPositionAttribVariableLocation(),
+                    up_texture_shader->GetTexcoordAttribVariableLocation()},
             up_texture_shader,
             &grass_shader_uniform,
             GL_STATIC_DRAW,

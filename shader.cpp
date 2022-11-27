@@ -37,19 +37,22 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     OPENGL_DEBUG_CHECK();
 
 
-    // Get uniform locations
-    uniform_projection_mat_ = glGetUniformLocation(program_object_, "projection_mat");
-    uniform_view_mat_ = glGetUniformLocation(program_object_, "view_mat");
-    uniform_model_mat_ = glGetUniformLocation(program_object_, "model_mat");
-    uniform_texture_unit_ = glGetUniformLocation(program_object_, "tex");
+    // Get locations of the uniform variable. (shader から取得できなかった場合は -1)
+    projection_mat_uniform_location_ = glGetUniformLocation(program_object_, "projection_mat");
+    view_mat_uniform_location_ = glGetUniformLocation(program_object_, "view_mat");
+    model_mat_uniform_location_ = glGetUniformLocation(program_object_, "model_mat");
+    texture_unit_uniform_location_ = glGetUniformLocation(program_object_, "tex");
     OPENGL_DEBUG_CHECK();
 
-    // Get attrib locations (どうせ使うので事前に取り出しておく)
-    position_attrib_location_ = glGetAttribLocation(program_object_, "position");
-    color_attrib_location_ = glGetAttribLocation(program_object_, "color");
-    texcoord_attrib_location_ = glGetAttribLocation(program_object_, "texcoord");
+    // Get locations of the attribute variable. (shader から取得できなかった場合は -1)
+    position_attrib_variable_location_ = glGetAttribLocation(program_object_, "position");
+    color_attrib_variable_location_ = glGetAttribLocation(program_object_, "color");
+    texcoord_attrib_variable_location_ = glGetAttribLocation(program_object_, "texcoord");
     OPENGL_DEBUG_CHECK();
 }
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnreachableCode"
 
 GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
     GLuint result = glCreateShader(shader_type);
@@ -57,19 +60,34 @@ GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
     glCompileShader(result);
     OPENGL_DEBUG_CHECK();
 
-
     GLint status;
     glGetShaderiv(result, GL_COMPILE_STATUS, &status);
     OPENGL_DEBUG_CHECK();
     if (!status) {
-        fprintf(stderr, "shader compile error.\n");
+        const char *shader_type_name;
+
+        switch (shader_type) {
+            case GL_VERTEX_SHADER:
+                shader_type_name = "GL_VERTEX_SHADER(0x8B31)";
+                break;
+            case GL_FRAGMENT_SHADER:
+                shader_type_name = "GL_FRAGMENT_SHADER(0x8B30)";
+                break;
+            default:
+                shader_type_name = "unknown";
+        }
+
+        fprintf(stderr, "Shader compile error [%s].\n", shader_type_name);
         char buffer[512];
         glGetShaderInfoLog(result, 512, nullptr, buffer);
-        fprintf(stderr, "%s", buffer);
+        fprintf(stderr, "%s\n", buffer);
+        fflush(stderr);
     }
 
     return result;
 }
+
+#pragma clang diagnostic pop
 
 void Shader::Finalize() {
     glDeleteProgram(program_object_);
