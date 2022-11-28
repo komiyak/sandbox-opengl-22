@@ -39,6 +39,7 @@ These words are hard to understand. You should use full spelling.
 
 - rad => radian (Math)
 - deg => degree (Math)
+- tex => texture
 
 ## To identify spelling inconsistency in the code
 
