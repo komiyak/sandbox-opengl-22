@@ -7,6 +7,7 @@
 void Application::Initialize(Content *p_content) {
     DEBUG_ASSERT_MESSAGE(p_content, "p_content is required.");
     p_content_ = p_content;
+    p_content_->OnAttach(&context_);
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -21,7 +22,12 @@ void Application::Initialize(Content *p_content) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
 
-    up_glfw_window_ = glfwCreateWindow(800, 600, "The sandbox of OpenGL", nullptr, nullptr);
+    up_glfw_window_ = glfwCreateWindow(
+            context_.GetWindowScreenWidth(),
+            context_.GetWindowScreenHeight(),
+            "The sandbox of OpenGL",
+            nullptr,
+            nullptr);
     if (!up_glfw_window_) {
         fprintf(stderr, "Error: Failed to make GLFW window.\n");
         glfwTerminate();

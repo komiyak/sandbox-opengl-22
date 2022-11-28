@@ -7,10 +7,32 @@
 // アプリケーション統合クラス、実装として GLFW を利用しています
 class Application {
 public:
+    // Application クラスの状態を保持する
+    class Context {
+    public:
+        [[nodiscard]] int GetWindowScreenWidth() const {
+            return windowScreenWidth_;
+        }
+
+        [[nodiscard]] int GetWindowScreenHeight() const {
+            return windowScreenHeight_;
+        }
+
+    private:
+        // 現在のウィンドウのスクリーンサイズ（描画領域）の横幅ピクセルサイズ
+        int windowScreenWidth_{800}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
+        // 現在のウィンドウのスクリーンサイズ（描画領域）の縦幅ピクセルサイズ
+        int windowScreenHeight_{600}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
+    };
+
     // Application クラスの利用者が任意の処理を実行するためのクラス
     // 任意の処理の実装はインターフェースの継承先で定義する
     class Content {
     public:
+        void OnAttach(const Context *p_context) {
+            p_context_ = p_context;
+        }
+
         // 起動時に一度だけ実行されるコールバック
         virtual void OnStart() = 0;
 
@@ -22,6 +44,9 @@ public:
 
         // ループ終了時に一度だけ実行されるコールバック
         virtual void OnDestroy() = 0;
+
+    protected:
+        const Context *p_context_{};
     };
 
     // Application 初期化
@@ -46,6 +71,9 @@ private:
 
     // アプリケーション実装
     Content *p_content_{};
+
+    // アプリケーションの状態
+    Context context_{};
 };
 
 #endif //SANDBOX_OPENGL_22_APPLICATION_H_
