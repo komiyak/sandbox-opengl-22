@@ -170,6 +170,9 @@ void MainApplication::OnStart() {
             up_texture_shader_->GetModelMatUniformLocation(),
             up_texture_shader_->GetTextureUnitUniformLocation()};
 
+    // texture unit 0 を利用する
+    up_grass_shader_uniform_->SetTextureUnit(0);
+
     up_grid_ = new VertexRenderObject();
     up_axis_ = new VertexRenderObject();
     up_triangle_ = new VertexRenderObject();
@@ -225,10 +228,6 @@ void MainApplication::OnStart() {
     up_axis_shader_uniform_->SetProjectionMat(projection_mat);
     up_triangle_shader_uniform_->SetProjectionMat(projection_mat);
     up_grass_shader_uniform_->SetProjectionMat(projection_mat);
-
-
-    // FIXME ?
-    up_grass_shader_uniform_->SetTextureUnit(0);
 }
 
 void MainApplication::OnFrame() {
