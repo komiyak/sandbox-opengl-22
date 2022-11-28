@@ -29,8 +29,14 @@ These words can be abbreviated as another one.
 | Length | Len |
 | Matrix | Mat |
 | Parameter, Parameters | Param, Params |
+| Quadrangle (Math) | Quad |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
+
+### NGs
+
+- rad => radian (Math)
+- deg => degree (Math)
 
 ## To identify spelling inconsistency in the code
 
