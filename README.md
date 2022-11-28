@@ -32,6 +32,12 @@ These words can be abbreviated as another one.
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
 
+## To identify spelling inconsistency in the code
+
+| Meaning | Words | Should |
+| --- | --- | --- |
+| plural of `vertex` | `vertexes` or `vertices` | `vertices` |
+
 ## Shader files
 
 | Shader's name (and filename) | Description |
