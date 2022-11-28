@@ -25,8 +25,10 @@ These words can be abbreviated as another one.
 | Full | To abbreviate |
 | --- | --- |
 | Attribute | Attrib |
+| Function | Func |
 | Length | Len |
 | Matrix | Mat |
+| Parameter, Parameters | Param, Params |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
 
