@@ -7,6 +7,8 @@
 // アプリケーション統合クラス、実装として GLFW を利用しています
 class Application {
 public:
+    // Application クラスの利用者が任意の処理を実行するためのクラス
+    // 任意の処理の実装はインターフェースの継承先で定義する
     class Content {
     public:
         // 起動時に一度だけ実行されるコールバック
@@ -33,7 +35,6 @@ public:
     // この関数は、メインループが終了するまで終わりません
     void RunLoop() const;
 
-
 private:
     // Error handling for GLFW initialization.
     static void ErrorCallback(int error, const char *description);
@@ -43,7 +44,7 @@ private:
 
     GLFWwindow *up_glfw_window_{};
 
-    // アプリケーションループのコールバック実装
+    // アプリケーション実装
     Content *p_content_{};
 };
 
