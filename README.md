@@ -35,6 +35,8 @@ These words can be abbreviated as another one.
 
 ### NGs
 
+These words are hard to understand. You should use full spelling.
+
 - rad => radian (Math)
 - deg => degree (Math)
 
