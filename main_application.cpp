@@ -13,13 +13,15 @@
 #include "position_vertex_specification.h"
 #include "color_vertex_specification.h"
 #include "texture_vertex_specification.h"
+#include "texture_2d_vertex_specification.h"
 #include "basic_shader_uniform.h"
 #include "texture_shader_uniform.h"
+#include "texture_2d_shader_uniform.h"
 #include "png_load.h"
+#include "game_data.h"
 
 void MainApplication::OnStart() {
     // 頂点
-    // Note: Projection の説明を省くために、最初から device coordinates に対応した頂点座標としておく
     const GLfloat kVertices[] = {
             // x, y, z, r, g, b
             0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -125,22 +127,27 @@ void MainApplication::OnStart() {
     up_texture_shader_ = new Shader();
     up_texture_shader_->BuildFromFile("shader/texture.vert", "shader/texture.frag");
 
-    glGenTextures(1, &texture_);
-    glBindTexture(GL_TEXTURE_2D, texture_);
+    up_texture_2d_shader_ = new Shader();
+    up_texture_2d_shader_->BuildFromFile("shader/texture_2d.vert", "shader/texture_2d.frag");
 
-    auto *up_png_load = new PngLoad();
-    up_png_load->LoadFile("./texture/grass.png", PNG_FORMAT_RGBA);
+
+    glGenTextures(1, &texture_0_);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_0_);
+
+    PngLoad png_load{};
+    png_load.LoadFile("./texture/grass.png", PNG_FORMAT_RGBA);
     glTexImage2D(
             GL_TEXTURE_2D,
             0,
             GL_RGBA,
-            up_png_load->GetImageSize().width,
-            up_png_load->GetImageSize().height,
+            png_load.GetImageSize().width,
+            png_load.GetImageSize().height,
             0,
             GL_RGBA,
             GL_UNSIGNED_BYTE,
-            up_png_load->GetData());
-    FINALIZE_AND_DELETE(up_png_load);
+            png_load.GetData());
+    png_load.Finalize();
     OPENGL_DEBUG_CHECK();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -148,6 +155,30 @@ void MainApplication::OnStart() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
+    glGenTextures(1, &texture_1_);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture_1_);
+
+    PngLoad png_load_2d{};
+    png_load_2d.LoadFile("./texture/texture_rgb_128x128.png", PNG_FORMAT_RGB);
+    glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGB,
+            png_load_2d.GetImageSize().width,
+            png_load_2d.GetImageSize().height,
+            0,
+            GL_RGB,
+            GL_UNSIGNED_BYTE,
+            png_load_2d.GetData());
+    png_load_2d.Finalize();
+    OPENGL_DEBUG_CHECK();
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     up_grid_shader_uniform_ = new BasicShaderUniform{
             up_grid_shader_->GetProjectionMatUniformLocation(),
@@ -170,13 +201,19 @@ void MainApplication::OnStart() {
             up_texture_shader_->GetModelMatUniformLocation(),
             up_texture_shader_->GetTextureUnitUniformLocation()};
 
+    up_test_2d_shader_uniform_ = new Texture2dShaderUniform{
+            up_texture_2d_shader_->GetTextureUnitUniformLocation()};
+
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
+    // 2d 描画は texture unit 1 を利用
+    up_test_2d_shader_uniform_->SetTextureUnit(1);
 
     up_grid_ = new VertexRenderObject();
     up_axis_ = new VertexRenderObject();
     up_triangle_ = new VertexRenderObject();
     up_grass_ = new VertexRenderObject();
+    up_test_2d_ = new VertexRenderObject();
 
     up_grid_->Initialize(
             sizeof(kGridPlaneVertices),
@@ -220,7 +257,17 @@ void MainApplication::OnStart() {
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);
-
+    up_test_2d_->Initialize(
+            sizeof(GameData::kQuad2dPivotBottomLeftVertices),
+            (void *) GameData::kQuad2dPivotBottomLeftVertices,
+            Texture2dVertexSpecification{
+                    up_texture_2d_shader_->GetPositionAttribVariableLocation(),
+                    up_texture_2d_shader_->GetTexcoordAttribVariableLocation()},
+            up_texture_2d_shader_,
+            up_test_2d_shader_uniform_,
+            GL_STATIC_DRAW,
+            GL_TRIANGLE_STRIP,
+            4);
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
@@ -266,6 +313,9 @@ void MainApplication::OnFrame() {
     up_grass_shader_uniform_->SetViewMat(view_mat);
     up_grass_shader_uniform_->SetModelMat(grass_model_mat);
     up_grass_->Render();
+
+    // 2d 描画テスト
+    up_test_2d_->Render();
 }
 
 void MainApplication::OnFrameAfterSwap() {
@@ -276,7 +326,8 @@ void MainApplication::OnFrameAfterSwap() {
 #define DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
 
 void MainApplication::OnDestroy() {
-    glDeleteTextures(1, &texture_);
+    glDeleteTextures(1, &texture_0_);
+    glDeleteTextures(1, &texture_1_);
 
     FINALIZE_AND_DELETE(up_frame_);
 
@@ -284,13 +335,16 @@ void MainApplication::OnDestroy() {
     DELETE(up_axis_shader_uniform_);
     DELETE(up_triangle_shader_uniform_);
     DELETE(up_grass_shader_uniform_);
+    DELETE(up_test_2d_shader_uniform_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_axis_);
     FINALIZE_AND_DELETE(up_triangle_);
     FINALIZE_AND_DELETE(up_grass_);
+    FINALIZE_AND_DELETE(up_test_2d_);
 
     FINALIZE_AND_DELETE(up_grid_shader_);
     FINALIZE_AND_DELETE(up_shader_);
     FINALIZE_AND_DELETE(up_texture_shader_);
+    FINALIZE_AND_DELETE(up_texture_2d_shader_);
 }

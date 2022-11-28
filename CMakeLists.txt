@@ -37,11 +37,13 @@ add_executable(
         shader.cpp
         basic_shader_uniform.cpp
         texture_shader_uniform.cpp
+        texture_2d_shader_uniform.cpp
         frame.cpp
         png_load.cpp
         position_vertex_specification.cpp
         color_vertex_specification.cpp
         texture_vertex_specification.cpp
+        texture_2d_vertex_specification.cpp
         opengl_debug.cpp
         cstring_util.cpp
         main_application.cpp
