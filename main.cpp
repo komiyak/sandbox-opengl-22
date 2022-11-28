@@ -2,9 +2,9 @@
 #include "main_application.h"
 
 int main() {
-    MainApplication application_implementation;
+    MainApplication main_application;
     Application application;
-    application.Initialize(&application_implementation);
+    application.Initialize(&main_application);
     application.RunLoop();
     application.Finalize();
     return 0;
