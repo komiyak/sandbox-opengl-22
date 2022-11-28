@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "application_implementation.h"
+#include "main_application.h"
 #include "opengl_debug.h"
 #include "frame.h"
 #include "vertex_render_object.h"
@@ -17,77 +17,7 @@
 #include "texture_shader_uniform.h"
 #include "png_load.h"
 
-void ApplicationImplementation::OnMain() {
-    if (first_time_) {
-        Initialize();
-    }
-    first_time_ = false;
-
-    up_frame_->StartFrame();
-
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    angle_ += glm::pi<float>() * 0.25f * (float) up_frame_->GetDeltaTime();
-
-    // View 行列を設定
-    const glm::mat4 view_mat = glm::lookAt(
-            glm::vec3(glm::cos(angle_) * 8.0f, 1.f, glm::sin(angle_) * 12.0f),
-            glm::vec3(0.f, 0.f, 0.f),
-            glm::vec3(0.f, 1.f, 0.f));
-
-
-    glm::mat4 model_mat = glm::mat4(1.0f);
-    model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.5f, 0.0f));
-    up_triangle_shader_uniform_->SetViewMat(view_mat);
-    up_triangle_shader_uniform_->SetModelMat(model_mat);
-    up_triangle_->Render();
-
-
-    up_grid_shader_uniform_->SetViewMat(view_mat);
-    up_grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-    up_grid_->Render();
-
-    up_axis_shader_uniform_->SetViewMat(view_mat);
-    up_axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-    up_axis_->Render();
-
-    glm::mat4 grass_model_mat = glm::mat4(1.0f);
-    grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
-    grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
-    up_grass_shader_uniform_->SetViewMat(view_mat);
-    up_grass_shader_uniform_->SetModelMat(grass_model_mat);
-    up_grass_->Render();
-}
-
-void ApplicationImplementation::OnAfterSwappingBuffers() {
-    up_frame_->EndFrame();
-}
-
-// Finalizing and deleting
-#define DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
-
-void ApplicationImplementation::Finalize() {
-    glDeleteTextures(1, &texture_);
-
-    FINALIZE_AND_DELETE(up_frame_);
-
-    DELETE(up_grid_shader_uniform_);
-    DELETE(up_axis_shader_uniform_);
-    DELETE(up_triangle_shader_uniform_);
-    DELETE(up_grass_shader_uniform_);
-
-    FINALIZE_AND_DELETE(up_grid_);
-    FINALIZE_AND_DELETE(up_axis_);
-    FINALIZE_AND_DELETE(up_triangle_);
-    FINALIZE_AND_DELETE(up_grass_);
-
-    FINALIZE_AND_DELETE(up_grid_shader_);
-    FINALIZE_AND_DELETE(up_shader_);
-    FINALIZE_AND_DELETE(up_texture_shader_);
-}
-
-void ApplicationImplementation::Initialize() {
+void MainApplication::OnStart() {
     // 頂点
     // Note: Projection の説明を省くために、最初から device coordinates に対応した頂点座標としておく
     const GLfloat kVertices[] = {
@@ -299,4 +229,69 @@ void ApplicationImplementation::Initialize() {
 
     // FIXME ?
     up_grass_shader_uniform_->SetTextureUnit(0);
+}
+
+void MainApplication::OnFrame() {
+    up_frame_->StartFrame();
+
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    angle_ += glm::pi<float>() * 0.25f * (float) up_frame_->GetDeltaTime();
+
+    // View 行列を設定
+    const glm::mat4 view_mat = glm::lookAt(
+            glm::vec3(glm::cos(angle_) * 8.0f, 1.f, glm::sin(angle_) * 12.0f),
+            glm::vec3(0.f, 0.f, 0.f),
+            glm::vec3(0.f, 1.f, 0.f));
+
+
+    glm::mat4 model_mat = glm::mat4(1.0f);
+    model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.5f, 0.0f));
+    up_triangle_shader_uniform_->SetViewMat(view_mat);
+    up_triangle_shader_uniform_->SetModelMat(model_mat);
+    up_triangle_->Render();
+
+
+    up_grid_shader_uniform_->SetViewMat(view_mat);
+    up_grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+    up_grid_->Render();
+
+    up_axis_shader_uniform_->SetViewMat(view_mat);
+    up_axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+    up_axis_->Render();
+
+    glm::mat4 grass_model_mat = glm::mat4(1.0f);
+    grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
+    grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
+    up_grass_shader_uniform_->SetViewMat(view_mat);
+    up_grass_shader_uniform_->SetModelMat(grass_model_mat);
+    up_grass_->Render();
+}
+
+void MainApplication::OnFrameAfterSwap() {
+    up_frame_->EndFrame();
+}
+
+// Finalizing and deleting
+#define DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
+
+void MainApplication::OnDestroy() {
+    glDeleteTextures(1, &texture_);
+
+    FINALIZE_AND_DELETE(up_frame_);
+
+    DELETE(up_grid_shader_uniform_);
+    DELETE(up_axis_shader_uniform_);
+    DELETE(up_triangle_shader_uniform_);
+    DELETE(up_grass_shader_uniform_);
+
+    FINALIZE_AND_DELETE(up_grid_);
+    FINALIZE_AND_DELETE(up_axis_);
+    FINALIZE_AND_DELETE(up_triangle_);
+    FINALIZE_AND_DELETE(up_grass_);
+
+    FINALIZE_AND_DELETE(up_grid_shader_);
+    FINALIZE_AND_DELETE(up_shader_);
+    FINALIZE_AND_DELETE(up_texture_shader_);
 }

@@ -4,9 +4,9 @@
 #include "debug.h"
 #include "opengl_debug.h"
 
-void Application::Initialize(Loop *p_loop) {
-    DEBUG_ASSERT_MESSAGE(p_loop, "p_loop is required.");
-    p_loop_ = p_loop;
+void Application::Initialize(Content *p_content) {
+    DEBUG_ASSERT_MESSAGE(p_content, "p_content is required.");
+    p_content_ = p_content;
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -63,26 +63,27 @@ void Application::Initialize(Loop *p_loop) {
 }
 
 void Application::Finalize() {
-    p_loop_->Finalize();
-    p_loop_ = nullptr;
-
     glfwDestroyWindow(up_glfw_window_);
     up_glfw_window_ = nullptr;
-
     glfwTerminate();
 }
 
 void Application::RunLoop() const {
     DEBUG_ASSERT(up_glfw_window_);
 
+    p_content_->OnStart();
+
     // Application loop の実行
     while (!glfwWindowShouldClose(up_glfw_window_)) {
-        p_loop_->OnMain();
+        p_content_->OnFrame();
 
         glfwSwapBuffers(up_glfw_window_);
         glfwPollEvents();
-        p_loop_->OnAfterSwappingBuffers();
+
+        p_content_->OnFrameAfterSwap();
     }
+
+    p_content_->OnDestroy();
 }
 
 void Application::ErrorCallback([[maybe_unused]] int error, const char *description) {

@@ -7,21 +7,24 @@
 // アプリケーション統合クラス、実装として GLFW を利用しています
 class Application {
 public:
-    class Loop {
+    class Content {
     public:
-        // アプリケーションループのメイン処理
-        virtual void OnMain() = 0;
+        // 起動時に一度だけ実行されるコールバック
+        virtual void OnStart() = 0;
 
-        // Swapping buffers 後に呼び出されるコールバック
-        virtual void OnAfterSwappingBuffers() = 0;
+        // ループのメイン処理のコールバック
+        virtual void OnFrame() = 0;
 
-        // Application ループの終了処理
-        virtual void Finalize() = 0;
+        // Swapping buffers の後に呼び出されるコールバック
+        virtual void OnFrameAfterSwap() = 0;
+
+        // ループ終了時に一度だけ実行されるコールバック
+        virtual void OnDestroy() = 0;
     };
 
     // Application 初期化
-    // param p_loop アプリケーションループの実態
-    void Initialize(Loop *p_loop);
+    // param p_content アプリケーションループの実態
+    void Initialize(Content *p_content);
 
     // Application 終了
     void Finalize();
@@ -41,7 +44,7 @@ private:
     GLFWwindow *up_glfw_window_{};
 
     // アプリケーションループのコールバック実装
-    Loop *p_loop_{};
+    Content *p_content_{};
 };
 
 #endif //SANDBOX_OPENGL_22_APPLICATION_H_

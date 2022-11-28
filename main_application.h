@@ -1,5 +1,5 @@
-#ifndef SANDBOX_OPENGL_22_APPLICATION_IMPLEMENTATION_H_
-#define SANDBOX_OPENGL_22_APPLICATION_IMPLEMENTATION_H_
+#ifndef SANDBOX_OPENGL_22_MAIN_APPLICATION_H_
+#define SANDBOX_OPENGL_22_MAIN_APPLICATION_H_
 
 #include "application.h"
 #include "frame.h"
@@ -12,20 +12,17 @@ class VertexRenderObject;
 
 class Shader;
 
-class ApplicationImplementation : public Application::Loop {
+class MainApplication : public Application::Content {
 public:
-    void OnMain() override;
+    void OnFrame() override;
 
-    void OnAfterSwappingBuffers() override;
+    void OnFrameAfterSwap() override;
 
-    void Finalize() override;
+    void OnStart() override;
+
+    void OnDestroy() override;
 
 private:
-    void Initialize();
-
-    // 初回実行時（初期化管理用）
-    bool first_time_{true};
-
     Frame *up_frame_{new Frame()};
 
     float angle_{0.f};
@@ -47,4 +44,4 @@ private:
     Shader *up_texture_shader_{};
 };
 
-#endif //SANDBOX_OPENGL_22_APPLICATION_IMPLEMENTATION_H_
+#endif //SANDBOX_OPENGL_22_MAIN_APPLICATION_H_

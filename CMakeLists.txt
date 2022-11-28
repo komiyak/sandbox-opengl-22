@@ -44,7 +44,7 @@ add_executable(
         texture_vertex_specification.cpp
         opengl_debug.cpp
         cstring_util.cpp
-        application_implementation.cpp
+        main_application.cpp
         application.cpp)
 
 target_link_libraries(
