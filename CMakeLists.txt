@@ -43,7 +43,9 @@ add_executable(
         color_vertex_specification.cpp
         texture_vertex_specification.cpp
         opengl_debug.cpp
-        cstring_util.cpp)
+        cstring_util.cpp
+        application_implementation.cpp
+        application.cpp)
 
 target_link_libraries(
         sandbox_opengl_22
