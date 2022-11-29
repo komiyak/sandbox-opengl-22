@@ -13,13 +13,10 @@
 #include "position_vertex_specification.h"
 #include "color_vertex_specification.h"
 #include "texture_vertex_specification.h"
-#include "texture_2d_vertex_specification.h"
 #include "basic_shader_uniform.h"
 #include "texture_shader_uniform.h"
-#include "texture_2d_shader_uniform.h"
 #include "png_load.h"
-#include "game_data.h"
-#include "math.h"
+#include "bitmap_font_render.h"
 
 void MainApplication::OnStart() {
     // 頂点
@@ -162,19 +159,36 @@ void MainApplication::OnStart() {
     glBindTexture(GL_TEXTURE_2D, texture_1_);
 
     PngLoad png_load_2d{};
-    png_load_2d.LoadFile("./texture/texture_rgb_128x128.png", PNG_FORMAT_RGB);
+    png_load_2d.LoadFile("./texture/ascii_bitmap_font.png", PNG_FORMAT_RGBA);
     glTexImage2D(
             GL_TEXTURE_2D,
             0,
-            GL_RGB,
+            GL_RGBA,
             png_load_2d.GetImageSize().width,
             png_load_2d.GetImageSize().height,
             0,
-            GL_RGB,
+            GL_RGBA,
             GL_UNSIGNED_BYTE,
             png_load_2d.GetData());
-    png_load_2d.Finalize();
     OPENGL_DEBUG_CHECK();
+
+    // フォント準備
+    up_bitmap_font_render_ = new BitmapFontRender(
+            p_context_->GetWindowScreenWidth(),
+            p_context_->GetWindowScreenHeight(),
+            png_load_2d.GetImageSize().width,
+            png_load_2d.GetImageSize().height,
+            4,
+            8,
+            up_texture_2d_shader_->GetTextureUnitUniformLocation(),
+            up_texture_2d_shader_->GetTranslationVecUniformLocation(),
+            up_texture_2d_shader_->GetScalingVecUniformLocation(),
+            up_texture_2d_shader_->GetTexcoordTranslationVecUniformLocation(),
+            up_texture_2d_shader_->GetTexcoordScalingVecUniformLocation(),
+            up_texture_2d_shader_);
+    up_bitmap_font_render_->Initialize();
+
+    png_load_2d.Finalize();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -202,39 +216,13 @@ void MainApplication::OnStart() {
             up_texture_shader_->GetModelMatUniformLocation(),
             up_texture_shader_->GetTextureUnitUniformLocation()};
 
-    up_test_2d_shader_uniform_ = new Texture2dShaderUniform{
-            up_texture_2d_shader_->GetTextureUnitUniformLocation(),
-            up_texture_2d_shader_->GetTranslationVecUniformLocation(),
-            up_texture_2d_shader_->GetScalingVecUniformLocation(),
-            up_texture_2d_shader_->GetTexcoordTranslationVecUniformLocation(),
-            up_texture_2d_shader_->GetTexcoordScalingVecUniformLocation()};
-
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
-    // 2d 描画は texture unit 1 を利用
-    up_test_2d_shader_uniform_->SetTextureUnit(1);
-
-
-    // 2d の位置を適当に決定
-    up_test_2d_shader_uniform_->SetTranslation(
-            math::TransformFromScreenCoordinateToDeviceCoordinate(
-                    10.f, 10.f, p_context_->GetWindowScreenWidth(), p_context_->GetWindowScreenHeight()));
-    // スクリーンの半分のサイズに設定
-    up_test_2d_shader_uniform_->SetScaling(
-            glm::vec2(
-                    100.0f / p_context_->GetWindowScreenWidth() * 2.f,
-                    100.0f / p_context_->GetWindowScreenHeight() * 2.f));
-
-    // texcoord をずらしてみる(test)
-    up_test_2d_shader_uniform_->SetTexcoordScaling(glm::vec2(0.5f, 0.5f));
-    up_test_2d_shader_uniform_->SetTexcoordTranslation(glm::vec2(0.5f, 0.5f));
-
 
     up_grid_ = new VertexRenderObject();
     up_axis_ = new VertexRenderObject();
     up_triangle_ = new VertexRenderObject();
     up_grass_ = new VertexRenderObject();
-    up_test_2d_ = new VertexRenderObject();
 
     up_grid_->Initialize(
             sizeof(kGridPlaneVertices),
@@ -275,17 +263,6 @@ void MainApplication::OnStart() {
                     up_texture_shader_->GetTexcoordAttribVariableLocation()},
             up_texture_shader_,
             up_grass_shader_uniform_,
-            GL_STATIC_DRAW,
-            GL_TRIANGLE_STRIP,
-            4);
-    up_test_2d_->Initialize(
-            sizeof(GameData::kQuad2dPivotTopLeftVertices),
-            (void *) GameData::kQuad2dPivotTopLeftVertices,
-            Texture2dVertexSpecification{
-                    up_texture_2d_shader_->GetPositionAttribVariableLocation(),
-                    up_texture_2d_shader_->GetTexcoordAttribVariableLocation()},
-            up_texture_2d_shader_,
-            up_test_2d_shader_uniform_,
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);
@@ -336,7 +313,14 @@ void MainApplication::OnFrame() {
     up_grass_->Render();
 
     // 2d 描画テスト
-    up_test_2d_->Render();
+    //up_test_2d_->Render();
+
+
+    // フォント描画テスト
+    up_bitmap_font_render_->RenderAsciiText("abcd HELLO WORDL! hello world! 0,1,2,3,4,5,6,7,8,9 : 10 / {}", 10, 100,
+                                            20);
+    up_bitmap_font_render_->RenderAsciiText("abcd HELLO WORDL! hello world! 0,1,2,3,4,5,6,7,8,9 : 10 / {}", 10, 140,
+                                            40);
 }
 
 void MainApplication::OnFrameAfterSwap() {
@@ -351,18 +335,17 @@ void MainApplication::OnDestroy() {
     glDeleteTextures(1, &texture_1_);
 
     FINALIZE_AND_DELETE(up_frame_);
+    FINALIZE_AND_DELETE(up_bitmap_font_render_);
 
     DELETE(up_grid_shader_uniform_);
     DELETE(up_axis_shader_uniform_);
     DELETE(up_triangle_shader_uniform_);
     DELETE(up_grass_shader_uniform_);
-    DELETE(up_test_2d_shader_uniform_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_axis_);
     FINALIZE_AND_DELETE(up_triangle_);
     FINALIZE_AND_DELETE(up_grass_);
-    FINALIZE_AND_DELETE(up_test_2d_);
 
     FINALIZE_AND_DELETE(up_grid_shader_);
     FINALIZE_AND_DELETE(up_shader_);

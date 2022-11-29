@@ -17,7 +17,7 @@ set(SOURCE_FILES
 # もっと良い方法があるかもしれない
 set(TARGET_SOURCE_FILES
         ../cstring_util.cpp
-        ../math.h)
+        ../math.cpp)
 
 add_executable(google_tests_run
         ${SOURCE_FILES}
