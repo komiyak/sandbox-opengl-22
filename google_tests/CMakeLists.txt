@@ -10,12 +10,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 set(SOURCE_FILES
-        cstring_util_test.cpp)
+        cstring_util_test.cpp
+        math_test.cpp)
 
 # テスト対象となるファイルをビルドに含める
 # もっと良い方法があるかもしれない
 set(TARGET_SOURCE_FILES
-        ../cstring_util.cpp)
+        ../cstring_util.cpp
+        ../math.h)
 
 add_executable(google_tests_run
         ${SOURCE_FILES}
