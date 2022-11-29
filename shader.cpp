@@ -44,6 +44,8 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     texture_unit_uniform_location_ = glGetUniformLocation(program_object_, "tex");
     translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "translation_vec");
     scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "scaling_vec");
+    texcoord_translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_translation_vec");
+    texcoord_scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_scaling_vec");
     OPENGL_DEBUG_CHECK();
 
     // Get locations of the attribute variable. (shader から取得できなかった場合は -1)

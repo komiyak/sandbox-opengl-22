@@ -205,23 +205,30 @@ void MainApplication::OnStart() {
     up_test_2d_shader_uniform_ = new Texture2dShaderUniform{
             up_texture_2d_shader_->GetTextureUnitUniformLocation(),
             up_texture_2d_shader_->GetTranslationVecUniformLocation(),
-            up_texture_2d_shader_->GetScalingVecUniformLocation()};
+            up_texture_2d_shader_->GetScalingVecUniformLocation(),
+            up_texture_2d_shader_->GetTexcoordTranslationVecUniformLocation(),
+            up_texture_2d_shader_->GetTexcoordScalingVecUniformLocation()};
 
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
     // 2d 描画は texture unit 1 を利用
     up_test_2d_shader_uniform_->SetTextureUnit(1);
 
+
     // 2d の位置を適当に決定
     up_test_2d_shader_uniform_->SetTranslation(
             math::TransformFromScreenCoordinateToDeviceCoordinate(
                     10.f, 10.f, p_context_->GetWindowScreenWidth(), p_context_->GetWindowScreenHeight()));
-
     // スクリーンの半分のサイズに設定
     up_test_2d_shader_uniform_->SetScaling(
             glm::vec2(
                     100.0f / p_context_->GetWindowScreenWidth() * 2.f,
                     100.0f / p_context_->GetWindowScreenHeight() * 2.f));
+
+    // texcoord をずらしてみる(test)
+    up_test_2d_shader_uniform_->SetTexcoordScaling(glm::vec2(0.5f, 0.5f));
+    up_test_2d_shader_uniform_->SetTexcoordTranslation(glm::vec2(0.5f, 0.5f));
+
 
     up_grid_ = new VertexRenderObject();
     up_axis_ = new VertexRenderObject();

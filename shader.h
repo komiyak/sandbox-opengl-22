@@ -50,6 +50,14 @@ public:
         return scaling_vec_uniform_location_;
     }
 
+    [[nodiscard]] GLint GetTexcoordTranslationVecUniformLocation() const {
+        return texcoord_translation_vec_uniform_location_;
+    }
+
+    [[nodiscard]] GLint GetTexcoordScalingVecUniformLocation() const {
+        return texcoord_scaling_vec_uniform_location_;
+    }
+
     void Finalize() override;
 
 private:
@@ -77,6 +85,8 @@ private:
     GLint texture_unit_uniform_location_{};
     GLint translation_vec_uniform_location_{};
     GLint scaling_vec_uniform_location_{};
+    GLint texcoord_translation_vec_uniform_location_{};
+    GLint texcoord_scaling_vec_uniform_location_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_

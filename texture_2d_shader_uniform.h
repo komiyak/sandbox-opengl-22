@@ -9,10 +9,18 @@
 
 class Texture2dShaderUniform : public ShaderUniform {
 public:
-    Texture2dShaderUniform(GLint uniform_texture_unit, GLint uniform_translation_vec, GLint uniform_scaling_vec)
+
+    Texture2dShaderUniform(
+            GLint uniform_texture_unit,
+            GLint uniform_translation_vec,
+            GLint uniform_scaling_vec,
+            GLint uniform_texcoord_translation_vec,
+            GLint uniform_texcoord_scaling_vec)
             : uniform_texture_unit_(uniform_texture_unit),
               uniform_translation_vec_(uniform_translation_vec),
-              uniform_scaling_vec_(uniform_scaling_vec) {}
+              uniform_scaling_vec_(uniform_scaling_vec),
+              uniform_texcoord_translation_vec_(uniform_texcoord_translation_vec),
+              uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) {}
 
     void Transfer() const override;
 
@@ -28,14 +36,26 @@ public:
         scaling_ = scaling;
     }
 
+    void SetTexcoordTranslation(const glm::vec2 &texcoord_translation) {
+        texcoord_translation_ = texcoord_translation;
+    }
+
+    void SetTexcoordScaling(const glm::vec2 &texcoord_scaling) {
+        texcoord_scaling_ = texcoord_scaling;
+    }
+
 private:
     GLint texture_unit_{};
     glm::vec2 translation_{};
     glm::vec2 scaling_{};
+    glm::vec2 texcoord_translation_{};
+    glm::vec2 texcoord_scaling_{};
 
     GLint uniform_texture_unit_{-1};
     GLint uniform_translation_vec_{-1};
     GLint uniform_scaling_vec_{-1};
+    GLint uniform_texcoord_translation_vec_{-1};
+    GLint uniform_texcoord_scaling_vec_{-1};
 };
 
 
