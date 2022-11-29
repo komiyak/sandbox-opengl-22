@@ -30,6 +30,7 @@ These words can be abbreviated as another one.
 | Matrix | Mat |
 | Parameter, Parameters | Param, Params |
 | Quadrangle (Math) | Quad |
+| Vector (Math) | Vec |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
 
