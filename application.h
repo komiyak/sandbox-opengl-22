@@ -20,9 +20,9 @@ public:
 
     private:
         // 現在のウィンドウのスクリーンサイズ（描画領域）の横幅ピクセルサイズ
-        int windowScreenWidth_{800}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
+        int windowScreenWidth_{1920}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
         // 現在のウィンドウのスクリーンサイズ（描画領域）の縦幅ピクセルサイズ
-        int windowScreenHeight_{600}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
+        int windowScreenHeight_{1080}; // Note: 現在は固定値だが、将来的には動的に横幅をセットする
     };
 
     // Application クラスの利用者が任意の処理を実行するためのクラス

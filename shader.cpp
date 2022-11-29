@@ -42,6 +42,8 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     view_mat_uniform_location_ = glGetUniformLocation(program_object_, "view_mat");
     model_mat_uniform_location_ = glGetUniformLocation(program_object_, "model_mat");
     texture_unit_uniform_location_ = glGetUniformLocation(program_object_, "tex");
+    translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "translation_vec");
+    scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "scaling_vec");
     OPENGL_DEBUG_CHECK();
 
     // Get locations of the attribute variable. (shader から取得できなかった場合は -1)

@@ -19,6 +19,7 @@
 #include "texture_2d_shader_uniform.h"
 #include "png_load.h"
 #include "game_data.h"
+#include "math.h"
 
 void MainApplication::OnStart() {
     // 頂点
@@ -202,12 +203,25 @@ void MainApplication::OnStart() {
             up_texture_shader_->GetTextureUnitUniformLocation()};
 
     up_test_2d_shader_uniform_ = new Texture2dShaderUniform{
-            up_texture_2d_shader_->GetTextureUnitUniformLocation()};
+            up_texture_2d_shader_->GetTextureUnitUniformLocation(),
+            up_texture_2d_shader_->GetTranslationVecUniformLocation(),
+            up_texture_2d_shader_->GetScalingVecUniformLocation()};
 
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
     // 2d 描画は texture unit 1 を利用
     up_test_2d_shader_uniform_->SetTextureUnit(1);
+
+    // 2d の位置を適当に決定
+    up_test_2d_shader_uniform_->SetTranslation(
+            math::TransformFromScreenCoordinateToDeviceCoordinate(
+                    10.f, 10.f, p_context_->GetWindowScreenWidth(), p_context_->GetWindowScreenHeight()));
+
+    // スクリーンの半分のサイズに設定
+    up_test_2d_shader_uniform_->SetScaling(
+            glm::vec2(
+                    100.0f / p_context_->GetWindowScreenWidth() * 2.f,
+                    100.0f / p_context_->GetWindowScreenHeight() * 2.f));
 
     up_grid_ = new VertexRenderObject();
     up_axis_ = new VertexRenderObject();
@@ -258,8 +272,8 @@ void MainApplication::OnStart() {
             GL_TRIANGLE_STRIP,
             4);
     up_test_2d_->Initialize(
-            sizeof(GameData::kQuad2dPivotBottomLeftVertices),
-            (void *) GameData::kQuad2dPivotBottomLeftVertices,
+            sizeof(GameData::kQuad2dPivotTopLeftVertices),
+            (void *) GameData::kQuad2dPivotTopLeftVertices,
             Texture2dVertexSpecification{
                     up_texture_2d_shader_->GetPositionAttribVariableLocation(),
                     up_texture_2d_shader_->GetTexcoordAttribVariableLocation()},

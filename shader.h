@@ -42,6 +42,14 @@ public:
         return texture_unit_uniform_location_;
     }
 
+    [[nodiscard]] GLint GetTranslationVecUniformLocation() const {
+        return translation_vec_uniform_location_;
+    }
+
+    [[nodiscard]] GLint GetScalingVecUniformLocation() const {
+        return scaling_vec_uniform_location_;
+    }
+
     void Finalize() override;
 
 private:
@@ -67,6 +75,8 @@ private:
     GLint view_mat_uniform_location_{};
     GLint model_mat_uniform_location_{};
     GLint texture_unit_uniform_location_{};
+    GLint translation_vec_uniform_location_{};
+    GLint scaling_vec_uniform_location_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_
