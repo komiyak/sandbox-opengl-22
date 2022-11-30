@@ -55,10 +55,29 @@ public:
             return should_destroy_;
         }
 
+        [[nodiscard]] bool IsNeedToPushNextActivity() const {
+            return (need_to_push_next_activity_ != nullptr);
+        }
+
+        // IsNeedToPushNextActivity() が true のときに、push する activity
+        Activity *NextActivity() {
+            return need_to_push_next_activity_();
+        }
+
+        // NextActivity() をコールしたら必ず呼び出してください
+        void ResetNextActivity() {
+            need_to_push_next_activity_ = nullptr;
+        }
+
     protected:
         const Context *p_context_{};
 
+        // Application に終了を通知したいとき
         bool should_destroy_{};
+
+        // Application に push を通知したいとき
+        // TODO: いつかメッセージ方式に変更したい。
+        Activity *(*need_to_push_next_activity_)(){};
     };
 
     // Application 初期化

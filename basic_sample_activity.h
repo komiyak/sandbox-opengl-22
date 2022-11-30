@@ -26,6 +26,10 @@ public:
 
     void OnDestroy() override;
 
+    static Application::Activity *CreateActivityFactory() {
+        return new BasicSampleActivity();
+    }
+
 private:
     Frame *up_frame_{new Frame()};
 
@@ -49,7 +53,7 @@ private:
     Shader *up_texture_shader_{};
     Shader *up_texture_2d_shader_{};
 
-    BitmapFontRender *up_bitmap_font_render_;
+    BitmapFontRender *up_bitmap_font_render_{};
 };
 
 #endif //SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_

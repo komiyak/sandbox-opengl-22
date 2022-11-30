@@ -3,6 +3,7 @@
 #include "shader.h"
 #include "png_load.h"
 #include "bitmap_font_render.h"
+#include "basic_sample_activity.h"
 
 void MainActivity::OnStart() {
     up_font_shader_ = new Shader();
@@ -82,5 +83,10 @@ void MainActivity::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
+    }
+
+    // 1 の場合は次の activity を push
+    if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
+        need_to_push_next_activity_ = BasicSampleActivity::CreateActivityFactory;
     }
 }
