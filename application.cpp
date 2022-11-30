@@ -3,15 +3,10 @@
 #include "application.h"
 #include "debug.h"
 #include "opengl_debug.h"
+#include "key_callback_singleton.h"
 
 void Application::Initialize(Application::Activity *(*p_activity_factory_method)()) {
     DEBUG_ASSERT_MESSAGE(p_activity_factory_method, "p_activity_factory_method is required.");
-
-    // 初回起動の Activity を登録する
-    Activity *up_activity = p_activity_factory_method();
-    DEBUG_ASSERT(up_activity);
-    activities_stack_.push(up_activity);
-    up_activity->OnAttach(&context_);
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -71,6 +66,13 @@ void Application::Initialize(Application::Activity *(*p_activity_factory_method)
 
     glfwSwapInterval(1);
     glEnable(GL_DEPTH_TEST);
+
+    // 初回起動の Activity を登録する
+    Activity *up_activity = p_activity_factory_method();
+    DEBUG_ASSERT(up_activity);
+    activities_stack_.push(up_activity);
+    KeyCallbackSingleton::GetInstance()->SetActivity(up_activity);
+    up_activity->OnAttach(&context_);
 }
 
 void Application::Finalize() {
@@ -84,7 +86,7 @@ void Application::Finalize() {
     glfwTerminate();
 }
 
-void Application::RunLoop() const {
+void Application::RunLoop() {
     DEBUG_ASSERT(up_glfw_window_);
 
     // 最初の activity を開始する
@@ -98,8 +100,12 @@ void Application::RunLoop() const {
         glfwPollEvents();
 
         activities_stack_.top()->OnFrameAfterSwap();
-    }
 
+        // Activity が終了したがっている場合は、pop する
+        if (activities_stack_.top()->IsShouldDestroy()) {
+            PopActivity();
+        }
+    }
 }
 
 void Application::ErrorCallback([[maybe_unused]] int error, const char *description) {
@@ -113,9 +119,9 @@ void Application::KeyCallback(
         int action,
         [[maybe_unused]] int mods) {
 
-    // ESC の場合はとりあえずアプリケーションを終了する
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    Activity *p_activity = KeyCallbackSingleton::GetInstance()->GetActivity();
+    if (p_activity) {
+        p_activity->OnKey(key, action);
     }
 }
 
@@ -124,4 +130,8 @@ void Application::PopActivity() {
     p_activity->OnDestroy();
     delete p_activity; // Factory method で new しているため、ここで delete する
     activities_stack_.pop();
+
+    if (!activities_stack_.empty()) {
+        KeyCallbackSingleton::GetInstance()->SetActivity(activities_stack_.top());
+    }
 }

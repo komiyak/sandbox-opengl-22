@@ -1,9 +1,9 @@
 #include "application.h"
-#include "basic_sample_activity.h"
+#include "main_activity.h"
 
 // 最初に実行する Application activity
 static Application::Activity *FirstApplicationActivityFactory() {
-    return new BasicSampleActivity();
+    return new MainActivity();
 }
 
 int main() {

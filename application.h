@@ -43,13 +43,22 @@ public:
         virtual void OnFrame() = 0;
 
         // Swapping buffers の後に呼び出されるコールバック
-        virtual void OnFrameAfterSwap() = 0;
+        virtual void OnFrameAfterSwap() {};
 
         // ループ終了時に一度だけ実行されるコールバック
         virtual void OnDestroy() = 0;
 
+        // キー入力イベントで呼び出される
+        virtual void OnKey(int glfw_key, int glfw_action) {};
+
+        [[nodiscard]] bool IsShouldDestroy() const {
+            return should_destroy_;
+        }
+
     protected:
         const Context *p_context_{};
+
+        bool should_destroy_{};
     };
 
     // Application 初期化
@@ -61,7 +70,7 @@ public:
 
     // Application のメインループを実行
     // この関数は、メインループが終了するまで終わりません
-    void RunLoop() const;
+    void RunLoop();
 
     void PopActivity();
 
