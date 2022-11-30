@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "main_application.h"
+#include "basic_sample_activity.h"
 #include "opengl_debug.h"
 #include "frame.h"
 #include "vertex_render_object.h"
@@ -18,7 +18,7 @@
 #include "png_load.h"
 #include "bitmap_font_render.h"
 
-void MainApplication::OnStart() {
+void BasicSampleActivity::OnStart() {
     // 頂点
     const GLfloat kVertices[] = {
             // x, y, z, r, g, b
@@ -275,7 +275,7 @@ void MainApplication::OnStart() {
     up_grass_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
-void MainApplication::OnFrame() {
+void BasicSampleActivity::OnFrame() {
     up_frame_->StartFrame();
 
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -323,14 +323,14 @@ void MainApplication::OnFrame() {
                                             40);
 }
 
-void MainApplication::OnFrameAfterSwap() {
+void BasicSampleActivity::OnFrameAfterSwap() {
     up_frame_->EndFrame();
 }
 
 // Finalizing and deleting
 #define DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
 
-void MainApplication::OnDestroy() {
+void BasicSampleActivity::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
 

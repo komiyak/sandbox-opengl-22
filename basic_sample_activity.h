@@ -1,5 +1,5 @@
-#ifndef SANDBOX_OPENGL_22_MAIN_APPLICATION_H_
-#define SANDBOX_OPENGL_22_MAIN_APPLICATION_H_
+#ifndef SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_
+#define SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_
 
 #include "application.h"
 #include "frame.h"
@@ -16,7 +16,7 @@ class Shader;
 
 class BitmapFontRender;
 
-class MainApplication : public Application::Content {
+class BasicSampleActivity : public Application::Activity {
 public:
     void OnFrame() override;
 
@@ -52,4 +52,4 @@ private:
     BitmapFontRender *up_bitmap_font_render_;
 };
 
-#endif //SANDBOX_OPENGL_22_MAIN_APPLICATION_H_
+#endif //SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_

@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stack>
 
 // アプリケーション統合クラス、実装として GLFW を利用しています
 class Application {
@@ -27,8 +28,10 @@ public:
 
     // Application クラスの利用者が任意の処理を実行するためのクラス
     // 任意の処理の実装はインターフェースの継承先で定義する
-    class Content {
+    class Activity {
     public:
+        virtual ~Activity() = default;
+
         void OnAttach(const Context *p_context) {
             p_context_ = p_context;
         }
@@ -50,8 +53,8 @@ public:
     };
 
     // Application 初期化
-    // param p_content アプリケーションループの実態
-    void Initialize(Content *p_content);
+    // param p_activity_factory_method 初回起動する Activity を作成する factory method
+    void Initialize(Activity *(*p_activity_factory_method)());
 
     // Application 終了
     void Finalize();
@@ -59,6 +62,8 @@ public:
     // Application のメインループを実行
     // この関数は、メインループが終了するまで終わりません
     void RunLoop() const;
+
+    void PopActivity();
 
 private:
     // Error handling for GLFW initialization.
@@ -69,11 +74,11 @@ private:
 
     GLFWwindow *up_glfw_window_{};
 
-    // アプリケーション実装
-    Content *p_content_{};
-
     // アプリケーションの状態
     Context context_{};
+
+    // Activity の実行スタック (top element が常に実行される)
+    std::stack<Activity *> activities_stack_;
 };
 
 #endif //SANDBOX_OPENGL_22_APPLICATION_H_

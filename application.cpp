@@ -4,10 +4,14 @@
 #include "debug.h"
 #include "opengl_debug.h"
 
-void Application::Initialize(Content *p_content) {
-    DEBUG_ASSERT_MESSAGE(p_content, "p_content is required.");
-    p_content_ = p_content;
-    p_content_->OnAttach(&context_);
+void Application::Initialize(Application::Activity *(*p_activity_factory_method)()) {
+    DEBUG_ASSERT_MESSAGE(p_activity_factory_method, "p_activity_factory_method is required.");
+
+    // 初回起動の Activity を登録する
+    Activity *up_activity = p_activity_factory_method();
+    DEBUG_ASSERT(up_activity);
+    activities_stack_.push(up_activity);
+    up_activity->OnAttach(&context_);
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -47,7 +51,8 @@ void Application::Initialize(Content *p_content) {
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stdout, "Your computer supports to OpenGL %d.%d (Driver: %s).\n",
+    fprintf(stdout,
+            "Your computer supports to OpenGL %d.%d (Driver: %s).\n",
             GLVersion.major,
             GLVersion.minor,
             glGetString(GL_VERSION));
@@ -69,6 +74,11 @@ void Application::Initialize(Content *p_content) {
 }
 
 void Application::Finalize() {
+    // 終了時には必ず stack を空っぽにする
+    while (!activities_stack_.empty()) {
+        PopActivity();
+    }
+
     glfwDestroyWindow(up_glfw_window_);
     up_glfw_window_ = nullptr;
     glfwTerminate();
@@ -77,19 +87,19 @@ void Application::Finalize() {
 void Application::RunLoop() const {
     DEBUG_ASSERT(up_glfw_window_);
 
-    p_content_->OnStart();
+    // 最初の activity を開始する
+    activities_stack_.top()->OnStart();
 
     // Application loop の実行
-    while (!glfwWindowShouldClose(up_glfw_window_)) {
-        p_content_->OnFrame();
+    while (!glfwWindowShouldClose(up_glfw_window_) && !activities_stack_.empty()) {
+        activities_stack_.top()->OnFrame();
 
         glfwSwapBuffers(up_glfw_window_);
         glfwPollEvents();
 
-        p_content_->OnFrameAfterSwap();
+        activities_stack_.top()->OnFrameAfterSwap();
     }
 
-    p_content_->OnDestroy();
 }
 
 void Application::ErrorCallback([[maybe_unused]] int error, const char *description) {
@@ -107,4 +117,11 @@ void Application::KeyCallback(
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
+}
+
+void Application::PopActivity() {
+    Activity *p_activity = activities_stack_.top();
+    p_activity->OnDestroy();
+    delete p_activity; // Factory method で new しているため、ここで delete する
+    activities_stack_.pop();
 }
