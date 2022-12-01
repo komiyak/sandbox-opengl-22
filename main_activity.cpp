@@ -71,20 +71,20 @@ void MainActivity::OnFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Drawing the title.
-    up_bitmap_font_render_->RenderAsciiText(
+    up_bitmap_font_render_->RenderWhiteAsciiText(
             "THE SANDBOX OF OPENGL",
             40, 40, 38);
-    up_bitmap_font_render_->RenderAsciiText(
-            "Press the key that if you need to play a sandbox.",
+    up_bitmap_font_render_->RenderWhiteAsciiText(
+            "Press the key if you need to play that sandbox.",
             40, 120, 14);
 
     // Drawing the menu.
-    up_bitmap_font_render_->RenderAsciiText(
+    up_bitmap_font_render_->RenderWhiteAsciiText(
             "[ESC] Exit",
-            40, 200, 18);
-    up_bitmap_font_render_->RenderAsciiText(
+            40, 200, 16);
+    up_bitmap_font_render_->RenderWhiteAsciiText(
             "[1] Move to 'BasicSampleActivity'",
-            40, 240, 18);
+            40, 240, 16);
 }
 
 #pragma clang diagnostic pop

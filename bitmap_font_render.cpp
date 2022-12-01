@@ -28,9 +28,18 @@ void BitmapFontRender::Finalize() {
     p_shader_ = nullptr;
 }
 
-void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int font_size) {
+[[maybe_unused]] void BitmapFontRender::RenderWhiteAsciiText(const char *ascii_text, int x, int y, int font_size) {
+    RenderAsciiText(ascii_text, x, y, font_size, glm::vec3(1, 1, 1));
+}
+
+[[maybe_unused]] void BitmapFontRender::RenderBlackAsciiText(const char *ascii_text, int x, int y, int font_size) {
+    RenderAsciiText(ascii_text, x, y, font_size, glm::vec3(0, 0, 0));
+}
+
+void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int font_size, const glm::vec3 &color) {
     DEBUG_ASSERT(up_vertex_render_object_);
     DEBUG_ASSERT(font_size > 0);
+    if (!up_vertex_render_object_) return;
 
     const int row_max = 16; // テクスチャの横方向の分割数
     const int column_max = 8; // テクスチャの縦方向の分割数
@@ -66,7 +75,7 @@ void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int
                         (float) font_size_h / (float) screen_height_ * 2.f));
         font_shader_uniform_.SetTexcoordTranslation(glm::vec2(texcoord_s_begin, texcoord_t_begin));
         font_shader_uniform_.SetTexcoordScaling(glm::vec2(scale_x, scale_y));
-        font_shader_uniform_.SetColor(glm::vec3(1, 1, 1));
+        font_shader_uniform_.SetColor(glm::vec3(color.x, color.y, color.z));
 
         up_vertex_render_object_->Render();
     }

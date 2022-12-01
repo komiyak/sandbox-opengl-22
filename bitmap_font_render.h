@@ -42,9 +42,16 @@ public:
                       uniform_texcoord_scaling_vec),
               p_shader_(p_shader) {}
 
+    // 白文字テキスト
+    [[maybe_unused]] void RenderWhiteAsciiText(const char *ascii_text, int x, int y, int font_size);
+
+    // 黒文字テキスト
+    [[maybe_unused]] void RenderBlackAsciiText(const char *ascii_text, int x, int y, int font_size);
+
     // ASCII テキストを任意の位置に描画する
     // param font_size 文字の横幅をピクセルで指定
-    void RenderAsciiText(const char *ascii_text, int x, int y, int font_size);
+    // param color 任意の文字色
+    void RenderAsciiText(const char *ascii_text, int x, int y, int font_size, const glm::vec3 &color);
 
     void Initialize();
 
@@ -67,11 +74,9 @@ private:
     // ASCII bitmap font の shader uniform
     FontShaderUniform font_shader_uniform_;
     // ASCII bitmap font の vertex render object
-    VertexRenderObject
-            *up_vertex_render_object_{};
+    VertexRenderObject *up_vertex_render_object_{};
     // ASCII bitmap font 用のセットアップされたシェーダへのリンク
     Shader *p_shader_{};
 };
-
 
 #endif //SANDBOX_OPENGL_22_BITMAP_FONT_RENDER_H_
