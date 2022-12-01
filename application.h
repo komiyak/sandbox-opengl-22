@@ -55,18 +55,12 @@ public:
             return should_destroy_;
         }
 
-        [[nodiscard]] bool IsNeedToPushNextActivity() const {
-            return (need_to_push_next_activity_ != nullptr);
+        [[nodiscard]] bool HaveNextActivity() const {
+            return (next_activity_);
         }
 
-        // IsNeedToPushNextActivity() が true のときに、push する activity
-        Activity *NextActivity() {
-            return need_to_push_next_activity_();
-        }
-
-        // NextActivity() をコールしたら必ず呼び出してください
-        void ResetNextActivity() {
-            need_to_push_next_activity_ = nullptr;
+        [[nodiscard]] Activity *NextActivity() {
+            return next_activity_();
         }
 
     protected:
@@ -75,9 +69,9 @@ public:
         // Application に終了を通知したいとき
         bool should_destroy_{};
 
-        // Application に push を通知したいとき
+        // Activity 終了時に次に起動する Activity があればそれを指定しておく
         // TODO: いつかメッセージ方式に変更したい。
-        Activity *(*need_to_push_next_activity_)(){};
+        Activity *(*next_activity_)(){};
     };
 
     // Application 初期化
@@ -106,7 +100,7 @@ private:
     Context context_{};
 
     // Activity の実行スタック (top element が常に実行される)
-    std::stack<Activity *> activities_stack_;
+    std::stack<Activity *> activities_stack_{};
 };
 
 #endif //SANDBOX_OPENGL_22_APPLICATION_H_

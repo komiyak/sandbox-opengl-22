@@ -330,3 +330,10 @@ void BasicSampleActivity::OnDestroy() {
     FINALIZE_AND_DELETE(up_texture_shader_);
     FINALIZE_AND_DELETE(up_texture_2d_shader_);
 }
+
+void BasicSampleActivity::OnKey(int glfw_key, int glfw_action) {
+    // ESC の場合はとりあえずアプリケーションを終了する
+    if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
+        should_destroy_ = true;
+    }
+}

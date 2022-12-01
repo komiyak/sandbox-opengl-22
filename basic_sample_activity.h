@@ -24,6 +24,8 @@ public:
 
     void OnStart() override;
 
+    void OnKey(int glfw_key, int glfw_action) override;
+
     void OnDestroy() override;
 
     static Application::Activity *CreateActivityFactory() {

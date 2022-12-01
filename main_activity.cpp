@@ -104,7 +104,8 @@ void MainActivity::OnKey(int glfw_key, int glfw_action) {
 
     // 1 の場合は次の activity を push
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
-        need_to_push_next_activity_ = BasicSampleActivity::CreateActivityFactory;
+        should_destroy_ = true;
+        next_activity_ = BasicSampleActivity::CreateActivityFactory;
     }
 }
 

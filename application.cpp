@@ -101,19 +101,21 @@ void Application::RunLoop() {
 
         activities_stack_.top()->OnFrameAfterSwap();
 
+        // Activity が終了したがっている場合は、pop する
         if (activities_stack_.top()->IsShouldDestroy()) {
-            // Activity が終了したがっている場合は、pop する
-            PopActivity();
-        } else if (activities_stack_.top()->IsNeedToPushNextActivity()){
-            // FIXME activity が pop したときなどのリソース管理が正しくないので、修正が必要
-            // Activity が push を要求している場合は、push する
-            Activity* p_next = activities_stack_.top()->NextActivity();
-            activities_stack_.top()->ResetNextActivity();
+            if (activities_stack_.top()->HaveNextActivity()) {
+                // Activity が push を要求している場合は、push する
+                Activity* p_next = activities_stack_.top()->NextActivity();
 
-            activities_stack_.push(p_next);
-            KeyCallbackSingleton::GetInstance()->SetActivity(p_next);
-            p_next->OnAttach(&context_);
-            p_next->OnStart();
+                PopActivity();
+
+                activities_stack_.push(p_next);
+                KeyCallbackSingleton::GetInstance()->SetActivity(p_next);
+                p_next->OnAttach(&context_);
+                p_next->OnStart();
+            } else {
+                PopActivity();
+            }
         }
     }
 }
