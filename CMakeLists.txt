@@ -42,7 +42,7 @@ add_executable(
         bitmap_font_render.cpp
         frame.cpp
         png_load.cpp
-        math.cpp
+        game_math.cpp
         position_vertex_specification.cpp
         color_vertex_specification.cpp
         texture_vertex_specification.cpp

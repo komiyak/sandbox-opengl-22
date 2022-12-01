@@ -6,7 +6,7 @@
 #include "game_data.h"
 #include "texture_2d_vertex_specification.h"
 #include "shader.h"
-#include "math.h"
+#include "game_math.h"
 
 void BitmapFontRender::Initialize() {
     up_vertex_render_object_ = new VertexRenderObject();
@@ -67,7 +67,7 @@ void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int
         const int font_size_h = (glyph_height_ / glyph_width_) * font_size;
 
         font_shader_uniform_.SetTranslation(
-                math::TransformFromScreenCoordinateToDeviceCoordinate(
+                game_math::TransformFromScreenCoordinateToDeviceCoordinate(
                         x + (font_size_w * i), y, screen_width_, screen_height_));
         font_shader_uniform_.SetScaling(
                 glm::vec2(
