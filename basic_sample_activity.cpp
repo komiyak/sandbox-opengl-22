@@ -173,21 +173,6 @@ void BasicSampleActivity::OnStart() {
     OPENGL_DEBUG_CHECK();
 
     // フォント準備
-    up_bitmap_font_render_ = new BitmapFontRender(
-            p_context_->GetWindowScreenWidth(),
-            p_context_->GetWindowScreenHeight(),
-            png_load_2d.GetImageSize().width,
-            png_load_2d.GetImageSize().height,
-            4,
-            8,
-            up_texture_2d_shader_->GetTextureUnitUniformLocation(),
-            up_texture_2d_shader_->GetTranslationVecUniformLocation(),
-            up_texture_2d_shader_->GetScalingVecUniformLocation(),
-            up_texture_2d_shader_->GetTexcoordTranslationVecUniformLocation(),
-            up_texture_2d_shader_->GetTexcoordScalingVecUniformLocation(),
-            up_texture_2d_shader_);
-    up_bitmap_font_render_->Initialize();
-
     png_load_2d.Finalize();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -314,13 +299,6 @@ void BasicSampleActivity::OnFrame() {
 
     // 2d 描画テスト
     //up_test_2d_->Render();
-
-
-    // フォント描画テスト
-    up_bitmap_font_render_->RenderAsciiText("abcd HELLO WORDL! hello world! 0,1,2,3,4,5,6,7,8,9 : 10 / {}", 10, 100,
-                                            20);
-    up_bitmap_font_render_->RenderAsciiText("abcd HELLO WORDL! hello world! 0,1,2,3,4,5,6,7,8,9 : 10 / {}", 10, 140,
-                                            40);
 }
 
 void BasicSampleActivity::OnFrameAfterSwap() {

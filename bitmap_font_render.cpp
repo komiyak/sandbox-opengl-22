@@ -17,7 +17,7 @@ void BitmapFontRender::Initialize() {
                     p_shader_->GetPositionAttribVariableLocation(),
                     p_shader_->GetTexcoordAttribVariableLocation()},
             p_shader_,
-            &texture_2d_shader_uniform_,
+            &font_shader_uniform_,
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);
@@ -36,7 +36,7 @@ void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int
     const int column_max = 8; // テクスチャの縦方向の分割数
 
     // とりあえず bitmap font は固定で texture unit 1 に設定するということにする
-    texture_2d_shader_uniform_.SetTextureUnit(1);
+    font_shader_uniform_.SetTextureUnit(1);
 
     for (int i = 0; i < std::strlen(ascii_text); i++) {
         const char c = ascii_text[i];
@@ -57,15 +57,16 @@ void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int
         const int font_size_w = font_size;
         const int font_size_h = (glyph_height_ / glyph_width_) * font_size;
 
-        texture_2d_shader_uniform_.SetTranslation(
+        font_shader_uniform_.SetTranslation(
                 math::TransformFromScreenCoordinateToDeviceCoordinate(
                         x + (font_size_w * i), y, screen_width_, screen_height_));
-        texture_2d_shader_uniform_.SetScaling(
+        font_shader_uniform_.SetScaling(
                 glm::vec2(
                         (float) font_size_w / (float) screen_width_ * 2.f,
                         (float) font_size_h / (float) screen_height_ * 2.f));
-        texture_2d_shader_uniform_.SetTexcoordTranslation(glm::vec2(texcoord_s_begin, texcoord_t_begin));
-        texture_2d_shader_uniform_.SetTexcoordScaling(glm::vec2(scale_x, scale_y));
+        font_shader_uniform_.SetTexcoordTranslation(glm::vec2(texcoord_s_begin, texcoord_t_begin));
+        font_shader_uniform_.SetTexcoordScaling(glm::vec2(scale_x, scale_y));
+        font_shader_uniform_.SetColor(glm::vec3(1, 1, 1));
 
         up_vertex_render_object_->Render();
     }

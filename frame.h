@@ -14,7 +14,7 @@ public:
     void EndFrame();
 
     // FPS 値を取得
-    [[maybe_unused]] [[nodiscard]] int Get() const {
+    [[maybe_unused]] [[nodiscard]] int GetFps() const {
         return fps_;
     }
 

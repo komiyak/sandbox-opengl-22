@@ -2,8 +2,9 @@
 #define SANDBOX_OPENGL_22_BITMAP_FONT_RENDER_H_
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include "base_object.h"
-#include "texture_2d_shader_uniform.h"
+#include "font_shader_uniform.h"
 
 class VertexRenderObject;
 
@@ -20,6 +21,7 @@ public:
             int glyph_width,
             int glyph_height,
             GLint uniform_texture_unit,
+            GLint uniform_color,
             GLint uniform_translation_vec,
             GLint uniform_scaling_vec,
             GLint uniform_texcoord_translation_vec,
@@ -31,8 +33,9 @@ public:
               texture_height_(texture_height),
               glyph_width_(glyph_width),
               glyph_height_(glyph_height),
-              texture_2d_shader_uniform_(
+              font_shader_uniform_(
                       uniform_texture_unit,
+                      uniform_color,
                       uniform_translation_vec,
                       uniform_scaling_vec,
                       uniform_texcoord_translation_vec,
@@ -62,9 +65,10 @@ private:
     int glyph_height_;
 
     // ASCII bitmap font の shader uniform
-    Texture2dShaderUniform texture_2d_shader_uniform_;
+    FontShaderUniform font_shader_uniform_;
     // ASCII bitmap font の vertex render object
-    VertexRenderObject *up_vertex_render_object_{};
+    VertexRenderObject
+            *up_vertex_render_object_{};
     // ASCII bitmap font 用のセットアップされたシェーダへのリンク
     Shader *p_shader_{};
 };

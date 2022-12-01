@@ -1,3 +1,4 @@
+#include <glm/glm.hpp>
 #include "main_activity.h"
 #include "opengl_debug.h"
 #include "shader.h"
@@ -7,7 +8,7 @@
 
 void MainActivity::OnStart() {
     up_font_shader_ = new Shader();
-    up_font_shader_->BuildFromFile("shader/texture_2d.vert", "shader/texture_2d.frag");
+    up_font_shader_->BuildFromFile("shader/font.vert", "shader/font.frag");
 
 
     // bitmap font texture (texture unit = 1)
@@ -38,6 +39,7 @@ void MainActivity::OnStart() {
             4,
             8,
             up_font_shader_->GetTextureUnitUniformLocation(),
+            up_font_shader_->GetColorUniformLocation(),
             up_font_shader_->GetTranslationVecUniformLocation(),
             up_font_shader_->GetScalingVecUniformLocation(),
             up_font_shader_->GetTexcoordTranslationVecUniformLocation(),
@@ -52,8 +54,20 @@ void MainActivity::OnStart() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NullDereference"
+
 void MainActivity::OnFrame() {
-    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    frame_.StartFrame();
+
+    const float min = 0.25;
+    const float max = 0.4;
+    const float speed = 0.7;
+
+    count_ += frame_.GetDeltaTimeF() * speed;
+    const float color = (std::sin(count_) + 1.0f) * 0.5f * (max - min) + min;
+
+    glClearColor(color, color, color, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Drawing the title.
@@ -73,7 +87,10 @@ void MainActivity::OnFrame() {
             40, 240, 18);
 }
 
+#pragma clang diagnostic pop
+
 void MainActivity::OnDestroy() {
+    frame_.Finalize();
     glDeleteTextures(1, &texture_0_);
     FINALIZE_AND_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
@@ -89,4 +106,8 @@ void MainActivity::OnKey(int glfw_key, int glfw_action) {
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         need_to_push_next_activity_ = BasicSampleActivity::CreateActivityFactory;
     }
+}
+
+void MainActivity::OnFrameAfterSwap() {
+    frame_.EndFrame();
 }

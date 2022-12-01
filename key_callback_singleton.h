@@ -10,7 +10,7 @@ public:
 
     void operator=(const KeyCallbackSingleton &) = delete;
 
-    // Get the singleton instance.
+    // GetFps the singleton instance.
     static KeyCallbackSingleton *GetInstance();
 
     void SetActivity(Application::Activity *p_activity) {

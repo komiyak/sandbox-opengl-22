@@ -37,18 +37,19 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     OPENGL_DEBUG_CHECK();
 
 
-    // Get locations of the uniform variable. (shader から取得できなかった場合は -1)
+    // GetFps locations of the uniform variable. (shader から取得できなかった場合は -1)
     projection_mat_uniform_location_ = glGetUniformLocation(program_object_, "projection_mat");
     view_mat_uniform_location_ = glGetUniformLocation(program_object_, "view_mat");
     model_mat_uniform_location_ = glGetUniformLocation(program_object_, "model_mat");
     texture_unit_uniform_location_ = glGetUniformLocation(program_object_, "tex");
+    color_uniform_location_ = glGetUniformLocation(program_object_, "color");
     translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "translation_vec");
     scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "scaling_vec");
     texcoord_translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_translation_vec");
     texcoord_scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_scaling_vec");
     OPENGL_DEBUG_CHECK();
 
-    // Get locations of the attribute variable. (shader から取得できなかった場合は -1)
+    // GetFps locations of the attribute variable. (shader から取得できなかった場合は -1)
     position_attrib_variable_location_ = glGetAttribLocation(program_object_, "position");
     color_attrib_variable_location_ = glGetAttribLocation(program_object_, "color");
     texcoord_attrib_variable_location_ = glGetAttribLocation(program_object_, "texcoord");

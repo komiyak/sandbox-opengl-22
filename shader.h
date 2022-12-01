@@ -42,6 +42,10 @@ public:
         return texture_unit_uniform_location_;
     }
 
+    [[nodiscard]] GLint GetColorUniformLocation() const {
+        return color_uniform_location_;
+    }
+
     [[nodiscard]] GLint GetTranslationVecUniformLocation() const {
         return translation_vec_uniform_location_;
     }
@@ -83,6 +87,7 @@ private:
     GLint view_mat_uniform_location_{};
     GLint model_mat_uniform_location_{};
     GLint texture_unit_uniform_location_{};
+    GLint color_uniform_location_{};
     GLint translation_vec_uniform_location_{};
     GLint scaling_vec_uniform_location_{};
     GLint texcoord_translation_vec_uniform_location_{};

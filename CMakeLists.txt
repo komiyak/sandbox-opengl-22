@@ -38,6 +38,7 @@ add_executable(
         basic_shader_uniform.cpp
         texture_shader_uniform.cpp
         texture_2d_shader_uniform.cpp
+        font_shader_uniform.cpp
         bitmap_font_render.cpp
         frame.cpp
         png_load.cpp
