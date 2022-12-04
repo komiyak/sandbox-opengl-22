@@ -51,6 +51,7 @@ add_executable(
         cstring_util.cpp
         key_callback_singleton.cpp
         basic_sample_activity.cpp
+        lighting_example_activity.cpp
         main_activity.cpp
         application.cpp)
 

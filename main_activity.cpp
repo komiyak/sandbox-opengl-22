@@ -5,6 +5,7 @@
 #include "png_load.h"
 #include "bitmap_font_render.h"
 #include "basic_sample_activity.h"
+#include "lighting_example_activity.h"
 
 void MainActivity::OnStart() {
     up_font_shader_ = new Shader();
@@ -85,6 +86,9 @@ void MainActivity::OnFrame() {
     up_bitmap_font_render_->RenderWhiteAsciiText(
             "[1] Move to 'BasicSampleActivity'",
             40, 240, 16);
+    up_bitmap_font_render_->RenderWhiteAsciiText(
+            "[2] Move to 'LightingExampleActivity'",
+            40, 280, 16);
 }
 
 #pragma clang diagnostic pop
@@ -102,10 +106,14 @@ void MainActivity::OnKey(int glfw_key, int glfw_action) {
         should_destroy_ = true;
     }
 
-    // 1 の場合は次の activity を push
+    // 任意の Activity を起動する
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
         next_activity_ = BasicSampleActivity::CreateActivityFactory;
+    }
+    if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
+        should_destroy_ = true;
+        next_activity_ = LightingExampleActivity::CreateActivityFactory;
     }
 }
 
