@@ -2,12 +2,21 @@
 #define SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_ACTIVITY_H_
 
 #include "application.h"
+#include "frame.h"
+
+class Shader;
+
+class VertexRenderObject;
+
+class BasicShaderUniform;
 
 class LightingExampleActivity : public Application::Activity {
 public:
     void OnFrame() override;
 
     void OnStart() override;
+
+    void OnFrameAfterSwap() override;
 
     void OnDestroy() override;
 
@@ -16,6 +25,19 @@ public:
     static Application::Activity *CreateActivityFactory() {
         return new LightingExampleActivity();
     }
+
+private:
+    float angle_{};
+    Frame frame_{};
+
+    Shader *up_white_vertex_shader_{};
+    Shader *up_vertex_color_shader_{};
+
+    VertexRenderObject *up_grid_{};
+    VertexRenderObject *up_light_source_{};
+
+    BasicShaderUniform *up_grid_shader_uniform_{};
+    BasicShaderUniform *up_light_source_shader_uniform_{};
 };
 
 

@@ -29,86 +29,6 @@ void BasicSampleActivity::OnStart() {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
     };
 
-    const GLfloat kAxisVertices[] = {
-            // x, y, z, r, g, b
-            0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-            0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-            0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-
-            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 1.0f,
-    };
-
-    const GLfloat kGridPlaneVertices[] = {
-            -5.0f, 0.0f, -5.f,
-            -5.0f, 0.0f, 5.0f,
-
-            -4.0f, 0.0f, -5.0f,
-            -4.0f, 0.0f, 5.0f,
-
-            -3.0f, 0.0f, -5.0f,
-            -3.0f, 0.0f, 5.0f,
-
-            -2.0f, 0.0f, -5.0f,
-            -2.0f, 0.0f, 5.0f,
-
-            -1.0f, 0.0f, -5.0f,
-            -1.0f, 0.0f, 5.0f,
-
-            0.0f, 0.0f, -5.0f,
-            0.0f, 0.0f, 5.0f,
-
-            1.0f, 0.0f, -5.0f,
-            1.0f, 0.0f, 5.0f,
-
-            2.0f, 0.0f, -5.0f,
-            2.0f, 0.0f, 5.0f,
-
-            3.0f, 0.0f, -5.0f,
-            3.0f, 0.0f, 5.0f,
-
-            4.0f, 0.0f, -5.0f,
-            4.0f, 0.0f, 5.0f,
-
-            5.0f, 0.0f, -5.0f,
-            5.0f, 0.0f, 5.0f,
-
-
-            -5.0f, 0.0f, -5.0f,
-            5.0f, 0.0f, -5.0f,
-
-            -5.0f, 0.0f, -4.0f,
-            5.0f, 0.0f, -4.0f,
-
-            -5.0f, 0.0f, -3.0f,
-            5.0f, 0.0f, -3.0f,
-
-            -5.0f, 0.0f, -2.0f,
-            5.0f, 0.0f, -2.0f,
-
-            -5.0f, 0.0f, -1.0f,
-            5.0f, 0.0f, -1.0f,
-
-            -5.0f, 0.0f, 0.0f,
-            5.0f, 0.0f, 0.0f,
-
-            -5.0f, 0.0f, 1.0f,
-            5.0f, 0.0f, 1.0f,
-
-            -5.0f, 0.0f, 2.0f,
-            5.0f, 0.0f, 2.0f,
-
-            -5.0f, 0.0f, 3.0f,
-            5.0f, 0.0f, 3.0f,
-
-            -5.0f, 0.0f, 4.0f,
-            5.0f, 0.0f, 4.0f,
-
-            -5.0f, 0.0f, 5.0f,
-            5.0f, 0.0f, 5.0f,
-    };
 
     const GLfloat kGrassVertices[] = {
             // x, y, z, s, t
@@ -242,8 +162,8 @@ void BasicSampleActivity::OnStart() {
     up_cube_ = new VertexRenderObject();
 
     up_grid_->Initialize(
-            sizeof(kGridPlaneVertices),
-            (void *) kGridPlaneVertices,
+            sizeof(GameData::kGridVertices),
+            (void *) GameData::kGridVertices,
             PositionVertexSpecification{
                     up_grid_shader_->GetAttribVariableLocation("position")
             },
@@ -253,8 +173,8 @@ void BasicSampleActivity::OnStart() {
             GL_LINES,
             22 * 2);
     up_axis_->Initialize(
-            sizeof(kAxisVertices),
-            (void *) kAxisVertices,
+            GameData::kAxisVerticesSize,
+            (void *) GameData::kAxisVertices,
             ColorVertexSpecification{
                     up_shader_->GetAttribVariableLocation("position"),
                     up_shader_->GetAttribVariableLocation("color")
@@ -359,20 +279,17 @@ void BasicSampleActivity::OnFrameAfterSwap() {
     frame_.EndFrame();
 }
 
-// Finalizing and deleting
-#define DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
-
 void BasicSampleActivity::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
 
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 
-    DELETE(up_grid_shader_uniform_);
-    DELETE(up_axis_shader_uniform_);
-    DELETE(up_triangle_shader_uniform_);
-    DELETE(up_grass_shader_uniform_);
-    DELETE(up_cube_shader_uniform_);
+    SAFE_DELETE(up_grid_shader_uniform_);
+    SAFE_DELETE(up_axis_shader_uniform_);
+    SAFE_DELETE(up_triangle_shader_uniform_);
+    SAFE_DELETE(up_grass_shader_uniform_);
+    SAFE_DELETE(up_cube_shader_uniform_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_axis_);

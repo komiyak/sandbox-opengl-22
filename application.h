@@ -5,6 +5,9 @@
 #include <GLFW/glfw3.h>
 #include <stack>
 
+// Deleting
+#define SAFE_DELETE(p) if (p) {delete (p); (p) = nullptr;} do {} while (0)
+
 // アプリケーション統合クラス、実装として GLFW を利用しています
 class Application {
 public:
