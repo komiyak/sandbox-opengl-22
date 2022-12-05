@@ -1,11 +1,9 @@
 #ifndef SANDBOX_OPENGL_22_FRAME_H_
 #define SANDBOX_OPENGL_22_FRAME_H_
 
-#include "base_object.h"
-
 // Frame 管理
 // 内部的に高精度時間取得のため GLFW を使用している
-class Frame : public BaseObject {
+class Frame {
 public:
     // Frame レンダリング開始時にコールするフレームカウンタ
     void StartFrame();
@@ -27,8 +25,6 @@ public:
     [[maybe_unused]] [[nodiscard]] float GetDeltaTimeF() const {
         return (float) last_frame_elapsed_time_;
     }
-
-    void Finalize() override {}
 
 private:
     // 最新のFPS

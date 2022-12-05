@@ -101,7 +101,6 @@ void MainActivity::OnFrame() {
 #pragma clang diagnostic pop
 
 void MainActivity::OnDestroy() {
-    frame_.Finalize();
     glDeleteTextures(1, &texture_0_);
     FINALIZE_AND_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);

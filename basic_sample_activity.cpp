@@ -311,12 +311,12 @@ void BasicSampleActivity::OnStart() {
 }
 
 void BasicSampleActivity::OnFrame() {
-    up_frame_->StartFrame();
+    frame_.StartFrame();
 
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle_ += glm::pi<float>() * 0.25f * (float) up_frame_->GetDeltaTime();
+    angle_ += glm::pi<float>() * 0.25f * (float) frame_.GetDeltaTime();
 
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
@@ -356,7 +356,7 @@ void BasicSampleActivity::OnFrame() {
 }
 
 void BasicSampleActivity::OnFrameAfterSwap() {
-    up_frame_->EndFrame();
+    frame_.EndFrame();
 }
 
 // Finalizing and deleting
@@ -366,7 +366,6 @@ void BasicSampleActivity::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
 
-    FINALIZE_AND_DELETE(up_frame_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 
     DELETE(up_grid_shader_uniform_);

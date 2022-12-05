@@ -33,7 +33,7 @@ public:
     }
 
 private:
-    Frame *up_frame_{new Frame()};
+    Frame frame_{};
 
     float angle_{0.f};
 
