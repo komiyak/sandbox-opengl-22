@@ -57,6 +57,7 @@ These words are hard to understand. You should use full spelling.
 | texture_2d.frag/vert | A vertex with 4 data as Vertex (x, y) and texcoord (s, t). For 2D rendering. |
 | vertex_color.frag/vert | A vertex with 6 data as Vertex (x, y, z) and Vertex color (r, g, b). |
 | white_vertex.frag/vert | A vertex with 3 data as Vertex (x, y, z). Rendering white color vertex (for debug maybe). |
+| sample_lighting_cube.frag/vert | A vertex with 3 data as Vertex (x, y, z). To test lighting with uniform variable. |
 
 ## How to test
 

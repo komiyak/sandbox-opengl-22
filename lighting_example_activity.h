@@ -10,6 +10,8 @@ class VertexRenderObject;
 
 class BasicShaderUniform;
 
+class SampleLightingCubeShaderUniform;
+
 class LightingExampleActivity : public Application::Activity {
 public:
     void OnFrame() override;
@@ -32,12 +34,15 @@ private:
 
     Shader *up_white_vertex_shader_{};
     Shader *up_vertex_color_shader_{};
+    Shader *up_sample_lighting_cube_shader_{};
 
     VertexRenderObject *up_grid_{};
     VertexRenderObject *up_light_source_{};
+    VertexRenderObject *up_lighting_target_{};
 
     BasicShaderUniform *up_grid_shader_uniform_{};
     BasicShaderUniform *up_light_source_shader_uniform_{};
+    SampleLightingCubeShaderUniform *up_lighting_target_shader_uniform_{};
 };
 
 

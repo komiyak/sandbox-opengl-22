@@ -7,6 +7,7 @@
 #include "shader_data.h"
 #include "vertex_render_object.h"
 #include "basic_shader_uniform.h"
+#include "sample_lighting_cube_shader_uniform.h"
 #include "position_vertex_specification.h"
 #include "color_vertex_specification.h"
 
@@ -30,9 +31,19 @@ void LightingExampleActivity::OnFrame() {
         up_grid_->Render();
     }
     if (up_light_source_ && up_light_source_shader_uniform_) {
+        glm::mat4 model_mat = glm::mat4(1);
+        model_mat = glm::translate(model_mat, glm::vec3(1.2f, 1.0f, 2.0f));
+
         up_light_source_shader_uniform_->SetViewMat(view_mat);
-        up_light_source_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        up_light_source_shader_uniform_->SetModelMat(model_mat);
         up_light_source_->Render();
+    }
+    if (up_lighting_target_ && up_lighting_target_shader_uniform_) {
+        up_lighting_target_shader_uniform_->SetViewMat(view_mat);
+        up_lighting_target_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        up_lighting_target_shader_uniform_->SetObjectColor(glm::vec3(1.0f, 0.5f, 0.31f));
+        up_lighting_target_shader_uniform_->SetLightColor(glm::vec3(1.0f));
+        up_lighting_target_->Render();
     }
 }
 
@@ -62,14 +73,37 @@ void LightingExampleActivity::OnStart() {
             shader_data::kUniformVariableLocationsOfVertexColorShader,
             shader_data::kUniformVariableLocationsOfVertexColorShaderSize);
 
+    const char *const attrib_variable_locations[] = {
+            "position"};
+    const char *const uniform_variable_locations[] = {
+            "projection_mat",
+            "view_mat",
+            "model_mat",
+            "objectColor",
+            "lightColor"};
+    up_sample_lighting_cube_shader_ = new Shader();
+    up_sample_lighting_cube_shader_->BuildFromFile(
+            "shader/sample_lighting_cube.vert",
+            "shader/sample_lighting_cube.frag",
+            attrib_variable_locations,
+            std::size(attrib_variable_locations),
+            uniform_variable_locations,
+            std::size(uniform_variable_locations));
+
     up_grid_shader_uniform_ = new BasicShaderUniform{
-            up_white_vertex_shader_->GetUniformVariableLocation("projection_mat"),
-            up_white_vertex_shader_->GetUniformVariableLocation("view_mat"),
-            up_white_vertex_shader_->GetUniformVariableLocation("model_mat")};
+            up_vertex_color_shader_->GetUniformVariableLocation("projection_mat"),
+            up_vertex_color_shader_->GetUniformVariableLocation("view_mat"),
+            up_vertex_color_shader_->GetUniformVariableLocation("model_mat")};
     up_light_source_shader_uniform_ = new BasicShaderUniform{
             up_white_vertex_shader_->GetUniformVariableLocation("projection_mat"),
             up_white_vertex_shader_->GetUniformVariableLocation("view_mat"),
             up_white_vertex_shader_->GetUniformVariableLocation("model_mat")};
+    up_lighting_target_shader_uniform_ = new SampleLightingCubeShaderUniform{
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("projection_mat"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("objectColor"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(
@@ -97,21 +131,38 @@ void LightingExampleActivity::OnStart() {
             GL_LINES,
             6);
 
+    up_lighting_target_ = new VertexRenderObject();
+    up_lighting_target_->Initialize(
+            sizeof(GameData::kCube),
+            (void *) GameData::kCube,
+            PositionVertexSpecification{
+                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("position")
+            },
+            up_sample_lighting_cube_shader_,
+            up_lighting_target_shader_uniform_,
+            GL_STATIC_DRAW,
+            GL_TRIANGLES,
+            36);
+
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
     up_grid_shader_uniform_->SetProjectionMat(projection_mat);
     up_light_source_shader_uniform_->SetProjectionMat(projection_mat);
+    up_lighting_target_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
 void LightingExampleActivity::OnDestroy() {
     FINALIZE_AND_DELETE(up_white_vertex_shader_);
     FINALIZE_AND_DELETE(up_vertex_color_shader_);
+    FINALIZE_AND_DELETE(up_sample_lighting_cube_shader_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_light_source_);
+    FINALIZE_AND_DELETE(up_lighting_target_);
 
     SAFE_DELETE(up_grid_shader_uniform_);
     SAFE_DELETE(up_light_source_shader_uniform_);
+    SAFE_DELETE(up_lighting_target_shader_uniform_);
 }
 
 void LightingExampleActivity::OnFrameAfterSwap() {
