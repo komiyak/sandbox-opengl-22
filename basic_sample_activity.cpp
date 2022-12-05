@@ -17,6 +17,7 @@
 #include "texture_shader_uniform.h"
 #include "png_load.h"
 #include "bitmap_font_render.h"
+#include "game_data.h"
 #include "shader_data.h"
 
 void BasicSampleActivity::OnStart() {
@@ -226,6 +227,11 @@ void BasicSampleActivity::OnStart() {
             up_texture_shader_->GetUniformVariableLocation("model_mat"),
             up_texture_shader_->GetUniformVariableLocation("tex")};
 
+    up_cube_shader_uniform_ = new BasicShaderUniform(
+            up_grid_shader_->GetUniformVariableLocation("projection_mat"),
+            up_grid_shader_->GetUniformVariableLocation("view_mat"),
+            up_grid_shader_->GetUniformVariableLocation("model_mat"));
+
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
 
@@ -233,6 +239,7 @@ void BasicSampleActivity::OnStart() {
     up_axis_ = new VertexRenderObject();
     up_triangle_ = new VertexRenderObject();
     up_grass_ = new VertexRenderObject();
+    up_cube_ = new VertexRenderObject();
 
     up_grid_->Initialize(
             sizeof(kGridPlaneVertices),
@@ -282,12 +289,25 @@ void BasicSampleActivity::OnStart() {
             GL_TRIANGLE_STRIP,
             4);
 
+    up_cube_->Initialize(
+            sizeof(GameData::kCube),
+            (void *) GameData::kCube,
+            PositionVertexSpecification{
+                    up_grid_shader_->GetAttribVariableLocation("position")
+            },
+            up_grid_shader_,
+            up_cube_shader_uniform_,
+            GL_STATIC_DRAW,
+            GL_TRIANGLES,
+            36);
+
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
     up_grid_shader_uniform_->SetProjectionMat(projection_mat);
     up_axis_shader_uniform_->SetProjectionMat(projection_mat);
     up_triangle_shader_uniform_->SetProjectionMat(projection_mat);
     up_grass_shader_uniform_->SetProjectionMat(projection_mat);
+    up_cube_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
 void BasicSampleActivity::OnFrame() {
@@ -327,8 +347,12 @@ void BasicSampleActivity::OnFrame() {
     up_grass_shader_uniform_->SetModelMat(grass_model_mat);
     up_grass_->Render();
 
-    // 2d 描画テスト
-    //up_test_2d_->Render();
+    glm::mat4 cube_mat = glm::mat4(1.0f);
+    cube_mat = glm::translate(cube_mat, glm::vec3(0.0f, 2.f, 0.0f));
+    cube_mat = glm::scale(cube_mat, glm::vec3(0.5, 0.5, 0.5));
+    up_cube_shader_uniform_->SetViewMat(view_mat);
+    up_cube_shader_uniform_->SetModelMat(cube_mat);
+    up_cube_->Render();
 }
 
 void BasicSampleActivity::OnFrameAfterSwap() {
@@ -349,6 +373,7 @@ void BasicSampleActivity::OnDestroy() {
     DELETE(up_axis_shader_uniform_);
     DELETE(up_triangle_shader_uniform_);
     DELETE(up_grass_shader_uniform_);
+    DELETE(up_cube_shader_uniform_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_axis_);

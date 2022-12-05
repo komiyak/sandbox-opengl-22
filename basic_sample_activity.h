@@ -44,6 +44,7 @@ private:
     BasicShaderUniform *up_axis_shader_uniform_{};
     BasicShaderUniform *up_triangle_shader_uniform_{};
     TextureShaderUniform *up_grass_shader_uniform_{};
+    BasicShaderUniform *up_cube_shader_uniform_{};
 
     VertexRenderObject *up_grid_{};
     VertexRenderObject *up_axis_{};
