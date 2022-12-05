@@ -49,6 +49,7 @@ private:
     VertexRenderObject *up_axis_{};
     VertexRenderObject *up_triangle_{};
     VertexRenderObject *up_grass_{};
+    VertexRenderObject *up_cube_{};
 
     Shader *up_grid_shader_{};
     Shader *up_shader_{};

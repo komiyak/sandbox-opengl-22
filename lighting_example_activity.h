@@ -5,13 +5,13 @@
 
 class LightingExampleActivity : public Application::Activity {
 public:
-    void OnKey(int glfw_key, int glfw_action) override;
-
     void OnFrame() override;
 
     void OnStart() override;
 
     void OnDestroy() override;
+
+    void OnKey(int glfw_key, int glfw_action) override;
 
     static Application::Activity *CreateActivityFactory() {
         return new LightingExampleActivity();

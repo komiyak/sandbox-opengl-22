@@ -6,11 +6,18 @@
 #include "bitmap_font_render.h"
 #include "basic_sample_activity.h"
 #include "lighting_example_activity.h"
+#include "shader_data.h"
 
 void MainActivity::OnStart() {
-    up_font_shader_ = new Shader();
-    up_font_shader_->BuildFromFile("shader/font.vert", "shader/font.frag");
 
+    up_font_shader_ = new Shader();
+    up_font_shader_->BuildFromFile(
+            "shader/font.vert",
+            "shader/font.frag",
+            shader_data::kAttribVariableLocationsOfFontShader,
+            shader_data::kAttribVariableLocationsOfFontShaderSize,
+            shader_data::kUniformVariableLocationsOfFontShader,
+            shader_data::kUniformVariableLocationsOfFontShaderSize);
 
     // bitmap font texture (texture unit = 1)
     glGenTextures(1, &texture_0_);
@@ -39,12 +46,12 @@ void MainActivity::OnStart() {
             png_load.GetImageSize().height,
             4,
             8,
-            up_font_shader_->GetTextureUnitUniformLocation(),
-            up_font_shader_->GetColorUniformLocation(),
-            up_font_shader_->GetTranslationVecUniformLocation(),
-            up_font_shader_->GetScalingVecUniformLocation(),
-            up_font_shader_->GetTexcoordTranslationVecUniformLocation(),
-            up_font_shader_->GetTexcoordScalingVecUniformLocation(),
+            up_font_shader_->GetUniformVariableLocation("tex"),
+            up_font_shader_->GetUniformVariableLocation("color"),
+            up_font_shader_->GetUniformVariableLocation("translation_vec"),
+            up_font_shader_->GetUniformVariableLocation("scaling_vec"),
+            up_font_shader_->GetUniformVariableLocation("texcoord_translation_vec"),
+            up_font_shader_->GetUniformVariableLocation("texcoord_scaling_vec"),
             up_font_shader_);
     up_bitmap_font_render_->Initialize();
     png_load.Finalize();

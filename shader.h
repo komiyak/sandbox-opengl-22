@@ -2,6 +2,7 @@
 #define SANDBOX_OPENGL_22_SHADER_H_
 
 #include <glad/glad.h>
+#include <map>
 #include <string>
 
 #include "base_object.h"
@@ -12,57 +13,29 @@ public:
     void UseProgram() const;
 
     // shader file をビルドし、shader を利用可能にする
-    void BuildFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath);
-
-    [[nodiscard]] GLint GetPositionAttribVariableLocation() const {
-        return position_attrib_variable_location_;
-    }
-
-    [[nodiscard]] GLint GetColorAttribVariableLocation() const {
-        return color_attrib_variable_location_;
-    }
-
-    [[nodiscard]] GLint GetTexcoordAttribVariableLocation() const {
-        return texcoord_attrib_variable_location_;
-    }
-
-    [[nodiscard]] GLint GetProjectionMatUniformLocation() const {
-        return projection_mat_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetViewMatUniformLocation() const {
-        return view_mat_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetModelMatUniformLocation() const {
-        return model_mat_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetTextureUnitUniformLocation() const {
-        return texture_unit_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetColorUniformLocation() const {
-        return color_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetTranslationVecUniformLocation() const {
-        return translation_vec_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetScalingVecUniformLocation() const {
-        return scaling_vec_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetTexcoordTranslationVecUniformLocation() const {
-        return texcoord_translation_vec_uniform_location_;
-    }
-
-    [[nodiscard]] GLint GetTexcoordScalingVecUniformLocation() const {
-        return texcoord_scaling_vec_uniform_location_;
-    }
+    // param vertex_shader_filepath Vertex shader ファイル
+    // param fragment_shader_filepath Fragment shader ファイル
+    // param attrib_variable_location_names Shader 内に定義されている属性変数の名前リスト
+    // param attrib_variable_location_names_size attrib_variable_location_names's size
+    // param uniform_variable_location_names Shader 内に定義されている uniform 変数の名前リスト
+    // param uniform_variable_location_names_size uniform_variable_location_names's size
+    void BuildFromFile(
+            const char *vertex_shader_filepath,
+            const char *fragment_shader_filepath,
+            const char *const *attrib_variable_location_names,
+            std::size_t attrib_variable_location_names_size,
+            const char *const *uniform_variable_location_names,
+            std::size_t uniform_variable_location_names_size);
 
     void Finalize() override;
+
+    [[maybe_unused]] GLint GetAttribVariableLocation(const char *name) {
+        return attrib_variable_locations_.at(name);
+    }
+
+    [[maybe_unused]] GLint GetUniformVariableLocation(const char *name) {
+        return uniform_variable_locations_.at(name);
+    }
 
 private:
     static std::string LoadShaderSourceFromFile(const char *filepath);
@@ -73,25 +46,10 @@ private:
     GLuint vertex_shader_{};
     GLuint fragment_shader_{};
 
-    // TODO shader によって変化する部分なので、それに対応できるような構造に変更したい
-    // 'position' 属性変数の位置
-    GLint position_attrib_variable_location_{};
-    // 'color' 属性変数の位置
-    GLint color_attrib_variable_location_{};
-    // 'texcoord' 属性変数の位置
-    GLint texcoord_attrib_variable_location_{};
-
-    // TODO shader によって変化する部分なので、それに対応できるような構造に変更したい
+    // 属性変数の位置
+    std::map<std::string, GLint> attrib_variable_locations_{};
     // uniform 変数の位置
-    GLint projection_mat_uniform_location_{};
-    GLint view_mat_uniform_location_{};
-    GLint model_mat_uniform_location_{};
-    GLint texture_unit_uniform_location_{};
-    GLint color_uniform_location_{};
-    GLint translation_vec_uniform_location_{};
-    GLint scaling_vec_uniform_location_{};
-    GLint texcoord_translation_vec_uniform_location_{};
-    GLint texcoord_scaling_vec_uniform_location_{};
+    std::map<std::string, GLint> uniform_variable_locations_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_

@@ -17,6 +17,7 @@
 #include "texture_shader_uniform.h"
 #include "png_load.h"
 #include "bitmap_font_render.h"
+#include "shader_data.h"
 
 void BasicSampleActivity::OnStart() {
     // 頂点
@@ -117,16 +118,40 @@ void BasicSampleActivity::OnStart() {
     };
 
     up_grid_shader_ = new Shader();
-    up_grid_shader_->BuildFromFile("shader/white_vertex.vert", "shader/white_vertex.frag");
+    up_grid_shader_->BuildFromFile(
+            "shader/white_vertex.vert",
+            "shader/white_vertex.frag",
+            shader_data::kAttribVariableLocationsOfWhiteVertexShader,
+            shader_data::kAttribVariableLocationsOfWhiteVertexShaderSize,
+            shader_data::kUniformVariableLocationsOfWhiteVertexShader,
+            shader_data::kUniformVariableLocationsOfWhiteVertexShaderSize);
 
     up_shader_ = new Shader();
-    up_shader_->BuildFromFile("shader/vertex_color.vert", "shader/vertex_color.frag");
+    up_shader_->BuildFromFile(
+            "shader/vertex_color.vert",
+            "shader/vertex_color.frag",
+            shader_data::kAttribVariableLocationsOfVertexColorShader,
+            shader_data::kAttribVariableLocationsOfVertexColorShaderSize,
+            shader_data::kUniformVariableLocationsOfVertexColorShader,
+            shader_data::kUniformVariableLocationsOfVertexColorShaderSize);
 
     up_texture_shader_ = new Shader();
-    up_texture_shader_->BuildFromFile("shader/texture.vert", "shader/texture.frag");
+    up_texture_shader_->BuildFromFile(
+            "shader/texture.vert",
+            "shader/texture.frag",
+            shader_data::kAttribVariableLocationsOfTextureShader,
+            shader_data::kAttribVariableLocationsOfTextureShaderSize,
+            shader_data::kUniformVariableLocationsOfTextureShader,
+            shader_data::kUniformVariableLocationsOfTextureShaderSize);
 
     up_texture_2d_shader_ = new Shader();
-    up_texture_2d_shader_->BuildFromFile("shader/texture_2d.vert", "shader/texture_2d.frag");
+    up_texture_2d_shader_->BuildFromFile(
+            "shader/texture_2d.vert",
+            "shader/texture_2d.frag",
+            shader_data::kAttribVariableLocationsOfTexture2dShader,
+            shader_data::kAttribVariableLocationsOfTexture2dShaderSize,
+            shader_data::kUniformVariableLocationsOfTexture2dShader,
+            shader_data::kUniformVariableLocationsOfTexture2dShaderSize);
 
 
     glGenTextures(1, &texture_0_);
@@ -181,25 +206,25 @@ void BasicSampleActivity::OnStart() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     up_grid_shader_uniform_ = new BasicShaderUniform{
-            up_grid_shader_->GetProjectionMatUniformLocation(),
-            up_grid_shader_->GetViewMatUniformLocation(),
-            up_grid_shader_->GetModelMatUniformLocation()};
+            up_grid_shader_->GetUniformVariableLocation("projection_mat"),
+            up_grid_shader_->GetUniformVariableLocation("view_mat"),
+            up_grid_shader_->GetUniformVariableLocation("model_mat")};
 
     up_axis_shader_uniform_ = new BasicShaderUniform{
-            up_shader_->GetProjectionMatUniformLocation(),
-            up_shader_->GetViewMatUniformLocation(),
-            up_shader_->GetModelMatUniformLocation()};
+            up_shader_->GetUniformVariableLocation("projection_mat"),
+            up_shader_->GetUniformVariableLocation("view_mat"),
+            up_shader_->GetUniformVariableLocation("model_mat")};
 
     up_triangle_shader_uniform_ = new BasicShaderUniform{
-            up_shader_->GetProjectionMatUniformLocation(),
-            up_shader_->GetViewMatUniformLocation(),
-            up_shader_->GetModelMatUniformLocation()};
+            up_shader_->GetUniformVariableLocation("projection_mat"),
+            up_shader_->GetUniformVariableLocation("view_mat"),
+            up_shader_->GetUniformVariableLocation("model_mat")};
 
     up_grass_shader_uniform_ = new TextureShaderUniform{
-            up_texture_shader_->GetProjectionMatUniformLocation(),
-            up_texture_shader_->GetViewMatUniformLocation(),
-            up_texture_shader_->GetModelMatUniformLocation(),
-            up_texture_shader_->GetTextureUnitUniformLocation()};
+            up_texture_shader_->GetUniformVariableLocation("projection_mat"),
+            up_texture_shader_->GetUniformVariableLocation("view_mat"),
+            up_texture_shader_->GetUniformVariableLocation("model_mat"),
+            up_texture_shader_->GetUniformVariableLocation("tex")};
 
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
@@ -212,7 +237,9 @@ void BasicSampleActivity::OnStart() {
     up_grid_->Initialize(
             sizeof(kGridPlaneVertices),
             (void *) kGridPlaneVertices,
-            PositionVertexSpecification{up_grid_shader_->GetPositionAttribVariableLocation()},
+            PositionVertexSpecification{
+                    up_grid_shader_->GetAttribVariableLocation("position")
+            },
             up_grid_shader_,
             up_grid_shader_uniform_,
             GL_STATIC_DRAW,
@@ -222,8 +249,9 @@ void BasicSampleActivity::OnStart() {
             sizeof(kAxisVertices),
             (void *) kAxisVertices,
             ColorVertexSpecification{
-                    up_shader_->GetPositionAttribVariableLocation(),
-                    up_shader_->GetColorAttribVariableLocation()},
+                    up_shader_->GetAttribVariableLocation("position"),
+                    up_shader_->GetAttribVariableLocation("color")
+            },
             up_shader_,
             up_axis_shader_uniform_,
             GL_STATIC_DRAW,
@@ -233,8 +261,9 @@ void BasicSampleActivity::OnStart() {
             sizeof(kVertices),
             (void *) kVertices,
             ColorVertexSpecification{
-                    up_shader_->GetPositionAttribVariableLocation(),
-                    up_shader_->GetColorAttribVariableLocation()},
+                    up_shader_->GetAttribVariableLocation("position"),
+                    up_shader_->GetAttribVariableLocation("color")
+            },
             up_shader_,
             up_triangle_shader_uniform_,
             GL_STATIC_DRAW,
@@ -244,8 +273,9 @@ void BasicSampleActivity::OnStart() {
             sizeof(kGrassVertices),
             (void *) kGrassVertices,
             TextureVertexSpecification{
-                    up_texture_shader_->GetPositionAttribVariableLocation(),
-                    up_texture_shader_->GetTexcoordAttribVariableLocation()},
+                    up_texture_shader_->GetAttribVariableLocation("position"),
+                    up_texture_shader_->GetAttribVariableLocation("texcoord")
+            },
             up_texture_shader_,
             up_grass_shader_uniform_,
             GL_STATIC_DRAW,
@@ -324,6 +354,7 @@ void BasicSampleActivity::OnDestroy() {
     FINALIZE_AND_DELETE(up_axis_);
     FINALIZE_AND_DELETE(up_triangle_);
     FINALIZE_AND_DELETE(up_grass_);
+    FINALIZE_AND_DELETE(up_cube_);
 
     FINALIZE_AND_DELETE(up_grid_shader_);
     FINALIZE_AND_DELETE(up_shader_);

@@ -14,7 +14,17 @@ std::string Shader::LoadShaderSourceFromFile(const char *filepath) {
     return string_stream.str();
 }
 
-void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragment_shader_filepath) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
+
+void Shader::BuildFromFile(
+        const char *vertex_shader_filepath,
+        const char *fragment_shader_filepath,
+        const char *const *attrib_variable_location_names,
+        std::size_t attrib_variable_location_names_size,
+        const char *const *uniform_variable_location_names,
+        std::size_t uniform_variable_location_names_size) {
+
     DEBUG_ASSERT_MESSAGE(
             cstring_util::EqualLast(vertex_shader_filepath, ".vert"),
             "Vertex shader file must be with '.vert' extension.");
@@ -37,24 +47,38 @@ void Shader::BuildFromFile(const char *vertex_shader_filepath, const char *fragm
     OPENGL_DEBUG_CHECK();
 
 
-    // GetFps locations of the uniform variable. (shader から取得できなかった場合は -1)
-    projection_mat_uniform_location_ = glGetUniformLocation(program_object_, "projection_mat");
-    view_mat_uniform_location_ = glGetUniformLocation(program_object_, "view_mat");
-    model_mat_uniform_location_ = glGetUniformLocation(program_object_, "model_mat");
-    texture_unit_uniform_location_ = glGetUniformLocation(program_object_, "tex");
-    color_uniform_location_ = glGetUniformLocation(program_object_, "color");
-    translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "translation_vec");
-    scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "scaling_vec");
-    texcoord_translation_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_translation_vec");
-    texcoord_scaling_vec_uniform_location_ = glGetUniformLocation(program_object_, "texcoord_scaling_vec");
+    // Get locations of the uniform variable.
+    for (int i = 0; i < uniform_variable_location_names_size; i++) {
+        const char *const name = uniform_variable_location_names[i];
+        const GLint location = glGetUniformLocation(program_object_, name);
+        if (kRuntimeAssertion && location == -1) {
+            fprintf(stderr, "The uniform variable location '%s' is not found in '%s' or '%s'.\n",
+                    name,
+                    vertex_shader_filepath,
+                    fragment_shader_filepath);
+            abort();
+        }
+        uniform_variable_locations_.insert(std::make_pair(name, location));
+    }
     OPENGL_DEBUG_CHECK();
 
-    // GetFps locations of the attribute variable. (shader から取得できなかった場合は -1)
-    position_attrib_variable_location_ = glGetAttribLocation(program_object_, "position");
-    color_attrib_variable_location_ = glGetAttribLocation(program_object_, "color");
-    texcoord_attrib_variable_location_ = glGetAttribLocation(program_object_, "texcoord");
+    // Get locations of the attribute variable.
+    for (int i = 0; i < attrib_variable_location_names_size; i++) {
+        const char *const name = attrib_variable_location_names[i];
+        const GLint location = glGetAttribLocation(program_object_, name);
+        if (kRuntimeAssertion && location == -1) {
+            fprintf(stderr, "The attribute variable location '%s' is not found in '%s' or '%s'.\n",
+                    name,
+                    vertex_shader_filepath,
+                    fragment_shader_filepath);
+            abort();
+        }
+        attrib_variable_locations_.insert(std::make_pair(name, location));
+    }
     OPENGL_DEBUG_CHECK();
 }
+
+#pragma clang diagnostic pop
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
