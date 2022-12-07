@@ -9,6 +9,7 @@
 #include "basic_shader_uniform.h"
 #include "sample_lighting_cube_shader_uniform.h"
 #include "position_vertex_specification.h"
+#include "position_with_normal_vector_vertex_specification.h"
 #include "color_vertex_specification.h"
 
 void LightingExampleActivity::OnFrame() {
@@ -19,9 +20,12 @@ void LightingExampleActivity::OnFrame() {
 
     angle_ += glm::pi<float>() * 0.25f * (float) frame_.GetDeltaTime();
 
+    // 光源の位置
+    const glm::vec3 light_position = glm::vec3(1.2f, 1.2f, 2.0f);
+
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
-            glm::vec3(glm::cos(angle_) * 8.0f, 1.f, glm::sin(angle_) * 12.0f),
+            glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f),
             glm::vec3(0.f, 0.f, 0.f),
             glm::vec3(0.f, 1.f, 0.f));
 
@@ -32,17 +36,36 @@ void LightingExampleActivity::OnFrame() {
     }
     if (up_light_source_ && up_light_source_shader_uniform_) {
         glm::mat4 model_mat = glm::mat4(1);
-        model_mat = glm::translate(model_mat, glm::vec3(1.2f, 1.0f, 2.0f));
+        model_mat = glm::translate(model_mat, light_position);
 
         up_light_source_shader_uniform_->SetViewMat(view_mat);
         up_light_source_shader_uniform_->SetModelMat(model_mat);
         up_light_source_->Render();
     }
     if (up_lighting_target_ && up_lighting_target_shader_uniform_) {
+        glm::mat4 model_mat = glm::mat4(1);
+        model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
+        model_mat = glm::rotate(model_mat, angle_ / 3, glm::vec3(0, 1, 0));
+
         up_lighting_target_shader_uniform_->SetViewMat(view_mat);
-        up_lighting_target_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        up_lighting_target_shader_uniform_->SetModelMat(model_mat);
         up_lighting_target_shader_uniform_->SetObjectColor(glm::vec3(1.0f, 0.5f, 0.31f));
         up_lighting_target_shader_uniform_->SetLightColor(glm::vec3(1.0f));
+        up_lighting_target_shader_uniform_->SetLightPosition(light_position);
+        up_lighting_target_->Render();
+
+
+        // 位置を変えて
+        model_mat = glm::translate(glm::mat4(1), glm::vec3(3, 0.5, 3));
+        up_lighting_target_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_target_->Render();
+
+        model_mat = glm::translate(glm::mat4(1), glm::vec3(-4, 0.5, -4));
+        up_lighting_target_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_target_->Render();
+
+        model_mat = glm::translate(glm::mat4(1), glm::vec3(4, 0.5, -7));
+        up_lighting_target_shader_uniform_->SetModelMat(model_mat);
         up_lighting_target_->Render();
     }
 }
@@ -74,13 +97,15 @@ void LightingExampleActivity::OnStart() {
             shader_data::kUniformVariableLocationsOfVertexColorShaderSize);
 
     const char *const attrib_variable_locations[] = {
-            "position"};
+            "position",
+            "normal"};
     const char *const uniform_variable_locations[] = {
             "projection_mat",
             "view_mat",
             "model_mat",
             "objectColor",
-            "lightColor"};
+            "lightColor",
+            "lightPosition"};
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
             "shader/sample_lighting_cube.vert",
@@ -103,7 +128,8 @@ void LightingExampleActivity::OnStart() {
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("objectColor"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor")};
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightPosition")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(
@@ -133,10 +159,11 @@ void LightingExampleActivity::OnStart() {
 
     up_lighting_target_ = new VertexRenderObject();
     up_lighting_target_->Initialize(
-            sizeof(GameData::kCubeVertices),
-            (void *) GameData::kCubeVertices,
-            PositionVertexSpecification{
-                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("position")
+            sizeof(GameData::kCubeWithNormalVertices),
+            (void *) GameData::kCubeWithNormalVertices,
+            PositionWithNormalVectorVertexSpecification{
+                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("position"),
+                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("normal")
             },
             up_sample_lighting_cube_shader_,
             up_lighting_target_shader_uniform_,

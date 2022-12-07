@@ -9,5 +9,6 @@ void SampleLightingCubeShaderUniform::Transfer() const {
     glUniformMatrix4fv(uniform_model_mat_, 1, GL_FALSE, glm::value_ptr(model_mat_));
     glUniform3f(uniform_object_color_, object_color_.x, object_color_.y, object_color_.z);
     glUniform3f(uniform_light_color_, light_color_.x, light_color_.y, light_color_.z);
+    glUniform3f(uniform_light_position_, light_position_.x, light_position_.y, light_position_.z);
     OPENGL_DEBUG_CHECK();
 }

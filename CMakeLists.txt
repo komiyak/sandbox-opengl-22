@@ -45,6 +45,7 @@ add_executable(
         png_load.cpp
         game_math.cpp
         position_vertex_specification.cpp
+        position_with_normal_vector_vertex_specification.cpp
         color_vertex_specification.cpp
         texture_vertex_specification.cpp
         texture_2d_vertex_specification.cpp
