@@ -30,6 +30,7 @@ public:
 
 private:
     float angle_{};
+    float light_angle_{};
     Frame frame_{};
 
     Shader *up_white_vertex_shader_{};

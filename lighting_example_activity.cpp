@@ -18,10 +18,11 @@ void LightingExampleActivity::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle_ += glm::pi<float>() * 0.25f * (float) frame_.GetDeltaTime();
+    angle_ += glm::pi<float>() * 0.15f * (float) frame_.GetDeltaTime();
+    light_angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
 
     // 光源の位置
-    const glm::vec3 light_position = glm::vec3(1.2f, 1.2f, 2.0f);
+    const glm::vec3 light_position = glm::vec3(glm::sin(light_angle_) * 2, glm::sin(light_angle_) * 4.f, glm::cos(light_angle_) * 2.0f);
     // カメラの位置
     const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f);
 
@@ -47,7 +48,6 @@ void LightingExampleActivity::OnFrame() {
     if (up_lighting_target_ && up_lighting_target_shader_uniform_) {
         glm::mat4 model_mat = glm::mat4(1);
         model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
-        model_mat = glm::rotate(model_mat, angle_ / 3, glm::vec3(0, 1, 0));
 
         up_lighting_target_shader_uniform_->SetViewMat(view_mat);
         up_lighting_target_shader_uniform_->SetModelMat(model_mat);
