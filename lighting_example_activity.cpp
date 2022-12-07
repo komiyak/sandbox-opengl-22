@@ -22,10 +22,12 @@ void LightingExampleActivity::OnFrame() {
 
     // 光源の位置
     const glm::vec3 light_position = glm::vec3(1.2f, 1.2f, 2.0f);
+    // カメラの位置
+    const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f);
 
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
-            glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f),
+            view_position,
             glm::vec3(0.f, 0.f, 0.f),
             glm::vec3(0.f, 1.f, 0.f));
 
@@ -52,6 +54,7 @@ void LightingExampleActivity::OnFrame() {
         up_lighting_target_shader_uniform_->SetObjectColor(glm::vec3(1.0f, 0.5f, 0.31f));
         up_lighting_target_shader_uniform_->SetLightColor(glm::vec3(1.0f));
         up_lighting_target_shader_uniform_->SetLightPosition(light_position);
+        up_lighting_target_shader_uniform_->SetViewPosition(view_position);
         up_lighting_target_->Render();
 
 
@@ -105,7 +108,8 @@ void LightingExampleActivity::OnStart() {
             "model_mat",
             "objectColor",
             "lightColor",
-            "lightPosition"};
+            "lightPosition",
+            "viewPosition"};
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
             "shader/sample_lighting_cube.vert",
@@ -129,7 +133,8 @@ void LightingExampleActivity::OnStart() {
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("objectColor"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightPosition")};
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightPosition"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("viewPosition")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(

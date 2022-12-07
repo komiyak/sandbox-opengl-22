@@ -14,13 +14,15 @@ public:
             GLint uniform_model_mat,
             GLint uniform_object_color,
             GLint uniform_light_color,
-            GLint uniform_light_position) :
+            GLint uniform_light_position,
+            GLint uniform_view_position) :
             uniform_projection_mat_(uniform_projection_mat),
             uniform_view_mat_(uniform_view_mat),
             uniform_model_mat_(uniform_model_mat),
             uniform_object_color_(uniform_object_color),
             uniform_light_color_(uniform_light_color),
-            uniform_light_position_(uniform_light_position) {}
+            uniform_light_position_(uniform_light_position),
+            uniform_view_position_(uniform_view_position) {}
 
     void Transfer() const override;
 
@@ -48,6 +50,10 @@ public:
         light_position_ = light_position;
     }
 
+    void SetViewPosition(const glm::vec3 &view_position) {
+        view_position_ = view_position;
+    }
+
 private:
     GLint uniform_projection_mat_{-1};
     GLint uniform_view_mat_{-1};
@@ -55,13 +61,15 @@ private:
     GLint uniform_object_color_{-1};
     GLint uniform_light_color_{-1};
     GLint uniform_light_position_{-1};
+    GLint uniform_view_position_{-1};
 
     glm::mat4 projection_mat_{glm::mat4(1.f)};
     glm::mat4 view_mat_{glm::mat4(1.f)};
     glm::mat4 model_mat_{glm::mat4(1.f)};
     glm::vec3 object_color_{glm::vec3(1)};
     glm::vec3 light_color_{glm::vec3(1)};
-    glm::vec3 light_position_{glm::vec3(1)};
+    glm::vec3 light_position_{glm::vec3(0)};
+    glm::vec3 view_position_{glm::vec3(0)};
 };
 
 
