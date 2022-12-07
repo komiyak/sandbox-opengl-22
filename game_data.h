@@ -52,7 +52,7 @@ public:
 
     // 頂点 3D Cube
     // GL_TRIANGLES
-    [[maybe_unused]] constexpr static float kCube[] = {
+    [[maybe_unused]] constexpr static float kCubeVertices[] = {
             // x, y, z
             -0.5f, -0.5f, -0.5f,
             0.5f, -0.5f, -0.5f,

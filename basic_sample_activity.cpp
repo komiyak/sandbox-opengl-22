@@ -210,8 +210,8 @@ void BasicSampleActivity::OnStart() {
             4);
 
     up_cube_->Initialize(
-            sizeof(GameData::kCube),
-            (void *) GameData::kCube,
+            sizeof(GameData::kCubeVertices),
+            (void *) GameData::kCubeVertices,
             PositionVertexSpecification{
                     up_grid_shader_->GetAttribVariableLocation("position")
             },

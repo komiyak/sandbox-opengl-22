@@ -133,8 +133,8 @@ void LightingExampleActivity::OnStart() {
 
     up_lighting_target_ = new VertexRenderObject();
     up_lighting_target_->Initialize(
-            sizeof(GameData::kCube),
-            (void *) GameData::kCube,
+            sizeof(GameData::kCubeVertices),
+            (void *) GameData::kCubeVertices,
             PositionVertexSpecification{
                     up_sample_lighting_cube_shader_->GetAttribVariableLocation("position")
             },
