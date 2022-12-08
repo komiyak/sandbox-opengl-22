@@ -112,8 +112,8 @@ void LightingExampleActivity::OnStart() {
             "viewPosition"};
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
-            "shader/sample_lighting_cube.vert",
-            "shader/sample_lighting_cube.frag",
+            "shader/practice_lighting_phong_shading.vert",
+            "shader/practice_lighting_phong_shading.frag",
             attrib_variable_locations,
             std::size(attrib_variable_locations),
             uniform_variable_locations,
