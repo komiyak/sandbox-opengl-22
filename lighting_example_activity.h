@@ -10,7 +10,7 @@ class VertexRenderObject;
 
 class BasicShaderUniform;
 
-class SampleLightingCubeShaderUniform;
+class PracticeLightingPhongShadingShaderUniform;
 
 class LightingExampleActivity : public Application::Activity {
 public:
@@ -43,7 +43,7 @@ private:
 
     BasicShaderUniform *up_grid_shader_uniform_{};
     BasicShaderUniform *up_light_source_shader_uniform_{};
-    SampleLightingCubeShaderUniform *up_lighting_target_shader_uniform_{};
+    PracticeLightingPhongShadingShaderUniform *up_lighting_target_shader_uniform_{};
 };
 
 

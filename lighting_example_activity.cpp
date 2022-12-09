@@ -7,7 +7,7 @@
 #include "shader_data.h"
 #include "vertex_render_object.h"
 #include "basic_shader_uniform.h"
-#include "sample_lighting_cube_shader_uniform.h"
+#include "practice_lighting_phong_shading_shader_uniform.h"
 #include "position_vertex_specification.h"
 #include "position_with_normal_vector_vertex_specification.h"
 #include "color_vertex_specification.h"
@@ -22,7 +22,8 @@ void LightingExampleActivity::OnFrame() {
     light_angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
 
     // 光源の位置
-    const glm::vec3 light_position = glm::vec3(glm::sin(light_angle_) * 2, glm::sin(light_angle_) * 4.f, glm::cos(light_angle_) * 2.0f);
+    const glm::vec3 light_position =
+            glm::vec3(glm::sin(light_angle_) * 2, glm::sin(light_angle_) * 4.f, glm::cos(light_angle_) * 2.0f);
     // カメラの位置
     const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f);
 
@@ -55,6 +56,10 @@ void LightingExampleActivity::OnFrame() {
         up_lighting_target_shader_uniform_->SetLightColor(glm::vec3(1.0f));
         up_lighting_target_shader_uniform_->SetLightPosition(light_position);
         up_lighting_target_shader_uniform_->SetViewPosition(view_position);
+        up_lighting_target_shader_uniform_->SetMaterialAmbient(glm::vec3(1.0, 0.5, 0.31));
+        up_lighting_target_shader_uniform_->SetMaterialDiffuse(glm::vec3(1.0, 0.5, 0.31));
+        up_lighting_target_shader_uniform_->SetMaterialSpecular(glm::vec3(0.5, 0.5, 0.5));
+        up_lighting_target_shader_uniform_->SetMaterialShininess(32.0f);
         up_lighting_target_->Render();
 
 
@@ -109,7 +114,11 @@ void LightingExampleActivity::OnStart() {
             "objectColor",
             "lightColor",
             "lightPosition",
-            "viewPosition"};
+            "viewPosition",
+            "material.ambient",
+            "material.diffuse",
+            "material.specular",
+            "material.shininess"};
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
             "shader/practice_lighting_phong_shading.vert",
@@ -127,14 +136,18 @@ void LightingExampleActivity::OnStart() {
             up_white_vertex_shader_->GetUniformVariableLocation("projection_mat"),
             up_white_vertex_shader_->GetUniformVariableLocation("view_mat"),
             up_white_vertex_shader_->GetUniformVariableLocation("model_mat")};
-    up_lighting_target_shader_uniform_ = new SampleLightingCubeShaderUniform{
+    up_lighting_target_shader_uniform_ = new PracticeLightingPhongShadingShaderUniform{
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("projection_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("objectColor"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightPosition"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("viewPosition")};
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("viewPosition"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.ambient"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.diffuse"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.specular"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.shininess")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(

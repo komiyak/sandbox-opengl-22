@@ -39,7 +39,7 @@ add_executable(
         texture_shader_uniform.cpp
         texture_2d_shader_uniform.cpp
         font_shader_uniform.cpp
-        sample_lighting_cube_shader_uniform.cpp
+        practice_lighting_phong_shading_shader_uniform.cpp
         bitmap_font_render.cpp
         frame.cpp
         png_load.cpp
