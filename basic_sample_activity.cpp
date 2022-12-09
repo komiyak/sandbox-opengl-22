@@ -2,12 +2,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include "basic_sample_activity.h"
 #include "opengl_debug.h"
-#include "frame.h"
 #include "vertex_render_object.h"
 #include "shader.h"
 #include "position_vertex_specification.h"
@@ -18,7 +15,6 @@
 #include "png_load.h"
 #include "bitmap_font_render.h"
 #include "game_data.h"
-#include "shader_data.h"
 
 void BasicSampleActivity::OnStart() {
     // 頂点
@@ -41,38 +37,22 @@ void BasicSampleActivity::OnStart() {
     up_grid_shader_ = new Shader();
     up_grid_shader_->BuildFromFile(
             "shader/white_vertex.vert",
-            "shader/white_vertex.frag",
-            shader_data::kAttribVariableLocationsOfWhiteVertexShader,
-            shader_data::kAttribVariableLocationsOfWhiteVertexShaderSize,
-            shader_data::kUniformVariableLocationsOfWhiteVertexShader,
-            shader_data::kUniformVariableLocationsOfWhiteVertexShaderSize);
+            "shader/white_vertex.frag");
 
     up_shader_ = new Shader();
     up_shader_->BuildFromFile(
             "shader/vertex_color.vert",
-            "shader/vertex_color.frag",
-            shader_data::kAttribVariableLocationsOfVertexColorShader,
-            shader_data::kAttribVariableLocationsOfVertexColorShaderSize,
-            shader_data::kUniformVariableLocationsOfVertexColorShader,
-            shader_data::kUniformVariableLocationsOfVertexColorShaderSize);
+            "shader/vertex_color.frag");
 
     up_texture_shader_ = new Shader();
     up_texture_shader_->BuildFromFile(
             "shader/texture.vert",
-            "shader/texture.frag",
-            shader_data::kAttribVariableLocationsOfTextureShader,
-            shader_data::kAttribVariableLocationsOfTextureShaderSize,
-            shader_data::kUniformVariableLocationsOfTextureShader,
-            shader_data::kUniformVariableLocationsOfTextureShaderSize);
+            "shader/texture.frag");
 
     up_texture_2d_shader_ = new Shader();
     up_texture_2d_shader_->BuildFromFile(
             "shader/texture_2d.vert",
-            "shader/texture_2d.frag",
-            shader_data::kAttribVariableLocationsOfTexture2dShader,
-            shader_data::kAttribVariableLocationsOfTexture2dShaderSize,
-            shader_data::kUniformVariableLocationsOfTexture2dShader,
-            shader_data::kUniformVariableLocationsOfTexture2dShaderSize);
+            "shader/texture_2d.frag");
 
 
     glGenTextures(1, &texture_0_);

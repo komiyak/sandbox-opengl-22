@@ -4,7 +4,6 @@
 #include "lighting_example_activity.h"
 #include "game_data.h"
 #include "shader.h"
-#include "shader_data.h"
 #include "vertex_render_object.h"
 #include "basic_shader_uniform.h"
 #include "practice_lighting_phong_shading_shader_uniform.h"
@@ -89,44 +88,17 @@ void LightingExampleActivity::OnStart() {
     up_white_vertex_shader_ = new Shader();
     up_white_vertex_shader_->BuildFromFile(
             "shader/white_vertex.vert",
-            "shader/white_vertex.frag",
-            shader_data::kAttribVariableLocationsOfWhiteVertexShader,
-            shader_data::kAttribVariableLocationsOfWhiteVertexShaderSize,
-            shader_data::kUniformVariableLocationsOfWhiteVertexShader,
-            shader_data::kUniformVariableLocationsOfWhiteVertexShaderSize);
+            "shader/white_vertex.frag");
 
     up_vertex_color_shader_ = new Shader();
     up_vertex_color_shader_->BuildFromFile(
             "shader/vertex_color.vert",
-            "shader/vertex_color.frag",
-            shader_data::kAttribVariableLocationsOfVertexColorShader,
-            shader_data::kAttribVariableLocationsOfVertexColorShaderSize,
-            shader_data::kUniformVariableLocationsOfVertexColorShader,
-            shader_data::kUniformVariableLocationsOfVertexColorShaderSize);
+            "shader/vertex_color.frag");
 
-    const char *const attrib_variable_locations[] = {
-            "position",
-            "normal"};
-    const char *const uniform_variable_locations[] = {
-            "projection_mat",
-            "view_mat",
-            "model_mat",
-            "objectColor",
-            "lightColor",
-            "lightPosition",
-            "viewPosition",
-            "material.ambient",
-            "material.diffuse",
-            "material.specular",
-            "material.shininess"};
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
             "shader/practice_lighting_phong_shading.vert",
-            "shader/practice_lighting_phong_shading.frag",
-            attrib_variable_locations,
-            std::size(attrib_variable_locations),
-            uniform_variable_locations,
-            std::size(uniform_variable_locations));
+            "shader/practice_lighting_phong_shading.frag");
 
     up_grid_shader_uniform_ = new BasicShaderUniform{
             up_vertex_color_shader_->GetUniformVariableLocation("projection_mat"),

@@ -6,18 +6,13 @@
 #include "bitmap_font_render.h"
 #include "basic_sample_activity.h"
 #include "lighting_example_activity.h"
-#include "shader_data.h"
 
 void MainActivity::OnStart() {
 
     up_font_shader_ = new Shader();
     up_font_shader_->BuildFromFile(
             "shader/font.vert",
-            "shader/font.frag",
-            shader_data::kAttribVariableLocationsOfFontShader,
-            shader_data::kAttribVariableLocationsOfFontShaderSize,
-            shader_data::kUniformVariableLocationsOfFontShader,
-            shader_data::kUniformVariableLocationsOfFontShaderSize);
+            "shader/font.frag");
 
     // bitmap font texture (texture unit = 1)
     glGenTextures(1, &texture_0_);
