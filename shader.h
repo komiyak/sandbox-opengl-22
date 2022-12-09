@@ -20,8 +20,10 @@ public:
 
     void Finalize() override;
 
+    // Get the location of attribute variable in the shader.
     [[maybe_unused]] GLint GetAttribVariableLocation(const char *name);
 
+    // Get the location of uniform variable in the shader.
     [[maybe_unused]] GLint GetUniformVariableLocation(const char *name);
 
 private:
