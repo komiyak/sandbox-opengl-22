@@ -2,7 +2,6 @@
 #define SANDBOX_OPENGL_22_SHADER_H_
 
 #include <glad/glad.h>
-#include <map>
 #include <string>
 
 #include "base_object.h"
@@ -30,12 +29,14 @@ private:
 
     static GLuint BuildShader(GLenum shader_type, const GLchar *shader_source);
 
+    // glUniformLocation() を実行
     static GLint GetUniformVariableLocationFromProgramObject(
             GLuint program_object,
             const char *name,
             const char *vertex_shader_filepath,
             const char *fragment_shader_filepath);
 
+    // glAttribLocation() を実行
     static GLint GetAttribVariableLocationFromProgramObject(
             GLuint program_object,
             const char *name,
