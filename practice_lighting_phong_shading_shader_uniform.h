@@ -12,25 +12,29 @@ public:
             GLint uniform_projection_mat,
             GLint uniform_view_mat,
             GLint uniform_model_mat,
-            GLint uniform_object_color,
-            GLint uniform_light_color,
             GLint uniform_light_position,
+            GLint uniform_light_ambient,
+            GLint uniform_light_diffuse,
+            GLint uniform_light_specular,
             GLint uniform_view_position,
             GLint uniform_material_ambient,
             GLint uniform_material_diffuse,
             GLint uniform_material_specular,
-            GLint uniform_material_shininess) :
-            uniform_projection_mat_(uniform_projection_mat),
-            uniform_view_mat_(uniform_view_mat),
-            uniform_model_mat_(uniform_model_mat),
-            uniform_object_color_(uniform_object_color),
-            uniform_light_color_(uniform_light_color),
-            uniform_light_position_(uniform_light_position),
-            uniform_view_position_(uniform_view_position),
-            uniform_material_ambient_(uniform_material_ambient),
-            uniform_material_diffuse_(uniform_material_diffuse),
-            uniform_material_specular_(uniform_material_specular),
-            uniform_material_shininess_(uniform_material_shininess) {}
+            GLint uniform_material_shininess)
+            : uniform_projection_mat_(uniform_projection_mat),
+              uniform_view_mat_(uniform_view_mat),
+              uniform_model_mat_(uniform_model_mat),
+              uniform_light_position_(uniform_light_position),
+              uniform_light_ambient_(uniform_light_ambient),
+              uniform_light_diffuse_(uniform_light_diffuse),
+              uniform_light_specular_(uniform_light_specular),
+              uniform_view_position_(uniform_view_position),
+              uniform_material_ambient_(uniform_material_ambient),
+              uniform_material_diffuse_(uniform_material_diffuse),
+              uniform_material_specular_(uniform_material_specular),
+              uniform_material_shininess_(uniform_material_shininess) {}
+
+public:
 
     void Transfer() const override;
 
@@ -46,12 +50,16 @@ public:
         model_mat_ = model_mat;
     }
 
-    void SetObjectColor(const glm::vec3 &object_color) {
-        object_color_ = object_color;
+    void SetLightAmbient(const glm::vec3 &light_ambient) {
+        light_ambient_ = light_ambient;
     }
 
-    void SetLightColor(const glm::vec3 &light_color) {
-        light_color_ = light_color;
+    void SetLightDiffuse(const glm::vec3 &light_diffuse) {
+        light_diffuse_ = light_diffuse;
+    }
+
+    void SetLightSpecular(const glm::vec3 &light_specular) {
+        light_specular_ = light_specular;
     }
 
     void SetLightPosition(const glm::vec3 &light_position) {
@@ -82,9 +90,10 @@ private:
     GLint uniform_projection_mat_{-1};
     GLint uniform_view_mat_{-1};
     GLint uniform_model_mat_{-1};
-    GLint uniform_object_color_{-1};
-    GLint uniform_light_color_{-1};
     GLint uniform_light_position_{-1};
+    GLint uniform_light_ambient_{-1};
+    GLint uniform_light_diffuse_{-1};
+    GLint uniform_light_specular_{-1};
     GLint uniform_view_position_{-1};
     GLint uniform_material_ambient_{-1};
     GLint uniform_material_diffuse_{-1};
@@ -94,15 +103,15 @@ private:
     glm::mat4 projection_mat_{glm::mat4(1.f)};
     glm::mat4 view_mat_{glm::mat4(1.f)};
     glm::mat4 model_mat_{glm::mat4(1.f)};
-    glm::vec3 object_color_{glm::vec3(1)};
-    glm::vec3 light_color_{glm::vec3(1)};
     glm::vec3 light_position_{glm::vec3(0)};
+    glm::vec3 light_ambient_{glm::vec3(0)};
+    glm::vec3 light_diffuse_{glm::vec3(0)};
+    glm::vec3 light_specular_{glm::vec3(0)};
     glm::vec3 view_position_{glm::vec3(0)};
     glm::vec3 material_ambient_{glm::vec3(0)};
     glm::vec3 material_diffuse_{glm::vec3(0)};
     glm::vec3 material_specular_{glm::vec3(0)};
     float material_shininess_{0};
 };
-
 
 #endif //SANDBOX_OPENGL_22_PRACTICE_LIGHTING_PHONG_SHADING_SHADER_UNIFORM_H_

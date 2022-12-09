@@ -19,10 +19,13 @@ void LightingExampleActivity::OnFrame() {
 
     angle_ += glm::pi<float>() * 0.15f * (float) frame_.GetDeltaTime();
     light_angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
+    light_strength_ = 1;
 
     // 光源の位置
-    const glm::vec3 light_position =
-            glm::vec3(glm::sin(light_angle_) * 2, glm::sin(light_angle_) * 4.f, glm::cos(light_angle_) * 2.0f);
+    const glm::vec3 light_position = glm::vec3(
+            glm::sin(light_angle_) * 2,
+            glm::sin(light_angle_) * 4.f,
+            glm::cos(light_angle_) * 2.0f);
     // カメラの位置
     const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f);
 
@@ -49,10 +52,13 @@ void LightingExampleActivity::OnFrame() {
         glm::mat4 model_mat = glm::mat4(1);
         model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
 
+        float light_strength = glm::sin(light_strength_) * 0.5f + 0.5f;
+
         up_lighting_target_shader_uniform_->SetViewMat(view_mat);
         up_lighting_target_shader_uniform_->SetModelMat(model_mat);
-        up_lighting_target_shader_uniform_->SetObjectColor(glm::vec3(1.0f, 0.5f, 0.31f));
-        up_lighting_target_shader_uniform_->SetLightColor(glm::vec3(1.0f));
+        up_lighting_target_shader_uniform_->SetLightAmbient(glm::vec3(0.25f * light_strength));
+        up_lighting_target_shader_uniform_->SetLightDiffuse(glm::vec3(0.8f * light_strength));
+        up_lighting_target_shader_uniform_->SetLightSpecular(glm::vec3(1.0f * light_strength));
         up_lighting_target_shader_uniform_->SetLightPosition(light_position);
         up_lighting_target_shader_uniform_->SetViewPosition(view_position);
         up_lighting_target_shader_uniform_->SetMaterialAmbient(glm::vec3(1.0, 0.5, 0.31));
@@ -62,17 +68,29 @@ void LightingExampleActivity::OnFrame() {
         up_lighting_target_->Render();
 
 
-        // 位置を変えて
+        // 位置を変えて描画
         model_mat = glm::translate(glm::mat4(1), glm::vec3(3, 0.5, 3));
         up_lighting_target_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_target_shader_uniform_->SetMaterialAmbient(glm::vec3(0.212f, 0.127, 0.054));
+        up_lighting_target_shader_uniform_->SetMaterialDiffuse(glm::vec3(0.714f, 0.428f, 0.182f));
+        up_lighting_target_shader_uniform_->SetMaterialSpecular(glm::vec3(0.393f, 0.271f, 0.166f));
+        up_lighting_target_shader_uniform_->SetMaterialShininess(32.0f);
         up_lighting_target_->Render();
 
         model_mat = glm::translate(glm::mat4(1), glm::vec3(-4, 0.5, -4));
         up_lighting_target_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_target_shader_uniform_->SetMaterialAmbient(glm::vec3(0.0, 0.05, 0.0));
+        up_lighting_target_shader_uniform_->SetMaterialDiffuse(glm::vec3(0.4, 0.5, 0.4));
+        up_lighting_target_shader_uniform_->SetMaterialSpecular(glm::vec3(0.04, 0.7, 0.04));
+        up_lighting_target_shader_uniform_->SetMaterialShininess(256.0f);
         up_lighting_target_->Render();
 
         model_mat = glm::translate(glm::mat4(1), glm::vec3(4, 0.5, -7));
         up_lighting_target_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_target_shader_uniform_->SetMaterialAmbient(glm::vec3(0.0, 0.0, 0.0));
+        up_lighting_target_shader_uniform_->SetMaterialDiffuse(glm::vec3(0.5, 0.0, 0.0));
+        up_lighting_target_shader_uniform_->SetMaterialSpecular(glm::vec3(0.7, 0.6, 0.6));
+        up_lighting_target_shader_uniform_->SetMaterialShininess(16.0f);
         up_lighting_target_->Render();
     }
 }
@@ -112,9 +130,10 @@ void LightingExampleActivity::OnStart() {
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("projection_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("objectColor"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightColor"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("lightPosition"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.position"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.ambient"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.diffuse"),
+            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.specular"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("viewPosition"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.ambient"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.diffuse"),
