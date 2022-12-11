@@ -2,14 +2,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "lighting_example_activity.h"
+#include "opengl_debug.h"
 #include "game_data.h"
 #include "shader.h"
 #include "vertex_render_object.h"
 #include "basic_shader_uniform.h"
 #include "practice_lighting_phong_shading_shader_uniform.h"
+#include "practice_lighting_lighting_map_shader_uniform.h"
 #include "position_vertex_specification.h"
 #include "position_with_normal_vector_vertex_specification.h"
+#include "position_with_normal_and_texcoord_vertex_specification.h"
 #include "color_vertex_specification.h"
+#include "png_load.h"
 
 void LightingExampleActivity::OnFrame() {
     frame_.StartFrame();
@@ -17,7 +21,7 @@ void LightingExampleActivity::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle_ += glm::pi<float>() * 0.15f * (float) frame_.GetDeltaTime();
+    angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
     light_angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
     light_strength_ = 1;
 
@@ -27,7 +31,7 @@ void LightingExampleActivity::OnFrame() {
             glm::sin(light_angle_) * 4.f,
             glm::cos(light_angle_) * 2.0f);
     // カメラの位置
-    const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 8.0f, 2.f, glm::sin(angle_) * 12.0f);
+    const glm::vec3 view_position = glm::vec3(glm::cos(angle_) * 4.0f, 2.f, glm::sin(angle_) * 6.0f);
 
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
@@ -50,7 +54,7 @@ void LightingExampleActivity::OnFrame() {
     }
     if (up_lighting_target_ && up_lighting_target_shader_uniform_) {
         glm::mat4 model_mat = glm::mat4(1);
-        model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
+        model_mat = glm::translate(model_mat, glm::vec3(-3, 0.5, 3));
 
         float light_strength = glm::sin(light_strength_) * 0.5f + 0.5f;
 
@@ -93,6 +97,23 @@ void LightingExampleActivity::OnFrame() {
         up_lighting_target_shader_uniform_->SetMaterialShininess(16.0f);
         up_lighting_target_->Render();
     }
+
+    if (up_lighting_map_cube_ && up_lighting_map_shader_uniform_) {
+        glm::mat4 model_mat = glm::mat4(1);
+        model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
+
+        up_lighting_map_shader_uniform_->SetViewMat(view_mat);
+        up_lighting_map_shader_uniform_->SetModelMat(model_mat);
+        up_lighting_map_shader_uniform_->SetLightAmbient(glm::vec3(0.25f));
+        up_lighting_map_shader_uniform_->SetLightDiffuse(glm::vec3(0.8f));
+        up_lighting_map_shader_uniform_->SetLightSpecular(glm::vec3(1.0f));
+        up_lighting_map_shader_uniform_->SetLightPosition(light_position);
+        up_lighting_map_shader_uniform_->SetViewPosition(view_position);
+        up_lighting_map_shader_uniform_->SetMaterialDiffuse(0);
+        up_lighting_map_shader_uniform_->SetMaterialSpecular(glm::vec3(0.5, 0.5, 0.5));
+        up_lighting_map_shader_uniform_->SetMaterialShininess(32.0f);
+        up_lighting_map_cube_->Render();
+    }
 }
 
 void LightingExampleActivity::OnKey(int glfw_key, int glfw_action) {
@@ -118,6 +139,11 @@ void LightingExampleActivity::OnStart() {
             "shader/practice_lighting_phong_shading.vert",
             "shader/practice_lighting_phong_shading.frag");
 
+    up_lighting_map_shader_ = new Shader();
+    up_lighting_map_shader_->BuildFromFile(
+            "shader/practice_lighting_lighting_map.vert",
+            "shader/practice_lighting_lighting_map.frag");
+
     up_grid_shader_uniform_ = new BasicShaderUniform{
             up_vertex_color_shader_->GetUniformVariableLocation("projection_mat"),
             up_vertex_color_shader_->GetUniformVariableLocation("view_mat"),
@@ -139,6 +165,18 @@ void LightingExampleActivity::OnStart() {
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.diffuse"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.specular"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.shininess")};
+    up_lighting_map_shader_uniform_ = new PracticeLightingLightingMapShaderUniform{
+            up_lighting_map_shader_->GetUniformVariableLocation("projection_mat"),
+            up_lighting_map_shader_->GetUniformVariableLocation("view_mat"),
+            up_lighting_map_shader_->GetUniformVariableLocation("model_mat"),
+            up_lighting_map_shader_->GetUniformVariableLocation("light.position"),
+            up_lighting_map_shader_->GetUniformVariableLocation("light.ambient"),
+            up_lighting_map_shader_->GetUniformVariableLocation("light.diffuse"),
+            up_lighting_map_shader_->GetUniformVariableLocation("light.specular"),
+            up_lighting_map_shader_->GetUniformVariableLocation("material.diffuse"),
+            up_lighting_map_shader_->GetUniformVariableLocation("material.specular"),
+            up_lighting_map_shader_->GetUniformVariableLocation("material.shininess"),
+            up_lighting_map_shader_->GetUniformVariableLocation("viewPosition")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(
@@ -180,25 +218,70 @@ void LightingExampleActivity::OnStart() {
             GL_TRIANGLES,
             36);
 
+    up_lighting_map_cube_ = new VertexRenderObject();
+    up_lighting_map_cube_->Initialize(
+            sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
+            (void *) GameData::kCubeWithNormalAndTexcoordVertices,
+            PositionWithNormalAndTexcoordVertexSpecification{
+                    up_lighting_map_shader_->GetAttribVariableLocation("position"),
+                    up_lighting_map_shader_->GetAttribVariableLocation("normal"),
+                    up_lighting_map_shader_->GetAttribVariableLocation("texcoord")
+            },
+            up_lighting_map_shader_,
+            up_lighting_map_shader_uniform_,
+            GL_STATIC_DRAW,
+            GL_TRIANGLES,
+            36);
+
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
     up_grid_shader_uniform_->SetProjectionMat(projection_mat);
     up_light_source_shader_uniform_->SetProjectionMat(projection_mat);
     up_lighting_target_shader_uniform_->SetProjectionMat(projection_mat);
+    up_lighting_map_shader_uniform_->SetProjectionMat(projection_mat);
+
+    glGenTextures(1, &texture_0_);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_0_);
+
+    PngLoad png_load{};
+    png_load.LoadFile("./texture/container2.png", PNG_FORMAT_RGBA);
+    glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGBA,
+            png_load.GetImageSize().width,
+            png_load.GetImageSize().height,
+            0,
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            png_load.GetData());
+    png_load.Finalize();
+    OPENGL_DEBUG_CHECK();
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 void LightingExampleActivity::OnDestroy() {
+    glDeleteTextures(1, &texture_0_);
+
     FINALIZE_AND_DELETE(up_white_vertex_shader_);
     FINALIZE_AND_DELETE(up_vertex_color_shader_);
     FINALIZE_AND_DELETE(up_sample_lighting_cube_shader_);
+    FINALIZE_AND_DELETE(up_lighting_map_shader_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_light_source_);
     FINALIZE_AND_DELETE(up_lighting_target_);
+    FINALIZE_AND_DELETE(up_lighting_map_cube_);
 
     SAFE_DELETE(up_grid_shader_uniform_);
     SAFE_DELETE(up_light_source_shader_uniform_);
     SAFE_DELETE(up_lighting_target_shader_uniform_);
+    SAFE_DELETE(up_lighting_map_shader_uniform_);
 }
 
 void LightingExampleActivity::OnFrameAfterSwap() {

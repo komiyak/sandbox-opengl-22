@@ -40,12 +40,14 @@ add_executable(
         texture_2d_shader_uniform.cpp
         font_shader_uniform.cpp
         practice_lighting_phong_shading_shader_uniform.cpp
+        practice_lighting_lighting_map_shader_uniform.cpp
         bitmap_font_render.cpp
         frame.cpp
         png_load.cpp
         game_math.cpp
         position_vertex_specification.cpp
         position_with_normal_vector_vertex_specification.cpp
+        position_with_normal_and_texcoord_vertex_specification.cpp
         color_vertex_specification.cpp
         texture_vertex_specification.cpp
         texture_2d_vertex_specification.cpp
