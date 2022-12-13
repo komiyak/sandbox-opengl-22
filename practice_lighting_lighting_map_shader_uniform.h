@@ -19,6 +19,7 @@ public:
             GLint uniform_material_diffuse,
             GLint uniform_material_specular,
             GLint uniform_material_shininess,
+            GLint uniform_emission,
             GLint uniform_view_position)
             : uniform_projection_mat_(uniform_projection_mat),
               uniform_view_mat_(uniform_view_mat),
@@ -30,6 +31,7 @@ public:
               uniform_material_diffuse_(uniform_material_diffuse),
               uniform_material_specular_(uniform_material_specular),
               uniform_material_shininess_(uniform_material_shininess),
+              uniform_emission_(uniform_emission),
               uniform_view_position_(uniform_view_position) {}
 
     void SetProjectionMat(const glm::mat4 &projection_mat) {
@@ -76,6 +78,10 @@ public:
         view_position_ = view_position;
     }
 
+    void SetEmission(GLint emission) {
+        emission_ = emission;
+    }
+
     void Transfer() const override;
 
 private:
@@ -89,6 +95,7 @@ private:
     GLint uniform_material_diffuse_{-1};
     GLint uniform_material_specular_{-1};
     GLint uniform_material_shininess_{-1};
+    GLint uniform_emission_{-1};
     GLint uniform_view_position_{-1};
 
     glm::mat4 projection_mat_{glm::mat4(1.f)};
@@ -100,6 +107,7 @@ private:
     glm::vec3 light_specular_{glm::vec3(0)};
     GLint material_diffuse_{};
     GLint material_specular_{};
+    GLint emission_{};
     float material_shininess_{0};
     glm::vec3 view_position_{glm::vec3(0)};
 };

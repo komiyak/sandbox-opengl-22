@@ -13,6 +13,7 @@ void PracticeLightingLightingMapShaderUniform::Transfer() const {
     glUniform3f(uniform_light_specular_, light_specular_.x, light_specular_.y, light_specular_.z);
     glUniform1i(uniform_material_diffuse_, material_diffuse_);
     glUniform1i(uniform_material_specular_, material_specular_);
+    glUniform1i(uniform_emission_, emission_);
     glUniform1f(uniform_material_shininess_, material_shininess_);
     glUniform3f(uniform_view_position_, view_position_.x, view_position_.y, view_position_.z);
     OPENGL_DEBUG_CHECK();

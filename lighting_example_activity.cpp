@@ -112,6 +112,7 @@ void LightingExampleActivity::OnFrame() {
         up_lighting_map_shader_uniform_->SetMaterialDiffuse(0); // texture unit 0
         up_lighting_map_shader_uniform_->SetMaterialSpecular(1); // texture unit 1
         up_lighting_map_shader_uniform_->SetMaterialShininess(32.0f);
+        up_lighting_map_shader_uniform_->SetEmission(2); // texture unit 2
         up_lighting_map_cube_->Render();
     }
 }
@@ -176,6 +177,7 @@ void LightingExampleActivity::OnStart() {
             up_lighting_map_shader_->GetUniformVariableLocation("material.diffuse"),
             up_lighting_map_shader_->GetUniformVariableLocation("material.specular"),
             up_lighting_map_shader_->GetUniformVariableLocation("material.shininess"),
+            up_lighting_map_shader_->GetUniformVariableLocation("material.emission"),
             up_lighting_map_shader_->GetUniformVariableLocation("viewPosition")};
 
     up_grid_ = new VertexRenderObject();
@@ -288,11 +290,37 @@ void LightingExampleActivity::OnStart() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+    glGenTextures(1, &texture_2_);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture_2_);
+
+    PngLoad png_load3{};
+    png_load3.LoadFile("./texture/container2_emission.png", PNG_FORMAT_RGBA);
+    glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGBA,
+            png_load3.GetImageSize().width,
+            png_load3.GetImageSize().height,
+            0,
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            png_load3.GetData());
+    png_load3.Finalize();
+    OPENGL_DEBUG_CHECK();
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 void LightingExampleActivity::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
+    glDeleteTextures(1, &texture_2_);
 
     FINALIZE_AND_DELETE(up_white_vertex_shader_);
     FINALIZE_AND_DELETE(up_vertex_color_shader_);

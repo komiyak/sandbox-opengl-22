@@ -38,6 +38,7 @@ private:
 
     GLuint texture_0_{};
     GLuint texture_1_{};
+    GLuint texture_2_{};
 
     Shader *up_white_vertex_shader_{};
     Shader *up_vertex_color_shader_{};
