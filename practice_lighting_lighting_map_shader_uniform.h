@@ -64,7 +64,7 @@ public:
         material_diffuse_ = material_diffuse;
     }
 
-    void SetMaterialSpecular(const glm::vec3 &material_specular) {
+    void SetMaterialSpecular(GLint material_specular) {
         material_specular_ = material_specular;
     }
 
@@ -99,7 +99,7 @@ private:
     glm::vec3 light_diffuse_{glm::vec3(0)};
     glm::vec3 light_specular_{glm::vec3(0)};
     GLint material_diffuse_{};
-    glm::vec3 material_specular_{glm::vec3(0)};
+    GLint material_specular_{};
     float material_shininess_{0};
     glm::vec3 view_position_{glm::vec3(0)};
 };
