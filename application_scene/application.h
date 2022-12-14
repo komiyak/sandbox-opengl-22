@@ -26,9 +26,9 @@ public:
     // この関数は、メインループが終了するまで終わりません
     void RunLoop();
 
+private:
     void PopScene();
 
-private:
     // Error handling for GLFW initialization.
     static void ErrorCallback(int error, const char *description);
 

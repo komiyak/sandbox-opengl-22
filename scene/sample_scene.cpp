@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "sample_scene.h"
-#include "../application/application.h"
+#include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../vertex_render_object.h"
 #include "../shader.h"
@@ -210,12 +210,10 @@ void SampleActivity::OnStart() {
 }
 
 void SampleActivity::OnFrame() {
-    frame_.StartFrame();
-
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle_ += glm::pi<float>() * 0.25f * (float) frame_.GetDeltaTime();
+    angle_ += glm::pi<float>() * 0.25f * (float) GetFrame().GetDeltaTime();
 
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
@@ -252,10 +250,6 @@ void SampleActivity::OnFrame() {
     up_cube_shader_uniform_->SetViewMat(view_mat);
     up_cube_shader_uniform_->SetModelMat(cube_mat);
     up_cube_->Render();
-}
-
-void SampleActivity::OnFrameAfterSwap() {
-    frame_.EndFrame();
 }
 
 void SampleActivity::OnDestroy() {

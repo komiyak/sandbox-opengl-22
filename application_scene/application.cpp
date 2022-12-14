@@ -95,6 +95,7 @@ void Application::RunLoop() {
 
     // Application loop の実行
     while (!glfwWindowShouldClose(up_glfw_window_) && !scenes_stack_.empty()) {
+        scenes_stack_.top()->OnBeforeFrame();
         scenes_stack_.top()->OnFrame();
 
         glfwSwapBuffers(up_glfw_window_);

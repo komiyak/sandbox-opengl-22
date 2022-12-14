@@ -1,7 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_KEY_CALLBACK_SINGLETON_H_
 #define SANDBOX_OPENGL_22_KEY_CALLBACK_SINGLETON_H_
 
-#include "application/application.h"
+#include "application_scene/application.h"
 
 // キー入力を受け付ける singleton クラス
 class KeyCallbackSingleton {

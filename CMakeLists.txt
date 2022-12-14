@@ -42,7 +42,7 @@ add_executable(
         practice_lighting_phong_shading_shader_uniform.cpp
         practice_lighting_lighting_map_shader_uniform.cpp
         bitmap_font_render.cpp
-        frame.cpp
+        application_scene/frame.cpp
         png_load.cpp
         game_math.cpp
         position_vertex_specification.cpp
@@ -57,7 +57,7 @@ add_executable(
         scene/sample_scene.cpp
         scene/lighting_example_scene.cpp
         scene/starting_scene.cpp
-        application/application.cpp)
+        application_scene/application.cpp)
 
 target_link_libraries(
         sandbox_opengl_22

@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "lighting_example_scene.h"
-#include "../application/application.h"
+#include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../game_data.h"
 #include "../shader.h"
@@ -17,13 +17,11 @@
 #include "../png_load.h"
 
 void LightingExampleScene::OnFrame() {
-    frame_.StartFrame();
-
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
-    light_angle_ += glm::pi<float>() * 0.1f * (float) frame_.GetDeltaTime();
+    angle_ += glm::pi<float>() * 0.1f * (float) GetFrame().GetDeltaTime();
+    light_angle_ += glm::pi<float>() * 0.1f * (float) GetFrame().GetDeltaTime();
     light_strength_ = 1;
 
     // 光源の位置
@@ -337,8 +335,4 @@ void LightingExampleScene::OnDestroy() {
     SAFE_DELETE(up_light_source_shader_uniform_);
     SAFE_DELETE(up_lighting_target_shader_uniform_);
     SAFE_DELETE(up_lighting_map_shader_uniform_);
-}
-
-void LightingExampleScene::OnFrameAfterSwap() {
-    frame_.EndFrame();
 }

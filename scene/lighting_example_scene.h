@@ -3,8 +3,7 @@
 
 #include <glad/glad.h>
 
-#include "../frame.h"
-#include "../application/scene.h"
+#include "../application_scene/scene.h"
 
 class Shader;
 
@@ -22,8 +21,6 @@ public:
 
     void OnStart() override;
 
-    void OnFrameAfterSwap() override;
-
     void OnDestroy() override;
 
     void OnKey(int glfw_key, int glfw_action) override;
@@ -36,7 +33,6 @@ private:
     float angle_{};
     float light_angle_{};
     float light_strength_{};
-    Frame frame_{};
 
     GLuint texture_0_{};
     GLuint texture_1_{};

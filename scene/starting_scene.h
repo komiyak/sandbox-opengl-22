@@ -3,8 +3,7 @@
 
 #include <glad/glad.h>
 
-#include "../frame.h"
-#include "../application/scene.h"
+#include "../application_scene/scene.h"
 
 class Shader;
 
@@ -17,14 +16,11 @@ public:
 
     void OnFrame() override;
 
-    void OnFrameAfterSwap() override;
-
     void OnDestroy() override;
 
     void OnKey(int glfw_key, int glfw_action) override;
 
 private:
-    Frame frame_{};
     float count_{};
 
     GLuint texture_0_{};

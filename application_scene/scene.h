@@ -1,6 +1,8 @@
 #ifndef SANDBOX_OPENGL_22_SCENE_H_
 #define SANDBOX_OPENGL_22_SCENE_H_
 
+#include "frame.h"
+
 class ApplicationContext;
 
 // Application クラスから利用される任意の Scene の基底クラス
@@ -18,8 +20,15 @@ public:
     // ループのメイン処理のコールバック
     virtual void OnFrame() = 0;
 
+    // OnFrame の前に呼び出されるコールバック
+    void OnBeforeFrame() {
+        frame_.StartFrame();
+    };
+
     // Swapping buffers の後に呼び出されるコールバック
-    virtual void OnFrameAfterSwap() {};
+    void OnFrameAfterSwap() {
+        frame_.EndFrame();
+    };
 
     // ループ終了時に一度だけ実行されるコールバック
     virtual void OnDestroy() = 0;
@@ -40,6 +49,10 @@ public:
     }
 
 protected:
+    [[maybe_unused]] [[nodiscard]] const Frame &GetFrame() const {
+        return frame_;
+    }
+
     const ApplicationContext *p_application_context_{};
 
     // Application に終了を通知したいとき
@@ -48,6 +61,9 @@ protected:
     // Scene 終了時に次に起動する Scene があればそれを指定しておく
     // TODO: いつかメッセージ方式に変更したい。
     Scene *(*next_scene_)(){};
+
+private:
+    Frame frame_;
 };
 
 

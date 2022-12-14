@@ -3,8 +3,7 @@
 
 #include <glad/glad.h>
 
-#include "../frame.h"
-#include "../application/scene.h"
+#include "../application_scene/scene.h"
 
 class BasicShaderUniform;
 
@@ -22,8 +21,6 @@ class SampleActivity : public Scene {
 public:
     void OnFrame() override;
 
-    void OnFrameAfterSwap() override;
-
     void OnStart() override;
 
     void OnKey(int glfw_key, int glfw_action) override;
@@ -35,8 +32,6 @@ public:
     }
 
 private:
-    Frame frame_{};
-
     float angle_{0.f};
 
     GLuint texture_0_{};

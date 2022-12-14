@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 
 #include "starting_scene.h"
-#include "../application/application.h"
+#include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../shader.h"
 #include "../png_load.h"
@@ -63,13 +63,11 @@ void StartingScene::OnStart() {
 #pragma ide diagnostic ignored "NullDereference"
 
 void StartingScene::OnFrame() {
-    frame_.StartFrame();
-
     const float min = 0.25;
     const float max = 0.4;
     const float speed = 0.7;
 
-    count_ += frame_.GetDeltaTimeF() * speed;
+    count_ += GetFrame().GetDeltaTimeF() * speed;
     const float color = (std::sin(count_) + 1.0f) * 0.5f * (max - min) + min;
 
     glClearColor(color, color, color, 1.0f);
@@ -118,8 +116,4 @@ void StartingScene::OnKey(int glfw_key, int glfw_action) {
         should_destroy_ = true;
         next_scene_ = LightingExampleScene::CreateActivityFactory;
     }
-}
-
-void StartingScene::OnFrameAfterSwap() {
-    frame_.EndFrame();
 }
