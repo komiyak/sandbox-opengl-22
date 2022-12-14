@@ -66,5 +66,4 @@ private:
     Frame frame_;
 };
 
-
 #endif //SANDBOX_OPENGL_22_SCENE_H_
