@@ -1,14 +1,17 @@
-#ifndef SANDBOX_OPENGL_22_MAIN_ACTIVITY_H_
-#define SANDBOX_OPENGL_22_MAIN_ACTIVITY_H_
+#ifndef SANDBOX_OPENGL_22_STARTING_SCENE_H_
+#define SANDBOX_OPENGL_22_STARTING_SCENE_H_
 
-#include "application.h"
-#include "frame.h"
+#include <glad/glad.h>
+
+#include "../frame.h"
+#include "../application/scene.h"
 
 class Shader;
 
 class BitmapFontRender;
 
-class MainActivity : public Application::Activity {
+// 起動時のナビゲーション等を提供するシーン
+class StartingScene : public Scene {
 public:
     void OnStart() override;
 
@@ -29,4 +32,4 @@ private:
     BitmapFontRender *up_bitmap_font_render_{};
 };
 
-#endif //SANDBOX_OPENGL_22_MAIN_ACTIVITY_H_
+#endif //SANDBOX_OPENGL_22_STARTING_SCENE_H_

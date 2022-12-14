@@ -1,13 +1,15 @@
 #include <glm/glm.hpp>
-#include "main_activity.h"
-#include "opengl_debug.h"
-#include "shader.h"
-#include "png_load.h"
-#include "bitmap_font_render.h"
-#include "basic_sample_activity.h"
-#include "lighting_example_activity.h"
 
-void MainActivity::OnStart() {
+#include "starting_scene.h"
+#include "../application/application.h"
+#include "../opengl_debug.h"
+#include "../shader.h"
+#include "../png_load.h"
+#include "../bitmap_font_render.h"
+#include "sample_scene.h"
+#include "lighting_example_scene.h"
+
+void StartingScene::OnStart() {
 
     up_font_shader_ = new Shader();
     up_font_shader_->BuildFromFile(
@@ -35,8 +37,8 @@ void MainActivity::OnStart() {
 
     // フォント準備
     up_bitmap_font_render_ = new BitmapFontRender(
-            p_context_->GetWindowScreenWidth(),
-            p_context_->GetWindowScreenHeight(),
+            p_application_context_->GetWindowScreenWidth(),
+            p_application_context_->GetWindowScreenHeight(),
             png_load.GetImageSize().width,
             png_load.GetImageSize().height,
             4,
@@ -60,7 +62,7 @@ void MainActivity::OnStart() {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NullDereference"
 
-void MainActivity::OnFrame() {
+void StartingScene::OnFrame() {
     frame_.StartFrame();
 
     const float min = 0.25;
@@ -86,22 +88,22 @@ void MainActivity::OnFrame() {
             "[ESC] Exit",
             40, 200, 16);
     up_bitmap_font_render_->RenderWhiteAsciiText(
-            "[1] Move to 'BasicSampleActivity'",
+            "[1] Move to 'SampleActivity'",
             40, 240, 16);
     up_bitmap_font_render_->RenderWhiteAsciiText(
-            "[2] Move to 'LightingExampleActivity'",
+            "[2] Move to 'LightingExampleScene'",
             40, 280, 16);
 }
 
 #pragma clang diagnostic pop
 
-void MainActivity::OnDestroy() {
+void StartingScene::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     FINALIZE_AND_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }
 
-void MainActivity::OnKey(int glfw_key, int glfw_action) {
+void StartingScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
@@ -110,14 +112,14 @@ void MainActivity::OnKey(int glfw_key, int glfw_action) {
     // 任意の Activity を起動する
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_activity_ = BasicSampleActivity::CreateActivityFactory;
+        next_scene_ = SampleActivity::CreateActivityFactory;
     }
     if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_activity_ = LightingExampleActivity::CreateActivityFactory;
+        next_scene_ = LightingExampleScene::CreateActivityFactory;
     }
 }
 
-void MainActivity::OnFrameAfterSwap() {
+void StartingScene::OnFrameAfterSwap() {
     frame_.EndFrame();
 }

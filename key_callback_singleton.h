@@ -1,7 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_KEY_CALLBACK_SINGLETON_H_
 #define SANDBOX_OPENGL_22_KEY_CALLBACK_SINGLETON_H_
 
-#include "application.h"
+#include "application/application.h"
 
 // キー入力を受け付ける singleton クラス
 class KeyCallbackSingleton {
@@ -13,11 +13,11 @@ public:
     // GetFps the singleton instance.
     static KeyCallbackSingleton *GetInstance();
 
-    void SetActivity(Application::Activity *p_activity) {
+    void SetActivity(Scene *p_activity) {
         p_activity_ = p_activity;
     }
 
-    [[nodiscard]] Application::Activity *GetActivity() const {
+    [[nodiscard]] Scene *GetActivity() const {
         return p_activity_;
     }
 
@@ -26,7 +26,7 @@ protected:
 
     static KeyCallbackSingleton *singleton_;
 
-    Application::Activity *p_activity_;
+    Scene *p_activity_;
 };
 
 #endif //SANDBOX_OPENGL_22_KEY_CALLBACK_SINGLETON_H_

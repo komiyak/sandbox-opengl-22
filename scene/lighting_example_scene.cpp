@@ -1,21 +1,22 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "lighting_example_activity.h"
-#include "opengl_debug.h"
-#include "game_data.h"
-#include "shader.h"
-#include "vertex_render_object.h"
-#include "basic_shader_uniform.h"
-#include "practice_lighting_phong_shading_shader_uniform.h"
-#include "practice_lighting_lighting_map_shader_uniform.h"
-#include "position_vertex_specification.h"
-#include "position_with_normal_vector_vertex_specification.h"
-#include "position_with_normal_and_texcoord_vertex_specification.h"
-#include "color_vertex_specification.h"
-#include "png_load.h"
+#include "lighting_example_scene.h"
+#include "../application/application.h"
+#include "../opengl_debug.h"
+#include "../game_data.h"
+#include "../shader.h"
+#include "../vertex_render_object.h"
+#include "../basic_shader_uniform.h"
+#include "../practice_lighting_phong_shading_shader_uniform.h"
+#include "../practice_lighting_lighting_map_shader_uniform.h"
+#include "../position_vertex_specification.h"
+#include "../position_with_normal_vector_vertex_specification.h"
+#include "../position_with_normal_and_texcoord_vertex_specification.h"
+#include "../color_vertex_specification.h"
+#include "../png_load.h"
 
-void LightingExampleActivity::OnFrame() {
+void LightingExampleScene::OnFrame() {
     frame_.StartFrame();
 
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -117,14 +118,14 @@ void LightingExampleActivity::OnFrame() {
     }
 }
 
-void LightingExampleActivity::OnKey(int glfw_key, int glfw_action) {
+void LightingExampleScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
     }
 }
 
-void LightingExampleActivity::OnStart() {
+void LightingExampleScene::OnStart() {
     up_white_vertex_shader_ = new Shader();
     up_white_vertex_shader_->BuildFromFile(
             "shader/white_vertex.vert",
@@ -317,7 +318,7 @@ void LightingExampleActivity::OnStart() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-void LightingExampleActivity::OnDestroy() {
+void LightingExampleScene::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
     glDeleteTextures(1, &texture_2_);
@@ -338,6 +339,6 @@ void LightingExampleActivity::OnDestroy() {
     SAFE_DELETE(up_lighting_map_shader_uniform_);
 }
 
-void LightingExampleActivity::OnFrameAfterSwap() {
+void LightingExampleScene::OnFrameAfterSwap() {
     frame_.EndFrame();
 }

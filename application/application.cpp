@@ -1,12 +1,13 @@
 #include <cstdio>
 
 #include "application.h"
-#include "debug.h"
-#include "opengl_debug.h"
-#include "key_callback_singleton.h"
+#include "../debug.h"
+#include "../opengl_debug.h"
+#include "../key_callback_singleton.h"
+#include "scene.h"
 
-void Application::Initialize(Application::Activity *(*p_activity_factory_method)()) {
-    DEBUG_ASSERT_MESSAGE(p_activity_factory_method, "p_activity_factory_method is required.");
+void Application::Initialize(Scene *(*p_scene_method)()) {
+    DEBUG_ASSERT_MESSAGE(p_scene_method, "p_scene_method is required.");
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -22,8 +23,8 @@ void Application::Initialize(Application::Activity *(*p_activity_factory_method)
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
 
     up_glfw_window_ = glfwCreateWindow(
-            context_.GetWindowScreenWidth(),
-            context_.GetWindowScreenHeight(),
+            application_context_.GetWindowScreenWidth(),
+            application_context_.GetWindowScreenHeight(),
             "The sandbox of OpenGL",
             nullptr,
             nullptr);
@@ -68,17 +69,17 @@ void Application::Initialize(Application::Activity *(*p_activity_factory_method)
     glEnable(GL_DEPTH_TEST);
 
     // 初回起動の Activity を登録する
-    Activity *up_activity = p_activity_factory_method();
-    DEBUG_ASSERT(up_activity);
-    activities_stack_.push(up_activity);
-    KeyCallbackSingleton::GetInstance()->SetActivity(up_activity);
-    up_activity->OnAttach(&context_);
+    Scene *up_scene = p_scene_method();
+    DEBUG_ASSERT(up_scene);
+    scenes_stack_.push(up_scene);
+    KeyCallbackSingleton::GetInstance()->SetActivity(up_scene);
+    up_scene->OnAttach(&application_context_);
 }
 
 void Application::Finalize() {
     // 終了時には必ず stack を空っぽにする
-    while (!activities_stack_.empty()) {
-        PopActivity();
+    while (!scenes_stack_.empty()) {
+        PopScene();
     }
 
     glfwDestroyWindow(up_glfw_window_);
@@ -89,32 +90,32 @@ void Application::Finalize() {
 void Application::RunLoop() {
     DEBUG_ASSERT(up_glfw_window_);
 
-    // 最初の activity を開始する
-    activities_stack_.top()->OnStart();
+    // 最初の scene を開始する
+    scenes_stack_.top()->OnStart();
 
     // Application loop の実行
-    while (!glfwWindowShouldClose(up_glfw_window_) && !activities_stack_.empty()) {
-        activities_stack_.top()->OnFrame();
+    while (!glfwWindowShouldClose(up_glfw_window_) && !scenes_stack_.empty()) {
+        scenes_stack_.top()->OnFrame();
 
         glfwSwapBuffers(up_glfw_window_);
         glfwPollEvents();
 
-        activities_stack_.top()->OnFrameAfterSwap();
+        scenes_stack_.top()->OnFrameAfterSwap();
 
         // Activity が終了したがっている場合は、pop する
-        if (activities_stack_.top()->IsShouldDestroy()) {
-            if (activities_stack_.top()->HaveNextActivity()) {
+        if (scenes_stack_.top()->IsShouldDestroy()) {
+            if (scenes_stack_.top()->HaveNextScene()) {
                 // Activity が push を要求している場合は、push する
-                Activity* p_next = activities_stack_.top()->NextActivity();
+                Scene *p_next = scenes_stack_.top()->NextScene();
 
-                PopActivity();
+                PopScene();
 
-                activities_stack_.push(p_next);
+                scenes_stack_.push(p_next);
                 KeyCallbackSingleton::GetInstance()->SetActivity(p_next);
-                p_next->OnAttach(&context_);
+                p_next->OnAttach(&application_context_);
                 p_next->OnStart();
             } else {
-                PopActivity();
+                PopScene();
             }
         }
     }
@@ -131,19 +132,19 @@ void Application::KeyCallback(
         int action,
         [[maybe_unused]] int mods) {
 
-    Activity *p_activity = KeyCallbackSingleton::GetInstance()->GetActivity();
-    if (p_activity) {
-        p_activity->OnKey(key, action);
+    Scene *p_scene = KeyCallbackSingleton::GetInstance()->GetActivity();
+    if (p_scene) {
+        p_scene->OnKey(key, action);
     }
 }
 
-void Application::PopActivity() {
-    Activity *p_activity = activities_stack_.top();
-    p_activity->OnDestroy();
-    delete p_activity; // Factory method で new しているため、ここで delete する
-    activities_stack_.pop();
+void Application::PopScene() {
+    Scene *p_scene = scenes_stack_.top();
+    p_scene->OnDestroy();
+    delete p_scene; // Factory method で new しているため、ここで delete する
+    scenes_stack_.pop();
 
-    if (!activities_stack_.empty()) {
-        KeyCallbackSingleton::GetInstance()->SetActivity(activities_stack_.top());
+    if (!scenes_stack_.empty()) {
+        KeyCallbackSingleton::GetInstance()->SetActivity(scenes_stack_.top());
     }
 }

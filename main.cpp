@@ -1,14 +1,14 @@
-#include "application.h"
-#include "main_activity.h"
+#include "application/application.h"
+#include "scene/starting_scene.h"
 
-// 最初に実行する Application activity
-static Application::Activity *FirstApplicationActivityFactory() {
-    return new MainActivity();
+// 最初に実行する Scene
+static Scene *FirstSceneFactory() {
+    return new StartingScene();
 }
 
 int main() {
     Application application;
-    application.Initialize(FirstApplicationActivityFactory);
+    application.Initialize(FirstSceneFactory);
     application.RunLoop();
     application.Finalize();
     return 0;

@@ -54,10 +54,10 @@ add_executable(
         opengl_debug.cpp
         cstring_util.cpp
         key_callback_singleton.cpp
-        basic_sample_activity.cpp
-        lighting_example_activity.cpp
-        main_activity.cpp
-        application.cpp)
+        scene/sample_scene.cpp
+        scene/lighting_example_scene.cpp
+        scene/starting_scene.cpp
+        application/application.cpp)
 
 target_link_libraries(
         sandbox_opengl_22

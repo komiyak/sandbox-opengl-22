@@ -1,8 +1,10 @@
-#ifndef SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_
-#define SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_
+#ifndef SANDBOX_OPENGL_22_SAMPLE_SCENE_H_
+#define SANDBOX_OPENGL_22_SAMPLE_SCENE_H_
 
-#include "application.h"
-#include "frame.h"
+#include <glad/glad.h>
+
+#include "../frame.h"
+#include "../application/scene.h"
 
 class BasicShaderUniform;
 
@@ -16,7 +18,7 @@ class Shader;
 
 class BitmapFontRender;
 
-class BasicSampleActivity : public Application::Activity {
+class SampleActivity : public Scene {
 public:
     void OnFrame() override;
 
@@ -28,8 +30,8 @@ public:
 
     void OnDestroy() override;
 
-    static Application::Activity *CreateActivityFactory() {
-        return new BasicSampleActivity();
+    static Scene *CreateActivityFactory() {
+        return new SampleActivity();
     }
 
 private:
@@ -60,4 +62,4 @@ private:
     BitmapFontRender *up_bitmap_font_render_{};
 };
 
-#endif //SANDBOX_OPENGL_22_BASIC_SAMPLE_ACTIVITY_H_
+#endif //SANDBOX_OPENGL_22_SAMPLE_SCENE_H_

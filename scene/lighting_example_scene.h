@@ -1,8 +1,10 @@
-#ifndef SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_ACTIVITY_H_
-#define SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_ACTIVITY_H_
+#ifndef SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_
+#define SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_
 
-#include "application.h"
-#include "frame.h"
+#include <glad/glad.h>
+
+#include "../frame.h"
+#include "../application/scene.h"
 
 class Shader;
 
@@ -14,7 +16,7 @@ class PracticeLightingPhongShadingShaderUniform;
 
 class PracticeLightingLightingMapShaderUniform;
 
-class LightingExampleActivity : public Application::Activity {
+class LightingExampleScene : public Scene {
 public:
     void OnFrame() override;
 
@@ -26,8 +28,8 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
-    static Application::Activity *CreateActivityFactory() {
-        return new LightingExampleActivity();
+    static Scene *CreateActivityFactory() {
+        return new LightingExampleScene();
     }
 
 private:
@@ -57,4 +59,4 @@ private:
 };
 
 
-#endif //SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_ACTIVITY_H_
+#endif //SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_

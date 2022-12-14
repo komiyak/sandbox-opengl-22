@@ -1,22 +1,21 @@
-#include <glad/glad.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "basic_sample_activity.h"
-#include "opengl_debug.h"
-#include "vertex_render_object.h"
-#include "shader.h"
-#include "position_vertex_specification.h"
-#include "color_vertex_specification.h"
-#include "texture_vertex_specification.h"
-#include "basic_shader_uniform.h"
-#include "texture_shader_uniform.h"
-#include "png_load.h"
-#include "bitmap_font_render.h"
-#include "game_data.h"
+#include "sample_scene.h"
+#include "../application/application.h"
+#include "../opengl_debug.h"
+#include "../vertex_render_object.h"
+#include "../shader.h"
+#include "../position_vertex_specification.h"
+#include "../color_vertex_specification.h"
+#include "../texture_vertex_specification.h"
+#include "../basic_shader_uniform.h"
+#include "../texture_shader_uniform.h"
+#include "../png_load.h"
+#include "../bitmap_font_render.h"
+#include "../game_data.h"
 
-void BasicSampleActivity::OnStart() {
+void SampleActivity::OnStart() {
     // 頂点
     const GLfloat kVertices[] = {
             // x, y, z, r, g, b
@@ -210,7 +209,7 @@ void BasicSampleActivity::OnStart() {
     up_cube_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
-void BasicSampleActivity::OnFrame() {
+void SampleActivity::OnFrame() {
     frame_.StartFrame();
 
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -255,11 +254,11 @@ void BasicSampleActivity::OnFrame() {
     up_cube_->Render();
 }
 
-void BasicSampleActivity::OnFrameAfterSwap() {
+void SampleActivity::OnFrameAfterSwap() {
     frame_.EndFrame();
 }
 
-void BasicSampleActivity::OnDestroy() {
+void SampleActivity::OnDestroy() {
     glDeleteTextures(1, &texture_0_);
     glDeleteTextures(1, &texture_1_);
 
@@ -283,7 +282,7 @@ void BasicSampleActivity::OnDestroy() {
     FINALIZE_AND_DELETE(up_texture_2d_shader_);
 }
 
-void BasicSampleActivity::OnKey(int glfw_key, int glfw_action) {
+void SampleActivity::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
