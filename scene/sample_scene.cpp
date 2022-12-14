@@ -11,7 +11,6 @@
 #include "../texture_vertex_specification.h"
 #include "../basic_shader_uniform.h"
 #include "../texture_shader_uniform.h"
-#include "../png_load.h"
 #include "../bitmap_font_render.h"
 #include "../game_data.h"
 
@@ -54,56 +53,16 @@ void SampleActivity::OnStart() {
             "shader/texture_2d.frag");
 
 
-    glGenTextures(1, &texture_0_);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_0_);
+    texture_grass_.Load(
+            "./texture/grass.png",
+            Texture::ImageFormat::RGBA,
+            0);
 
-    PngLoad png_load{};
-    png_load.LoadFile("./texture/grass.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load.GetImageSize().width,
-            png_load.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load.GetData());
-    png_load.Finalize();
-    OPENGL_DEBUG_CHECK();
+    texture_bitmap_font_.Load(
+            "./texture/ascii_bitmap_font.png",
+            Texture::ImageFormat::RGBA,
+            1);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    glGenTextures(1, &texture_1_);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture_1_);
-
-    PngLoad png_load_2d{};
-    png_load_2d.LoadFile("./texture/ascii_bitmap_font.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load_2d.GetImageSize().width,
-            png_load_2d.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load_2d.GetData());
-    OPENGL_DEBUG_CHECK();
-
-    // フォント準備
-    png_load_2d.Finalize();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     up_grid_shader_uniform_ = new BasicShaderUniform{
             up_grid_shader_->GetUniformVariableLocation("projection_mat"),
@@ -253,8 +212,8 @@ void SampleActivity::OnFrame() {
 }
 
 void SampleActivity::OnDestroy() {
-    glDeleteTextures(1, &texture_0_);
-    glDeleteTextures(1, &texture_1_);
+    texture_grass_.Finalize();
+    texture_bitmap_font_.Finalize();
 
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 

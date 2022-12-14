@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "../application_scene/scene.h"
+#include "../texture.h"
 
 class BasicShaderUniform;
 
@@ -34,8 +35,8 @@ public:
 private:
     float angle_{0.f};
 
-    GLuint texture_0_{};
-    GLuint texture_1_{};
+    Texture texture_grass_;
+    Texture texture_bitmap_font_;
 
     BasicShaderUniform *up_grid_shader_uniform_{};
     BasicShaderUniform *up_axis_shader_uniform_{};

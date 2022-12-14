@@ -20,6 +20,7 @@ public:
             int texture_height,
             int glyph_width,
             int glyph_height,
+            GLint texture_unit_number,
             GLint uniform_texture_unit,
             GLint uniform_color,
             GLint uniform_translation_vec,
@@ -33,6 +34,7 @@ public:
               texture_height_(texture_height),
               glyph_width_(glyph_width),
               glyph_height_(glyph_height),
+              texture_unit_number_(texture_unit_number),
               font_shader_uniform_(
                       uniform_texture_unit,
                       uniform_color,
@@ -63,13 +65,15 @@ private:
     // スクリーンの縦幅
     int screen_height_{};
     // ASCII bitmap font のテクスチャ横幅
-    int texture_width_;
+    int texture_width_{};
     // ASCII bitmap font のテクスチャ縦幅
-    int texture_height_;
+    int texture_height_{};
     // ASCII bitmap font の glyph 横幅
-    int glyph_width_;
+    int glyph_width_{};
     // ASCII bitmap font の glyph 縦幅
-    int glyph_height_;
+    int glyph_height_{};
+    // ASCII bitmap font の texture unit
+    GLint texture_unit_number_{};
 
     // ASCII bitmap font の shader uniform
     FontShaderUniform font_shader_uniform_;

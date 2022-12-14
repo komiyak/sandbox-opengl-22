@@ -9,6 +9,7 @@
 
 #define DEBUG_ASSERT(expression) do { if (kRuntimeAssertion && !(expression)) { abort(); } } while (0)
 #define DEBUG_ASSERT_MESSAGE(expression, message) do { if (kRuntimeAssertion && !(expression)) { fprintf(stderr, message); fprintf(stderr, "\n"); abort(); } } while (0)
+#define DEBUG_ABORT_MESSAGE(message) do { if (kRuntimeAssertion) { fprintf(stderr, message); fprintf(stderr, "\n"); abort(); } } while (0)
 
 #pragma clang diagnostic pop
 

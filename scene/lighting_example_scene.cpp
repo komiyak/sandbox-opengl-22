@@ -108,10 +108,10 @@ void LightingExampleScene::OnFrame() {
         up_lighting_map_shader_uniform_->SetLightSpecular(glm::vec3(1.0f));
         up_lighting_map_shader_uniform_->SetLightPosition(light_position);
         up_lighting_map_shader_uniform_->SetViewPosition(view_position);
-        up_lighting_map_shader_uniform_->SetMaterialDiffuse(0); // texture unit 0
-        up_lighting_map_shader_uniform_->SetMaterialSpecular(1); // texture unit 1
+        up_lighting_map_shader_uniform_->SetMaterialDiffuse(texture_diffuse_map_.GetTextureUnitNumber());
+        up_lighting_map_shader_uniform_->SetMaterialSpecular(texture_specular_map_.GetTextureUnitNumber());
         up_lighting_map_shader_uniform_->SetMaterialShininess(32.0f);
-        up_lighting_map_shader_uniform_->SetEmission(2); // texture unit 2
+        up_lighting_map_shader_uniform_->SetEmission(texture_emission_map_.GetTextureUnitNumber());
         up_lighting_map_cube_->Render();
     }
 }
@@ -241,85 +241,25 @@ void LightingExampleScene::OnStart() {
     up_lighting_target_shader_uniform_->SetProjectionMat(projection_mat);
     up_lighting_map_shader_uniform_->SetProjectionMat(projection_mat);
 
-    glGenTextures(1, &texture_0_);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_0_);
 
-    PngLoad png_load{};
-    png_load.LoadFile("./texture/container2.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load.GetImageSize().width,
-            png_load.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load.GetData());
-    png_load.Finalize();
-    OPENGL_DEBUG_CHECK();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    glGenTextures(1, &texture_1_);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture_1_);
-
-    PngLoad png_load2{};
-    png_load2.LoadFile("./texture/container2_specular.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load2.GetImageSize().width,
-            png_load2.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load2.GetData());
-    png_load2.Finalize();
-    OPENGL_DEBUG_CHECK();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-    glGenTextures(1, &texture_2_);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, texture_2_);
-
-    PngLoad png_load3{};
-    png_load3.LoadFile("./texture/container2_emission.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load3.GetImageSize().width,
-            png_load3.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load3.GetData());
-    png_load3.Finalize();
-    OPENGL_DEBUG_CHECK();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    texture_diffuse_map_.Load(
+            "./texture/container2.png",
+            Texture::ImageFormat::RGBA,
+            0);
+    texture_specular_map_.Load(
+            "./texture/container2_specular.png",
+            Texture::ImageFormat::RGBA,
+            1);
+    texture_emission_map_.Load(
+            "./texture/container2_emission.png",
+            Texture::ImageFormat::RGBA,
+            2);
 }
 
 void LightingExampleScene::OnDestroy() {
-    glDeleteTextures(1, &texture_0_);
-    glDeleteTextures(1, &texture_1_);
-    glDeleteTextures(1, &texture_2_);
+    texture_diffuse_map_.Finalize();
+    texture_specular_map_.Finalize();
+    texture_emission_map_.Finalize();
 
     FINALIZE_AND_DELETE(up_white_vertex_shader_);
     FINALIZE_AND_DELETE(up_vertex_color_shader_);

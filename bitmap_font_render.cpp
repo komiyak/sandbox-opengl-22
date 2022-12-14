@@ -44,8 +44,7 @@ void BitmapFontRender::RenderAsciiText(const char *ascii_text, int x, int y, int
     const int row_max = 16; // テクスチャの横方向の分割数
     const int column_max = 8; // テクスチャの縦方向の分割数
 
-    // とりあえず bitmap font は固定で texture unit 1 に設定するということにする
-    font_shader_uniform_.SetTextureUnit(1);
+    font_shader_uniform_.SetTextureUnit(texture_unit_number_);
 
     for (int i = 0; i < std::strlen(ascii_text); i++) {
         const char c = ascii_text[i];

@@ -16,33 +16,20 @@ void StartingScene::OnStart() {
             "shader/font.vert",
             "shader/font.frag");
 
-    // bitmap font texture (texture unit = 1)
-    glGenTextures(1, &texture_0_);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture_0_);
-
-    PngLoad png_load{};
-    png_load.LoadFile("./texture/ascii_bitmap_font.png", PNG_FORMAT_RGBA);
-    glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RGBA,
-            png_load.GetImageSize().width,
-            png_load.GetImageSize().height,
-            0,
-            GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            png_load.GetData());
-    OPENGL_DEBUG_CHECK();
+    texture_.Load(
+            "./texture/ascii_bitmap_font.png",
+            Texture::ImageFormat::RGBA,
+            0);
 
     // フォント準備
     up_bitmap_font_render_ = new BitmapFontRender(
             p_application_context_->GetWindowScreenWidth(),
             p_application_context_->GetWindowScreenHeight(),
-            png_load.GetImageSize().width,
-            png_load.GetImageSize().height,
+            texture_.GetTextureWidth(),
+            texture_.GetTextureHeight(),
             4,
             8,
+            texture_.GetTextureUnitNumber(),
             up_font_shader_->GetUniformVariableLocation("tex"),
             up_font_shader_->GetUniformVariableLocation("color"),
             up_font_shader_->GetUniformVariableLocation("translation_vec"),
@@ -51,7 +38,6 @@ void StartingScene::OnStart() {
             up_font_shader_->GetUniformVariableLocation("texcoord_scaling_vec"),
             up_font_shader_);
     up_bitmap_font_render_->Initialize();
-    png_load.Finalize();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -96,7 +82,7 @@ void StartingScene::OnFrame() {
 #pragma clang diagnostic pop
 
 void StartingScene::OnDestroy() {
-    glDeleteTextures(1, &texture_0_);
+    texture_.Finalize();
     FINALIZE_AND_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }

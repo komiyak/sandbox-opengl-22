@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "../application_scene/scene.h"
+#include "../texture.h"
 
 class Shader;
 
@@ -34,9 +35,9 @@ private:
     float light_angle_{};
     float light_strength_{};
 
-    GLuint texture_0_{};
-    GLuint texture_1_{};
-    GLuint texture_2_{};
+    Texture texture_diffuse_map_;
+    Texture texture_specular_map_;
+    Texture texture_emission_map_;
 
     Shader *up_white_vertex_shader_{};
     Shader *up_vertex_color_shader_{};

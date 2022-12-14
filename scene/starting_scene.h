@@ -2,6 +2,7 @@
 #define SANDBOX_OPENGL_22_STARTING_SCENE_H_
 
 #include <glad/glad.h>
+#include "../texture.h"
 
 #include "../application_scene/scene.h"
 
@@ -23,7 +24,7 @@ public:
 private:
     float count_{};
 
-    GLuint texture_0_{};
+    Texture texture_;
     Shader *up_font_shader_{};
     BitmapFontRender *up_bitmap_font_render_{};
 };

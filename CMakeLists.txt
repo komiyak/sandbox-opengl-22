@@ -53,6 +53,7 @@ add_executable(
         texture_2d_vertex_specification.cpp
         opengl_debug.cpp
         cstring_util.cpp
+        texture.cpp
         key_callback_singleton.cpp
         scene/sample_scene.cpp
         scene/lighting_example_scene.cpp
