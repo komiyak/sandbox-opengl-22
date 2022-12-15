@@ -1,11 +1,7 @@
-//
-// Created by komiyak on 22/11/25.
-//
-
 #ifndef SANDBOX_OPENGL_22_VERTEX_RENDER_OBJECT_H_
 #define SANDBOX_OPENGL_22_VERTEX_RENDER_OBJECT_H_
 
-#include <glad/glad.h>
+#include "opengl_glfw.h"
 #include "base_object.h"
 
 class VertexSpecification;
@@ -39,6 +35,9 @@ public:
     void Render() const;
 
 private:
+    // Already initialized
+    bool initialized_{};
+
     // Vertex array object
     GLuint vao_{};
     // Vertex buffer object

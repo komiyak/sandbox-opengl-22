@@ -25,12 +25,13 @@ void Shader::BuildFromFile(
             cstring_util::EqualLast(fragment_shader_filepath, ".frag"),
             "Vertex shader file must be with '.frag' extension.");
 
-    vertex_shader_filepath_ = vertex_shader_filepath;
-    fragment_shader_filepath_ = fragment_shader_filepath;
+    prepared_ = true;
+    p_vertex_shader_filepath_ = vertex_shader_filepath;
+    p_fragment_shader_filepath_ = fragment_shader_filepath;
 
 
-    const std::string vertex_shader_source = LoadShaderSourceFromFile(vertex_shader_filepath_);
-    const std::string fragment_shader_source = LoadShaderSourceFromFile(fragment_shader_filepath_);
+    const std::string vertex_shader_source = LoadShaderSourceFromFile(p_vertex_shader_filepath_);
+    const std::string fragment_shader_source = LoadShaderSourceFromFile(p_fragment_shader_filepath_);
 
     vertex_shader_ = BuildShader(GL_VERTEX_SHADER, vertex_shader_source.c_str());
     fragment_shader_ = BuildShader(GL_FRAGMENT_SHADER, fragment_shader_source.c_str());
@@ -83,15 +84,20 @@ GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
 #pragma clang diagnostic pop
 
 void Shader::Finalize() {
-    glDeleteProgram(program_object_);
-    glDeleteShader(vertex_shader_); // Note: program_object を生成した段階で、これは delete してよいらしい
-    glDeleteShader(fragment_shader_); // Note: program_object を生成した段階で、これは delete してよいらしい
-    program_object_ = 0;
-    vertex_shader_ = 0;
-    fragment_shader_ = 0;
+    if (prepared_) {
+        glDeleteProgram(program_object_);
+        glDeleteShader(vertex_shader_); // Note: program_object を生成した段階で、これは delete してよいらしい
+        glDeleteShader(fragment_shader_); // Note: program_object を生成した段階で、これは delete してよいらしい
+        program_object_ = 0;
+        vertex_shader_ = 0;
+        fragment_shader_ = 0;
+    }
+    prepared_ = false;
 }
 
 void Shader::UseProgram() const {
+    if (!prepared_) return;
+
     glUseProgram(program_object_);
     OPENGL_DEBUG_CHECK();
 }
@@ -143,15 +149,19 @@ GLint Shader::GetAttribVariableLocationFromProgramObject(
 }
 
 GLint Shader::GetAttribVariableLocation(const char *name) {
+    if (!prepared_) return -1;
+
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする
     return GetAttribVariableLocationFromProgramObject(
-            program_object_, name, vertex_shader_filepath_, fragment_shader_filepath_);
+            program_object_, name, p_vertex_shader_filepath_, p_fragment_shader_filepath_);
 }
 
 GLint Shader::GetUniformVariableLocation(const char *name) {
+    if (!prepared_) return -1;
+
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする
     return GetUniformVariableLocationFromProgramObject(
-            program_object_, name, vertex_shader_filepath_, fragment_shader_filepath_);
+            program_object_, name, p_vertex_shader_filepath_, p_fragment_shader_filepath_);
 }
 
 #pragma clang diagnostic pop

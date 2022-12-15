@@ -41,6 +41,7 @@ add_executable(
         font_shader_uniform.cpp
         practice_lighting_phong_shading_shader_uniform.cpp
         practice_lighting_lighting_map_shader_uniform.cpp
+        learnopengl_lighting_directional_light_shader_uniform.cpp
         bitmap_font_render.cpp
         application/frame.cpp
         png_load.cpp

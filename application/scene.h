@@ -34,7 +34,7 @@ public:
     virtual void OnDestroy() = 0;
 
     // キー入力イベントで呼び出される
-    virtual void OnKey(int glfw_key, int glfw_action) {};
+    virtual void OnKey(int glfw_key, int glfw_action) = 0;
 
     [[nodiscard]] bool IsShouldDestroy() const {
         return should_destroy_;

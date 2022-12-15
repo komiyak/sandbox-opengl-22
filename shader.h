@@ -1,9 +1,9 @@
 #ifndef SANDBOX_OPENGL_22_SHADER_H_
 #define SANDBOX_OPENGL_22_SHADER_H_
 
-#include <glad/glad.h>
 #include <string>
 
+#include "opengl_glfw.h"
 #include "base_object.h"
 
 class Shader : public BaseObject {
@@ -45,12 +45,15 @@ private:
             const char *vertex_shader_filepath,
             const char *fragment_shader_filepath);
 
+    // 利用準備ができていれば true
+    bool prepared_{};
+
     GLuint program_object_{};
     GLuint vertex_shader_{};
     GLuint fragment_shader_{};
 
-    const char *vertex_shader_filepath_{};
-    const char *fragment_shader_filepath_{};
+    const char *p_vertex_shader_filepath_{};
+    const char *p_fragment_shader_filepath_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SHADER_H_

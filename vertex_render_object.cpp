@@ -17,6 +17,7 @@ void VertexRenderObject::Initialize(
 
     DEBUG_ASSERT(p_shader);
 
+    initialized_ = true;
     p_shader_ = p_shader;
     p_shader_uniform_ = p_shader_uniform;
     draw_mode_ = draw_mode;
@@ -41,14 +42,20 @@ void VertexRenderObject::Initialize(
 }
 
 void VertexRenderObject::Finalize() {
-    glDeleteBuffers(1, &vbo_);
-    glDeleteVertexArrays(1, &vao_);
-    vbo_ = 0;
-    vao_ = 0;
-    p_shader_ = nullptr;
+    if (initialized_) {
+        glDeleteBuffers(1, &vbo_);
+        glDeleteVertexArrays(1, &vao_);
+        vbo_ = 0;
+        vao_ = 0;
+        p_shader_ = nullptr;
+        p_shader_uniform_ = nullptr;
+    }
+    initialized_ = false;
 }
 
 void VertexRenderObject::Render() const {
+    if (!initialized_) return;
+
     if (p_shader_) {
         // shader 適用
         p_shader_->UseProgram();
