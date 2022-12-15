@@ -28,7 +28,7 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
-    static Scene *CreateActivityFactory() {
+    static Scene *CreateFactory() {
         return new LearnOpenGlLightingScene();
     }
 
@@ -56,6 +56,5 @@ private:
     PracticeLightingPhongShadingShaderUniform *up_lighting_target_shader_uniform_{};
     PracticeLightingLightingMapShaderUniform *up_lighting_map_shader_uniform_{};
 };
-
 
 #endif //SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_

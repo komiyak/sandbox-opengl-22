@@ -3,12 +3,23 @@
 
 #include <glad/glad.h>
 
-#include "../application_scene/scene.h"
+#include "../application/scene.h"
 
 // LearnOpenGL.com の lighting / light casters の学習用のシーン
 // https://learnopengl.com/Lighting/Light-casters
-class LearnOpenGlLightingLightCastersScene {
+class LearnOpenGlLightingLightCastersScene : public Scene {
+public:
+    void OnStart() override;
 
+    void OnFrame() override;
+
+    void OnDestroy() override;
+
+    void OnKey(int glfw_key, int glfw_action) override;
+
+    static Scene *CreateFactory() {
+        return new LearnOpenGlLightingLightCastersScene();
+    }
 };
 
 

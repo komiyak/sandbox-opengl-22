@@ -1,7 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_STARTING_SCENE_H_
 #define SANDBOX_OPENGL_22_STARTING_SCENE_H_
 
-#include <glad/glad.h>
+#include "../opengl_glfw.h"
 #include "../texture.h"
 
 #include "../application/scene.h"

@@ -7,6 +7,7 @@
 #include "../bitmap_font_render.h"
 #include "sandbox_scene.h"
 #include "learn_open_gl_lighting_scene.h"
+#include "learn_open_gl_lighting_light_casters_scene.h"
 
 void StartingScene::OnStart() {
     up_font_shader_ = new Shader();
@@ -35,6 +36,7 @@ void StartingScene::OnStart() {
             up_font_shader_->GetUniformVariableLocation("texcoord_translation_vec"),
             up_font_shader_->GetUniformVariableLocation("texcoord_scaling_vec"),
             up_font_shader_);
+
     up_bitmap_font_render_->Initialize();
 }
 
@@ -63,11 +65,14 @@ void StartingScene::OnFrame() {
                 "[ESC] Exit",
                 40, 200, 16);
         up_bitmap_font_render_->RenderWhiteAsciiText(
-                "[1] Move to 'SandboxActivity'",
+                "[1] Move to 'SandboxScene'",
                 40, 240, 16);
         up_bitmap_font_render_->RenderWhiteAsciiText(
                 "[2] Move to 'LearnOpenGlLightingScene'",
                 40, 280, 16);
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "[3] Move to 'LearnOpenGlLightingLightCastersScene'",
+                40, 320, 16);
     }
 }
 
@@ -83,13 +88,17 @@ void StartingScene::OnKey(int glfw_key, int glfw_action) {
         should_destroy_ = true;
     }
 
-    // 任意の Activity を起動する
+    // 任意の Scene を起動する
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_scene_ = SandboxActivity::CreateActivityFactory;
+        next_scene_ = SandboxScene::CreateFactory;
     }
     if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_scene_ = LearnOpenGlLightingScene::CreateActivityFactory;
+        next_scene_ = LearnOpenGlLightingScene::CreateFactory;
+    }
+    if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
+        should_destroy_ = true;
+        next_scene_ = LearnOpenGlLightingLightCastersScene::CreateFactory;
     }
 }

@@ -55,6 +55,7 @@ These words are hard to understand. You should use full spelling.
 | StartingScene | The first scene to start up. |
 | SandboxScene | A sandbox with no purpose. It's OK if it breaks. |
 | LearnOpenGlLightingScene | A scene to learn lighting from LearnOpenGL.com |
+| LearnOpenGlLightingLightCastersScene | A scene to learn light casters from LearnOpenGL.com |
 
 ## Shader files
 

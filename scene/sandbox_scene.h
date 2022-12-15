@@ -18,7 +18,7 @@ class Shader;
 
 class BitmapFontRender;
 
-class SandboxActivity : public Scene {
+class SandboxScene : public Scene {
 public:
     void OnFrame() override;
 
@@ -28,8 +28,8 @@ public:
 
     void OnDestroy() override;
 
-    static Scene *CreateActivityFactory() {
-        return new SandboxActivity();
+    static Scene *CreateFactory() {
+        return new SandboxScene();
     }
 
 private:
