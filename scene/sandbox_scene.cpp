@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "sample_scene.h"
+#include "sandbox_scene.h"
 #include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../vertex_render_object.h"
@@ -14,7 +14,7 @@
 #include "../bitmap_font_render.h"
 #include "../game_data.h"
 
-void SampleActivity::OnStart() {
+void SandboxActivity::OnStart() {
     // 頂点
     const GLfloat kVertices[] = {
             // x, y, z, r, g, b
@@ -168,7 +168,7 @@ void SampleActivity::OnStart() {
     up_cube_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
-void SampleActivity::OnFrame() {
+void SandboxActivity::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -211,7 +211,7 @@ void SampleActivity::OnFrame() {
     up_cube_->Render();
 }
 
-void SampleActivity::OnDestroy() {
+void SandboxActivity::OnDestroy() {
     texture_grass_.Finalize();
     texture_bitmap_font_.Finalize();
 
@@ -235,7 +235,7 @@ void SampleActivity::OnDestroy() {
     FINALIZE_AND_DELETE(up_texture_2d_shader_);
 }
 
-void SampleActivity::OnKey(int glfw_key, int glfw_action) {
+void SandboxActivity::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;

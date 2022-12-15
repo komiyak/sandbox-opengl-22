@@ -4,13 +4,11 @@
 #include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../shader.h"
-#include "../png_load.h"
 #include "../bitmap_font_render.h"
-#include "sample_scene.h"
-#include "lighting_example_scene.h"
+#include "sandbox_scene.h"
+#include "learn_open_gl_lighting_scene.h"
 
 void StartingScene::OnStart() {
-
     up_font_shader_ = new Shader();
     up_font_shader_->BuildFromFile(
             "shader/font.vert",
@@ -38,15 +36,7 @@ void StartingScene::OnStart() {
             up_font_shader_->GetUniformVariableLocation("texcoord_scaling_vec"),
             up_font_shader_);
     up_bitmap_font_render_->Initialize();
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
-
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "NullDereference"
 
 void StartingScene::OnFrame() {
     const float min = 0.25;
@@ -59,27 +49,27 @@ void StartingScene::OnFrame() {
     glClearColor(color, color, color, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Drawing the title.
-    up_bitmap_font_render_->RenderWhiteAsciiText(
-            "THE SANDBOX OF OPENGL",
-            40, 40, 38);
-    up_bitmap_font_render_->RenderWhiteAsciiText(
-            "Press the key if you need to play that sandbox.",
-            40, 120, 14);
+    if (up_bitmap_font_render_) {
+        // Drawing the title.
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "THE SANDBOX OF OPENGL",
+                40, 40, 38);
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "Press the key if you need to play that sandbox.",
+                40, 120, 14);
 
-    // Drawing the menu.
-    up_bitmap_font_render_->RenderWhiteAsciiText(
-            "[ESC] Exit",
-            40, 200, 16);
-    up_bitmap_font_render_->RenderWhiteAsciiText(
-            "[1] Move to 'SampleActivity'",
-            40, 240, 16);
-    up_bitmap_font_render_->RenderWhiteAsciiText(
-            "[2] Move to 'LightingExampleScene'",
-            40, 280, 16);
+        // Drawing the menu.
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "[ESC] Exit",
+                40, 200, 16);
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "[1] Move to 'SandboxActivity'",
+                40, 240, 16);
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "[2] Move to 'LearnOpenGlLightingScene'",
+                40, 280, 16);
+    }
 }
-
-#pragma clang diagnostic pop
 
 void StartingScene::OnDestroy() {
     texture_.Finalize();
@@ -96,10 +86,10 @@ void StartingScene::OnKey(int glfw_key, int glfw_action) {
     // 任意の Activity を起動する
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_scene_ = SampleActivity::CreateActivityFactory;
+        next_scene_ = SandboxActivity::CreateActivityFactory;
     }
     if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
-        next_scene_ = LightingExampleScene::CreateActivityFactory;
+        next_scene_ = LearnOpenGlLightingScene::CreateActivityFactory;
     }
 }

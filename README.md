@@ -48,6 +48,14 @@ These words are hard to understand. You should use full spelling.
 | --- | --- | --- |
 | plural of `vertex` | `vertexes` or `vertices` | `vertices` |
 
+## Scenes
+
+| Scene's name | Description |
+| --- | --- |
+| StartingScene | The first scene to start up. |
+| SandboxScene | A sandbox with no purpose. It's OK if it breaks. |
+| LearnOpenGlLightingScene | A scene to learn lighting from LearnOpenGL.com |
+
 ## Shader files
 
 | Shader's name (and filename) | Description |

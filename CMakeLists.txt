@@ -55,8 +55,8 @@ add_executable(
         cstring_util.cpp
         texture.cpp
         key_callback_singleton.cpp
-        scene/sample_scene.cpp
-        scene/lighting_example_scene.cpp
+        scene/sandbox_scene.cpp
+        scene/learn_open_gl_lighting_scene.cpp
         scene/starting_scene.cpp
         application_scene/application.cpp)
 

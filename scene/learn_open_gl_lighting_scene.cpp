@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "lighting_example_scene.h"
+#include "learn_open_gl_lighting_scene.h"
 #include "../application_scene/application.h"
 #include "../opengl_debug.h"
 #include "../game_data.h"
@@ -16,7 +16,7 @@
 #include "../color_vertex_specification.h"
 #include "../png_load.h"
 
-void LightingExampleScene::OnFrame() {
+void LearnOpenGlLightingScene::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -116,14 +116,14 @@ void LightingExampleScene::OnFrame() {
     }
 }
 
-void LightingExampleScene::OnKey(int glfw_key, int glfw_action) {
+void LearnOpenGlLightingScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         should_destroy_ = true;
     }
 }
 
-void LightingExampleScene::OnStart() {
+void LearnOpenGlLightingScene::OnStart() {
     up_white_vertex_shader_ = new Shader();
     up_white_vertex_shader_->BuildFromFile(
             "shader/white_vertex.vert",
@@ -256,7 +256,7 @@ void LightingExampleScene::OnStart() {
             2);
 }
 
-void LightingExampleScene::OnDestroy() {
+void LearnOpenGlLightingScene::OnDestroy() {
     texture_diffuse_map_.Finalize();
     texture_specular_map_.Finalize();
     texture_emission_map_.Finalize();

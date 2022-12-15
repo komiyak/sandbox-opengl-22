@@ -47,8 +47,8 @@ private:
 
     GLint texture_unit_number_{};
 
-    int texture_width_;
-    int texture_height_;
+    int texture_width_{};
+    int texture_height_{};
 };
 
 #endif //SANDBOX_OPENGL_22_TEXTURE_H_

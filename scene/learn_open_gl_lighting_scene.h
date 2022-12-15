@@ -1,5 +1,5 @@
-#ifndef SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_
-#define SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_
+#ifndef SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_
+#define SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_
 
 #include <glad/glad.h>
 
@@ -16,7 +16,9 @@ class PracticeLightingPhongShadingShaderUniform;
 
 class PracticeLightingLightingMapShaderUniform;
 
-class LightingExampleScene : public Scene {
+// LearnOpenGL.com の lighting のチャプターを学習するためのシーン
+// https://learnopengl.com/Lighting/Colors
+class LearnOpenGlLightingScene : public Scene {
 public:
     void OnFrame() override;
 
@@ -27,7 +29,7 @@ public:
     void OnKey(int glfw_key, int glfw_action) override;
 
     static Scene *CreateActivityFactory() {
-        return new LightingExampleScene();
+        return new LearnOpenGlLightingScene();
     }
 
 private:
@@ -56,4 +58,4 @@ private:
 };
 
 
-#endif //SANDBOX_OPENGL_22_LIGHTING_EXAMPLE_SCENE_H_
+#endif //SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_

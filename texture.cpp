@@ -29,8 +29,8 @@ void Texture::Load(const char *p_file_path, Texture::ImageFormat image_format, G
     // Note: この設定は将来的には柔軟に行えるようにしたい
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     OPENGL_DEBUG_CHECK();
 
     loaded_ = true;
@@ -98,4 +98,3 @@ GLuint Texture::GetGlTextureNumber(GLint texture_unit_number) {
 void Texture::Finalize() {
     Unload();
 }
-
