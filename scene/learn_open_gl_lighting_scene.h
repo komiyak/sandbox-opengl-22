@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-#include "../application_scene/scene.h"
+#include "../application/scene.h"
 #include "../texture.h"
 
 class Shader;

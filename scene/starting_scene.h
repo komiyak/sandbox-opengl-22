@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include "../texture.h"
 
-#include "../application_scene/scene.h"
+#include "../application/scene.h"
 
 class Shader;
 

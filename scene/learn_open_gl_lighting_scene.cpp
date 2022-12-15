@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "learn_open_gl_lighting_scene.h"
-#include "../application_scene/application.h"
+#include "../application/application.h"
 #include "../opengl_debug.h"
 #include "../game_data.h"
 #include "../shader.h"
@@ -14,7 +14,6 @@
 #include "../position_with_normal_vector_vertex_specification.h"
 #include "../position_with_normal_and_texcoord_vertex_specification.h"
 #include "../color_vertex_specification.h"
-#include "../png_load.h"
 
 void LearnOpenGlLightingScene::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);

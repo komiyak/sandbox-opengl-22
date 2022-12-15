@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 
 #include "starting_scene.h"
-#include "../application_scene/application.h"
+#include "../application/application.h"
 #include "../opengl_debug.h"
 #include "../shader.h"
 #include "../bitmap_font_render.h"

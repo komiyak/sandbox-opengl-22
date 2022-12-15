@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "sandbox_scene.h"
-#include "../application_scene/application.h"
+#include "../application/application.h"
 #include "../opengl_debug.h"
 #include "../vertex_render_object.h"
 #include "../shader.h"

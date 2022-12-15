@@ -1,4 +1,4 @@
-#include "application_scene/application.h"
+#include "application/application.h"
 #include "scene/starting_scene.h"
 
 // 最初に実行する Scene
