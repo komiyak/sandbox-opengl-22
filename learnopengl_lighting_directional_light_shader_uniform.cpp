@@ -4,8 +4,6 @@
 #include "opengl_debug.h"
 
 void LearnopenglLightingDirectionalLightShaderUniform::Transfer() const {
-    if (!activated_) return;
-
     glUniformMatrix4fv(uniform_projection_mat_, 1, GL_FALSE, glm::value_ptr(projection_mat_));
     glUniformMatrix4fv(uniform_view_mat_, 1, GL_FALSE, glm::value_ptr(view_mat_));
     glUniformMatrix4fv(uniform_model_mat_, 1, GL_FALSE, glm::value_ptr(model_mat_));

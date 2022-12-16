@@ -27,6 +27,8 @@ public:
 private:
     // コンテナ用 shader
     Shader container_shader_;
+    // 頂点カラー shader
+    Shader vertex_color_shader_;
 
     // Bitmap font 用 texture
     Texture font_texture_;
@@ -37,6 +39,9 @@ private:
 
     // コンテナオブジェクト
     VertexRenderObject container_;
+    // 原点用の３軸表示
+    VertexRenderObject axis_;
+
     // コンテナ用 shader uniform
     LearnopenglLightingDirectionalLightShaderUniform container_shader_uniform_;
 };

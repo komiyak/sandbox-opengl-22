@@ -32,7 +32,7 @@ public:
               uniform_material_specular_(uniform_material_specular),
               uniform_material_shininess_(uniform_material_shininess),
               uniform_emission_(uniform_emission),
-              uniform_view_position_(uniform_view_position) {}
+              uniform_view_position_(uniform_view_position) { Activate(); }
 
     void SetProjectionMat(const glm::mat4 &projection_mat) {
         projection_mat_ = projection_mat;

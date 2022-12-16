@@ -32,9 +32,7 @@ public:
               uniform_material_ambient_(uniform_material_ambient),
               uniform_material_diffuse_(uniform_material_diffuse),
               uniform_material_specular_(uniform_material_specular),
-              uniform_material_shininess_(uniform_material_shininess) {}
-
-public:
+              uniform_material_shininess_(uniform_material_shininess) { Activate(); }
 
     void Transfer() const override;
 

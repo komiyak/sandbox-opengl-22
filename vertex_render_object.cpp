@@ -59,7 +59,7 @@ void VertexRenderObject::Render() const {
     if (p_shader_) {
         // shader 適用
         p_shader_->UseProgram();
-        if (p_shader_uniform_) {
+        if (p_shader_uniform_ && p_shader_uniform_->IsActivated()) {
             p_shader_uniform_->Transfer();
         }
 

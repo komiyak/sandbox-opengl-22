@@ -20,7 +20,7 @@ public:
             GLint uniform_material_shininess,
             GLint uniform_view_position) {
 
-        activated_ = true;
+        Activate();
         uniform_projection_mat_ = uniform_projection_mat;
         uniform_view_mat_ = uniform_view_mat;
         uniform_model_mat_ = uniform_model_mat;
@@ -76,9 +76,6 @@ public:
     }
 
 private:
-    // SetUniformLocations() がコールされないと有効にならない
-    bool activated_{};
-
     GLint uniform_projection_mat_{-1};
     GLint uniform_view_mat_{-1};
     GLint uniform_model_mat_{-1};

@@ -16,7 +16,7 @@ public:
             : uniform_projection_mat_(uniform_projection_mat),
               uniform_view_mat_(uniform_view_mat),
               uniform_model_mat_(uniform_model_mat),
-              uniform_texture_unit_(uniform_texture_unit) {}
+              uniform_texture_unit_(uniform_texture_unit) { Activate(); }
 
     void Transfer() const override;
 
