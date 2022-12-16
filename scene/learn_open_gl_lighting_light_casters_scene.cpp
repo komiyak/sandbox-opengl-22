@@ -84,30 +84,53 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
 }
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
+
+    constexpr static struct ContainerLocation {
+        glm::vec3 position; // グローバル座標
+        glm::vec3 rotation_speed; // 回転速度
+    } container_locations[] = {
+            {glm::vec3(0.0f, 0.0f, -0.5f),    glm::vec3(0.2, 0.1, 0)},
+            {glm::vec3(2.0f, 5.0f, -15.0f),   glm::vec3(-0.1, 0, 0.2)},
+            {glm::vec3(-1.5f, -2.2f, -2.5f),  glm::vec3(0.3, -0.1, 0)},
+            {glm::vec3(-3.8f, -2.0f, -12.3f), glm::vec3(-0.5, 0.5, 0.1)},
+            {glm::vec3(2.4f, -0.4f, -3.5f),   glm::vec3(0, 0.05, -0.3)},
+            {glm::vec3(-1.7f, 3.0f, -7.5f),   glm::vec3(0.05, -0.35, -0.05)},
+            {glm::vec3(1.3f, -2.0f, -2.5f),   glm::vec3(-0.35, 0.05, -0.1)},
+            {glm::vec3(1.5f, 2.0f, -2.5f),    glm::vec3(0.05, 0.35, 0.1)},
+            {glm::vec3(1.5f, 0.2f, -1.5f),    glm::vec3(-0.05, -0.15, 0.3)},
+            {glm::vec3(-1.3f, 1.0f, -1.5f),   glm::vec3(0, -0.25, -0.18)},
+    };
+
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    angle_ += GetFrame().GetDeltaTimeF() * 3;
+
     // カメラの位置
-    const glm::vec3 view_position = glm::vec3(0, 1.f, 8.f);
+    const glm::vec3 view_position = glm::vec3(0, 1.f, 6.f);
 
     // View 行列を設定
     const glm::mat4 view_mat = glm::lookAt(
             view_position,
             glm::vec3(0.f, 0.f, 0.f),
             glm::vec3(0.f, 1.f, 0.f));
-    glm::mat4 model_mat = glm::mat4(1);
 
-    model_mat = glm::translate(model_mat, glm::vec3(0, 0.5, 0));
 
     container_shader_uniform_.SetViewMat(view_mat);
-    container_shader_uniform_.SetModelMat(model_mat);
     container_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
     container_shader_uniform_.SetLightDiffuse(glm::vec3(0.8f));
     container_shader_uniform_.SetLightSpecular(glm::vec3(1.0f));
     container_shader_uniform_.SetViewPosition(view_position);
     container_shader_uniform_.SetMaterialShininess(32.0f);
-    container_.Render();
-
+    for (const auto &container_location: container_locations) {
+        glm::mat4 model_mat = glm::mat4(1);
+        model_mat = glm::translate(model_mat, container_location.position);
+        model_mat = glm::rotate(model_mat, container_location.rotation_speed.z * angle_, glm::vec3(0, 0, 1));
+        model_mat = glm::rotate(model_mat, container_location.rotation_speed.y * angle_, glm::vec3(0, 1, 0));
+        model_mat = glm::rotate(model_mat, container_location.rotation_speed.x * angle_, glm::vec3(1, 0, 0));
+        container_shader_uniform_.SetModelMat(model_mat);
+        container_.Render();
+    }
 
     axis_shader_uniform_.SetViewMat(view_mat);
     axis_shader_uniform_.SetModelMat(glm::mat4(1));

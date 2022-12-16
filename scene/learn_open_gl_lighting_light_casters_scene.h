@@ -26,6 +26,8 @@ public:
     }
 
 private:
+    float angle_{};
+
     // コンテナ用 shader
     Shader container_shader_;
     // 頂点カラー shader
