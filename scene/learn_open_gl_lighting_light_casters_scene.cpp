@@ -20,6 +20,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             container_shader_.GetUniformVariableLocation("projection_mat"),
             container_shader_.GetUniformVariableLocation("view_mat"),
             container_shader_.GetUniformVariableLocation("model_mat"),
+            container_shader_.GetUniformVariableLocation("light.direction"),
             container_shader_.GetUniformVariableLocation("light.ambient"),
             container_shader_.GetUniformVariableLocation("light.diffuse"),
             container_shader_.GetUniformVariableLocation("light.specular"),
@@ -81,6 +82,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     // container の設定
     container_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
     container_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
+    container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, -2));
 }
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
@@ -89,7 +91,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
         glm::vec3 position; // グローバル座標
         glm::vec3 rotation_speed; // 回転速度
     } container_locations[] = {
-            {glm::vec3(0.0f, 0.0f, -0.5f),    glm::vec3(0.2, 0.1, 0)},
+            {glm::vec3(0.0f, 0.0f, -1.5f),    glm::vec3(0.2, 0.1, 0)},
             {glm::vec3(2.0f, 5.0f, -15.0f),   glm::vec3(-0.1, 0, 0.2)},
             {glm::vec3(-1.5f, -2.2f, -2.5f),  glm::vec3(0.3, -0.1, 0)},
             {glm::vec3(-3.8f, -2.0f, -12.3f), glm::vec3(-0.5, 0.5, 0.1)},

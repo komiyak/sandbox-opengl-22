@@ -12,6 +12,7 @@ public:
             GLint uniform_projection_mat,
             GLint uniform_view_mat,
             GLint uniform_model_mat,
+            GLint uniform_light_direction,
             GLint uniform_light_ambient,
             GLint uniform_light_diffuse,
             GLint uniform_light_specular,
@@ -24,6 +25,7 @@ public:
         uniform_projection_mat_ = uniform_projection_mat;
         uniform_view_mat_ = uniform_view_mat;
         uniform_model_mat_ = uniform_model_mat;
+        uniform_light_direction_ = uniform_light_direction;
         uniform_light_ambient_ = uniform_light_ambient;
         uniform_light_diffuse_ = uniform_light_diffuse;
         uniform_light_specular_ = uniform_light_specular;
@@ -45,6 +47,10 @@ public:
 
     void SetModelMat(const glm::mat4 &model_mat) {
         model_mat_ = model_mat;
+    }
+
+    void SetLightDirection(const glm::vec3 &light_direction) {
+        light_direction_ = light_direction;
     }
 
     void SetLightAmbient(const glm::vec3 &light_ambient) {
@@ -79,6 +85,7 @@ private:
     GLint uniform_projection_mat_{-1};
     GLint uniform_view_mat_{-1};
     GLint uniform_model_mat_{-1};
+    GLint uniform_light_direction_{-1};
     GLint uniform_light_ambient_{-1};
     GLint uniform_light_diffuse_{-1};
     GLint uniform_light_specular_{-1};
@@ -90,6 +97,7 @@ private:
     glm::mat4 projection_mat_{glm::mat4(1.f)};
     glm::mat4 view_mat_{glm::mat4(1.f)};
     glm::mat4 model_mat_{glm::mat4(1.f)};
+    glm::vec3 light_direction_{glm::vec3(0)};
     glm::vec3 light_ambient_{glm::vec3(0)};
     glm::vec3 light_diffuse_{glm::vec3(0)};
     glm::vec3 light_specular_{glm::vec3(0)};

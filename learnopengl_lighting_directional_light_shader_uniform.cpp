@@ -7,6 +7,7 @@ void LearnopenglLightingDirectionalLightShaderUniform::Transfer() const {
     glUniformMatrix4fv(uniform_projection_mat_, 1, GL_FALSE, glm::value_ptr(projection_mat_));
     glUniformMatrix4fv(uniform_view_mat_, 1, GL_FALSE, glm::value_ptr(view_mat_));
     glUniformMatrix4fv(uniform_model_mat_, 1, GL_FALSE, glm::value_ptr(model_mat_));
+    glUniform3f(uniform_light_direction_, light_direction_.x, light_direction_.y, light_direction_.z);
     glUniform3f(uniform_light_ambient_, light_ambient_.x, light_ambient_.y, light_ambient_.z);
     glUniform3f(uniform_light_diffuse_, light_diffuse_.x, light_diffuse_.y, light_diffuse_.z);
     glUniform3f(uniform_light_specular_, light_specular_.x, light_specular_.y, light_specular_.z);
