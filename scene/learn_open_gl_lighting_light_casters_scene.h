@@ -33,11 +33,18 @@ private:
         kPointLight,
         kSpotlight
     };
+    enum DirectionalLightMode {
+        kDirectionalLightA,
+        kDirectionalLightB,
+        kDirectionalLightC,
+    };
 
     float angle_{};
 
     // 動作モード
     Mode mode_{kDirectionalLight};
+    // Directional light mode のときのサブモード
+    DirectionalLightMode directional_light_mode_{kDirectionalLightA};
 
     // コンテナ用 shader
     Shader container_shader_;

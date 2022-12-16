@@ -164,9 +164,23 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
     // フォント描画
     if (up_bitmap_font_render_) {
         const char *current_mode;
+        const char *current_sub_mode = nullptr;
         switch (mode_) {
             case kDirectionalLight:
                 current_mode = "Current mode is: Directional light";
+                switch (directional_light_mode_) {
+                    case kDirectionalLightA:
+                        current_sub_mode = "Directional light mode is: A";
+                        break;
+                    case kDirectionalLightB:
+                        current_sub_mode = "Directional light mode is: B";
+                        break;
+                    case kDirectionalLightC:
+                        current_sub_mode = "Directional light mode is: C";
+                        break;
+                    default:
+                        DEBUG_ABORT_MESSAGE("Not implemented");
+                }
                 break;
             case kPointLight:
                 current_mode = "Current mode is: Point light";
@@ -182,6 +196,14 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                 "To change the mode, [1]: Directional light, [2]: Point light, [3]: Spotlight",
                 40, 90, 14,
                 glm::vec3(0, 0.7, 0));
+
+        if (current_sub_mode) {
+            up_bitmap_font_render_->RenderWhiteAsciiText(current_sub_mode, 40, 150, 20);
+            up_bitmap_font_render_->RenderAsciiText(
+                    "To change the sub mode, [A]: A, [S]: B, [D]: C",
+                    40, 200, 14,
+                    glm::vec3(0, 0.7, 0));
+        }
     }
 }
 
@@ -215,5 +237,17 @@ void LearnOpenGlLightingLightCastersScene::OnKey(int glfw_key, int glfw_action) 
     }
     if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
         mode_ = kSpotlight;
+    }
+
+    if (mode_ == kDirectionalLight) {
+        if (glfw_key == GLFW_KEY_A && glfw_action == GLFW_PRESS) {
+            directional_light_mode_ = kDirectionalLightA;
+        }
+        if (glfw_key == GLFW_KEY_S && glfw_action == GLFW_PRESS) {
+            directional_light_mode_ = kDirectionalLightB;
+        }
+        if (glfw_key == GLFW_KEY_D && glfw_action == GLFW_PRESS) {
+            directional_light_mode_ = kDirectionalLightC;
+        }
     }
 }
