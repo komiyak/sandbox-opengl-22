@@ -105,7 +105,6 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     // container の設定
     container_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
     container_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
-    container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, -2));
 }
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
@@ -140,6 +139,22 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
             glm::vec3(0.f, 0.f, 0.f),
             glm::vec3(0.f, 1.f, 0.f));
 
+    // directional light の向きを少し変える
+    if (mode_ == kDirectionalLight) {
+        switch (directional_light_mode_) {
+            case kDirectionalLightA:
+                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, -2));
+                break;
+            case kDirectionalLightB:
+                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, 1));
+                break;
+            case kDirectionalLightC:
+                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, 1, -0.1)); // 下からの光
+                break;
+            default:
+                DEBUG_ABORT_MESSAGE("Not reached");
+        }
+    }
 
     container_shader_uniform_.SetViewMat(view_mat);
     container_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
@@ -179,7 +194,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                         current_sub_mode = "Directional light mode is: C";
                         break;
                     default:
-                        DEBUG_ABORT_MESSAGE("Not implemented");
+                        DEBUG_ABORT_MESSAGE("Not reached");
                 }
                 break;
             case kPointLight:
@@ -189,7 +204,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                 current_mode = "Current mode is: Spotlight";
                 break;
             default:
-                DEBUG_ABORT_MESSAGE("Not implemented");
+                DEBUG_ABORT_MESSAGE("Not reached");
         }
         up_bitmap_font_render_->RenderWhiteAsciiText(current_mode, 40, 40, 20);
         up_bitmap_font_render_->RenderAsciiText(
