@@ -22,8 +22,8 @@ void StartingScene::OnStart() {
 
     // フォント準備
     up_bitmap_font_render_ = new BitmapFontRender(
-            p_application_context_->GetWindowScreenWidth(),
-            p_application_context_->GetWindowScreenHeight(),
+            GetApplicationContext()->GetWindowScreenWidth(),
+            GetApplicationContext()->GetWindowScreenHeight(),
             texture_.GetTextureWidth(),
             texture_.GetTextureHeight(),
             4,
@@ -85,20 +85,17 @@ void StartingScene::OnDestroy() {
 void StartingScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
+        SendToDestroy();
     }
 
     // 任意の Scene を起動する
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
-        next_scene_ = SandboxScene::CreateFactory;
+        LaunchNextScene(SandboxScene::CreateFactory);
     }
     if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
-        next_scene_ = LearnOpenGlLightingScene::CreateFactory;
+        LaunchNextScene(LearnOpenGlLightingScene::CreateFactory);
     }
     if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
-        next_scene_ = LearnOpenGlLightingLightCastersScene::CreateFactory;
+        LaunchNextScene(LearnOpenGlLightingLightCastersScene::CreateFactory);
     }
 }

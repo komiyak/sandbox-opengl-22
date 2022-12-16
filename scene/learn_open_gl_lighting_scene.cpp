@@ -118,7 +118,7 @@ void LearnOpenGlLightingScene::OnFrame() {
 void LearnOpenGlLightingScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
+        SendToDestroy();
     }
 }
 

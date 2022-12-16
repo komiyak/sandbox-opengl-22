@@ -187,32 +187,41 @@ void SandboxScene::OnFrame() {
 
     glm::mat4 model_mat = glm::mat4(1.0f);
     model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.5f, 0.0f));
-    up_triangle_shader_uniform_->SetViewMat(view_mat);
-    up_triangle_shader_uniform_->SetModelMat(model_mat);
-    up_triangle_->Render();
+    if (up_triangle_shader_uniform_ && up_triangle_) {
+        up_triangle_shader_uniform_->SetViewMat(view_mat);
+        up_triangle_shader_uniform_->SetModelMat(model_mat);
+        up_triangle_->Render();
+    }
 
+    if (up_grid_shader_uniform_ && up_grid_) {
+        up_grid_shader_uniform_->SetViewMat(view_mat);
+        up_grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        up_grid_->Render();
+    }
 
-    up_grid_shader_uniform_->SetViewMat(view_mat);
-    up_grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-    up_grid_->Render();
+    if (up_axis_shader_uniform_ && up_axis_) {
+        up_axis_shader_uniform_->SetViewMat(view_mat);
+        up_axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        up_axis_->Render();
+    }
 
-    up_axis_shader_uniform_->SetViewMat(view_mat);
-    up_axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-    up_axis_->Render();
+    if (up_grass_shader_uniform_ && up_grass_) {
+        glm::mat4 grass_model_mat = glm::mat4(1.0f);
+        grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
+        grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
+        up_grass_shader_uniform_->SetViewMat(view_mat);
+        up_grass_shader_uniform_->SetModelMat(grass_model_mat);
+        up_grass_->Render();
+    }
 
-    glm::mat4 grass_model_mat = glm::mat4(1.0f);
-    grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
-    grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
-    up_grass_shader_uniform_->SetViewMat(view_mat);
-    up_grass_shader_uniform_->SetModelMat(grass_model_mat);
-    up_grass_->Render();
-
-    glm::mat4 cube_mat = glm::mat4(1.0f);
-    cube_mat = glm::translate(cube_mat, glm::vec3(0.0f, 2.f, 0.0f));
-    cube_mat = glm::scale(cube_mat, glm::vec3(0.5, 0.5, 0.5));
-    up_cube_shader_uniform_->SetViewMat(view_mat);
-    up_cube_shader_uniform_->SetModelMat(cube_mat);
-    up_cube_->Render();
+    if (up_cube_shader_uniform_ && up_cube_) {
+        glm::mat4 cube_mat = glm::mat4(1.0f);
+        cube_mat = glm::translate(cube_mat, glm::vec3(0.0f, 2.f, 0.0f));
+        cube_mat = glm::scale(cube_mat, glm::vec3(0.5, 0.5, 0.5));
+        up_cube_shader_uniform_->SetViewMat(view_mat);
+        up_cube_shader_uniform_->SetModelMat(cube_mat);
+        up_cube_->Render();
+    }
 }
 
 void SandboxScene::OnDestroy() {
@@ -242,6 +251,6 @@ void SandboxScene::OnDestroy() {
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
-        should_destroy_ = true;
+        SendToDestroy();
     }
 }

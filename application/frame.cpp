@@ -1,6 +1,4 @@
-#include <glad/glad.h> // to need for GLFW the below include.
-#include <GLFW/glfw3.h>
-
+#include "../opengl_glfw.h"
 #include "frame.h"
 
 void Frame::StartFrame() {

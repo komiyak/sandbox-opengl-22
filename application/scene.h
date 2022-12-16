@@ -53,6 +53,25 @@ protected:
         return frame_;
     }
 
+    // Scene を終了したいときにコールする
+    void SendToDestroy() {
+        should_destroy_ = true;
+    }
+
+    void LaunchNextScene(Scene *(*next_scene)()) {
+        should_destroy_ = true;
+        next_scene_ = next_scene;
+    }
+
+    [[nodiscard]] const ApplicationContext *GetApplicationContext() const {
+        return p_application_context_;
+    }
+
+private:
+    // フレーム管理
+    Frame frame_;
+
+    // アプリケーションコンテキストへのリンク
     const ApplicationContext *p_application_context_{};
 
     // Application に終了を通知したいとき
@@ -62,8 +81,6 @@ protected:
     // TODO: いつかメッセージ方式に変更したい。
     Scene *(*next_scene_)(){};
 
-private:
-    Frame frame_;
 };
 
 #endif //SANDBOX_OPENGL_22_SCENE_H_

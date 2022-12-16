@@ -127,7 +127,7 @@ void Application::ErrorCallback([[maybe_unused]] int error, const char *descript
 }
 
 void Application::KeyCallback(
-        GLFWwindow *window,
+        [[maybe_unused]] GLFWwindow *window,
         int key,
         [[maybe_unused]] int scancode,
         int action,
