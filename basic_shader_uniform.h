@@ -12,10 +12,12 @@
 
 class BasicShaderUniform : public ShaderUniform {
 public:
-    BasicShaderUniform(GLint uniform_projection_mat, GLint uniform_view_mat, GLint uniform_model_mat)
-            : uniform_projection_mat_(uniform_projection_mat),
-              uniform_view_mat_(uniform_view_mat),
-              uniform_model_mat_(uniform_model_mat) { Activate(); }
+    void SetUniformLocations(GLint uniform_projection_mat, GLint uniform_view_mat, GLint uniform_model_mat) {
+        uniform_projection_mat_ = uniform_projection_mat;
+        uniform_view_mat_ = uniform_view_mat;
+        uniform_model_mat_ = uniform_model_mat;
+        Activate();
+    }
 
     void Transfer() const override;
 

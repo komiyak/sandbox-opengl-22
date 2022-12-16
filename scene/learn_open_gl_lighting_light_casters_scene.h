@@ -7,6 +7,7 @@
 #include "../texture.h"
 #include "../vertex_render_object.h"
 #include "../learnopengl_lighting_directional_light_shader_uniform.h"
+#include "../basic_shader_uniform.h"
 
 // LearnOpenGL.com の lighting / light casters の学習用のシーン
 // https://learnopengl.com/Lighting/Light-casters
@@ -44,6 +45,8 @@ private:
 
     // コンテナ用 shader uniform
     LearnopenglLightingDirectionalLightShaderUniform container_shader_uniform_;
+    // 原点用の３軸用の shader uniform
+    BasicShaderUniform axis_shader_uniform_;
 };
 
 
