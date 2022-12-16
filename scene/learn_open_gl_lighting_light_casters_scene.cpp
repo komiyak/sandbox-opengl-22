@@ -2,9 +2,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "learn_open_gl_lighting_light_casters_scene.h"
+#include "../application/application_context.h"
 #include "../game_data.h"
 #include "../position_with_normal_and_texcoord_vertex_specification.h"
 #include "../color_vertex_specification.h"
+#include "../bitmap_font_render.h"
+#include "../debug.h"
 
 void LearnOpenGlLightingLightCastersScene::OnStart() {
     // Preparing shaders
@@ -14,6 +17,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     vertex_color_shader_.BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag");
+    font_shader_.BuildFromFile(
+            "shader/font.vert",
+            "shader/font.frag");
 
     // Preparing containers.
     container_shader_uniform_.SetUniformLocations(
@@ -73,6 +79,23 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             Texture::ImageFormat::RGBA,
             2);
 
+    // フォント準備
+    up_bitmap_font_render_ = new BitmapFontRender(
+            GetApplicationContext()->GetWindowScreenWidth(),
+            GetApplicationContext()->GetWindowScreenHeight(),
+            font_texture_.GetTextureWidth(),
+            font_texture_.GetTextureHeight(),
+            4,
+            8,
+            font_texture_.GetTextureUnitNumber(),
+            font_shader_.GetUniformVariableLocation("tex"),
+            font_shader_.GetUniformVariableLocation("color"),
+            font_shader_.GetUniformVariableLocation("translation_vec"),
+            font_shader_.GetUniformVariableLocation("scaling_vec"),
+            font_shader_.GetUniformVariableLocation("texcoord_translation_vec"),
+            font_shader_.GetUniformVariableLocation("texcoord_scaling_vec"),
+            &font_shader_);
+    up_bitmap_font_render_->Initialize();
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
@@ -137,11 +160,35 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
     axis_shader_uniform_.SetViewMat(view_mat);
     axis_shader_uniform_.SetModelMat(glm::mat4(1));
     axis_.Render();
+
+    // フォント描画
+    if (up_bitmap_font_render_) {
+        const char *current_mode;
+        switch (mode_) {
+            case kDirectionalLight:
+                current_mode = "Current mode is: Directional light";
+                break;
+            case kPointLight:
+                current_mode = "Current mode is: Point light";
+                break;
+            case kSpotlight:
+                current_mode = "Current mode is: Spotlight";
+                break;
+            default:
+                DEBUG_ABORT_MESSAGE("Not implemented");
+        }
+        up_bitmap_font_render_->RenderWhiteAsciiText(current_mode, 40, 40, 20);
+        up_bitmap_font_render_->RenderAsciiText(
+                "To change the mode, [1]: Directional light, [2]: Point light, [3]: Spotlight",
+                40, 90, 14,
+                glm::vec3(0, 0.7, 0));
+    }
 }
 
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
     container_shader_.Finalize();
     vertex_color_shader_.Finalize();
+    font_shader_.Finalize();
 
     font_texture_.Finalize();
     container_texture_.Finalize();
@@ -149,11 +196,24 @@ void LearnOpenGlLightingLightCastersScene::OnDestroy() {
 
     container_.Finalize();
     axis_.Finalize();
+
+    FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }
 
 void LearnOpenGlLightingLightCastersScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
         SendToDestroy();
+    }
+
+    // mode change
+    if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
+        mode_ = kDirectionalLight;
+    }
+    if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
+        mode_ = kPointLight;
+    }
+    if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
+        mode_ = kSpotlight;
     }
 }

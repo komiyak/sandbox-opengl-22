@@ -9,6 +9,8 @@
 #include "../learnopengl_lighting_directional_light_shader_uniform.h"
 #include "../basic_shader_uniform.h"
 
+class BitmapFontRender;
+
 // LearnOpenGL.com の lighting / light casters の学習用のシーン
 // https://learnopengl.com/Lighting/Light-casters
 class LearnOpenGlLightingLightCastersScene : public Scene {
@@ -26,12 +28,23 @@ public:
     }
 
 private:
+    enum Mode {
+        kDirectionalLight,
+        kPointLight,
+        kSpotlight
+    };
+
     float angle_{};
+
+    // 動作モード
+    Mode mode_{kDirectionalLight};
 
     // コンテナ用 shader
     Shader container_shader_;
     // 頂点カラー shader
     Shader vertex_color_shader_;
+    // Font 用 shader
+    Shader font_shader_;
 
     // Bitmap font 用 texture
     Texture font_texture_;
@@ -49,6 +62,9 @@ private:
     LearnopenglLightingDirectionalLightShaderUniform container_shader_uniform_;
     // 原点用の３軸用の shader uniform
     BasicShaderUniform axis_shader_uniform_;
+
+    // Bitmap font
+    BitmapFontRender *up_bitmap_font_render_{};
 };
 
 
