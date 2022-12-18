@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include "opengl_glfw.h"
+#include "../opengl_glfw.h"
 #include "shader_uniform.h"
 
 class PracticeLightingLightingMapShaderUniform : public ShaderUniform {

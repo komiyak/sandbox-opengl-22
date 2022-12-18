@@ -4,8 +4,8 @@
 #include "learn_open_gl_lighting_light_casters_scene.h"
 #include "../application/application_context.h"
 #include "../game_data.h"
-#include "../position_with_normal_and_texcoord_vertex_specification.h"
-#include "../color_vertex_specification.h"
+#include "../vertex_specification/position_with_normal_and_texcoord_vertex_specification.h"
+#include "../vertex_specification/color_vertex_specification.h"
 #include "../bitmap_font_render.h"
 #include "../debug.h"
 

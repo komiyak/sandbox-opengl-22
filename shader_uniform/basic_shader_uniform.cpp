@@ -1,7 +1,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "basic_shader_uniform.h"
-#include "opengl_debug.h"
+#include "../opengl_debug.h"
 
 void BasicShaderUniform::Transfer() const {
     glUniformMatrix4fv(uniform_projection_mat_, 1, GL_FALSE, glm::value_ptr(projection_mat_));

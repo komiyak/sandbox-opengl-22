@@ -1,9 +1,9 @@
 #ifndef SANDBOX_OPENGL_22_TEXTURE_SHADER_UNIFORM_H_
 #define SANDBOX_OPENGL_22_TEXTURE_SHADER_UNIFORM_H_
 
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include "../opengl_glfw.h"
 #include "shader_uniform.h"
 
 class TextureShaderUniform : public ShaderUniform {

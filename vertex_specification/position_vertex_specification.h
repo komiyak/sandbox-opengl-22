@@ -1,11 +1,7 @@
-//
-// Created by komiyak on 22/11/22.
-//
-
 #ifndef SANDBOX_OPENGL_22_POSITION_VERTEX_SPECIFICATION_H_
 #define SANDBOX_OPENGL_22_POSITION_VERTEX_SPECIFICATION_H_
 
-#include <glad/glad.h>
+#include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
 class PositionVertexSpecification : public VertexSpecification {

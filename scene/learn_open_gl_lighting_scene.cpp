@@ -7,13 +7,13 @@
 #include "../game_data.h"
 #include "../shader.h"
 #include "../vertex_render_object.h"
-#include "../basic_shader_uniform.h"
-#include "../practice_lighting_phong_shading_shader_uniform.h"
-#include "../practice_lighting_lighting_map_shader_uniform.h"
-#include "../position_vertex_specification.h"
-#include "../position_with_normal_vector_vertex_specification.h"
-#include "../position_with_normal_and_texcoord_vertex_specification.h"
-#include "../color_vertex_specification.h"
+#include "../shader_uniform/basic_shader_uniform.h"
+#include "../shader_uniform/practice_lighting_phong_shading_shader_uniform.h"
+#include "../shader_uniform/practice_lighting_lighting_map_shader_uniform.h"
+#include "../vertex_specification/position_vertex_specification.h"
+#include "../vertex_specification/position_with_normal_vector_vertex_specification.h"
+#include "../vertex_specification/position_with_normal_and_texcoord_vertex_specification.h"
+#include "../vertex_specification/color_vertex_specification.h"
 
 void LearnOpenGlLightingScene::OnFrame() {
     glClearColor(0.8f, 0.8f, 0.8f, 1.0f);

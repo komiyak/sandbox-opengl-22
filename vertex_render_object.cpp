@@ -2,8 +2,8 @@
 #include "opengl_debug.h"
 #include "debug.h"
 #include "shader.h"
-#include "shader_uniform.h"
-#include "vertex_specification.h"
+#include "shader_uniform/shader_uniform.h"
+#include "vertex_specification/vertex_specification.h"
 
 void VertexRenderObject::Initialize(
         GLsizeiptr vertex_size,

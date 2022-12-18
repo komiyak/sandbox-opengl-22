@@ -1,7 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_POSITION_WITH_NORMAL_AND_TEXCOORD_VERTEX_SPECIFICATION_H_
 #define SANDBOX_OPENGL_22_POSITION_WITH_NORMAL_AND_TEXCOORD_VERTEX_SPECIFICATION_H_
 
-#include <glad/glad.h>
+#include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
 class PositionWithNormalAndTexcoordVertexSpecification : public VertexSpecification {

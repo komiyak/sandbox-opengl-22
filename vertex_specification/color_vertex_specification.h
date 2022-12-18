@@ -1,11 +1,7 @@
-//
-// Created by komiyak on 22/11/22.
-//
-
 #ifndef SANDBOX_OPENGL_22_COLOR_VERTEX_SPECIFICATION_H_
 #define SANDBOX_OPENGL_22_COLOR_VERTEX_SPECIFICATION_H_
 
-#include <glad/glad.h>
+#include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
 class ColorVertexSpecification : public VertexSpecification {
@@ -22,6 +18,5 @@ private:
     // shader に含まれる 'color' の属性変数の位置
     GLint color_attrib_location_;
 };
-
 
 #endif //SANDBOX_OPENGL_22_COLOR_VERTEX_SPECIFICATION_H_

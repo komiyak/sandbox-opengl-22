@@ -1,7 +1,3 @@
-//
-// Created by komiyak on 22/11/22.
-//
-
 #ifndef SANDBOX_OPENGL_22_VERTEX_SPECIFICATION_H_
 #define SANDBOX_OPENGL_22_VERTEX_SPECIFICATION_H_
 

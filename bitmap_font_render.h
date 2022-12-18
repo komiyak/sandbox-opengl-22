@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include "base_object.h"
-#include "font_shader_uniform.h"
+#include "shader_uniform/font_shader_uniform.h"
 
 class VertexRenderObject;
 

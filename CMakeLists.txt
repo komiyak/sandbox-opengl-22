@@ -35,23 +35,23 @@ add_executable(
         main.cpp
         vertex_render_object.cpp
         shader.cpp
-        basic_shader_uniform.cpp
-        texture_shader_uniform.cpp
-        texture_2d_shader_uniform.cpp
-        font_shader_uniform.cpp
-        practice_lighting_phong_shading_shader_uniform.cpp
-        practice_lighting_lighting_map_shader_uniform.cpp
-        learnopengl_lighting_directional_light_shader_uniform.cpp
+        shader_uniform/basic_shader_uniform.cpp
+        shader_uniform/texture_shader_uniform.cpp
+        shader_uniform/texture_2d_shader_uniform.cpp
+        shader_uniform/font_shader_uniform.cpp
+        shader_uniform/practice_lighting_phong_shading_shader_uniform.cpp
+        shader_uniform/practice_lighting_lighting_map_shader_uniform.cpp
+        shader_uniform/learnopengl_lighting_directional_light_shader_uniform.cpp
         bitmap_font_render.cpp
         application/frame.cpp
         png_load.cpp
         game_math.cpp
-        position_vertex_specification.cpp
-        position_with_normal_vector_vertex_specification.cpp
-        position_with_normal_and_texcoord_vertex_specification.cpp
-        color_vertex_specification.cpp
-        texture_vertex_specification.cpp
-        texture_2d_vertex_specification.cpp
+        vertex_specification/position_vertex_specification.cpp
+        vertex_specification/position_with_normal_vector_vertex_specification.cpp
+        vertex_specification/position_with_normal_and_texcoord_vertex_specification.cpp
+        vertex_specification/color_vertex_specification.cpp
+        vertex_specification/texture_vertex_specification.cpp
+        vertex_specification/texture_2d_vertex_specification.cpp
         opengl_debug.cpp
         cstring_util.cpp
         texture.cpp

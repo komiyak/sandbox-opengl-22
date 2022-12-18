@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "vertex_render_object.h"
 #include "game_data.h"
-#include "texture_2d_vertex_specification.h"
+#include "vertex_specification/texture_2d_vertex_specification.h"
 #include "shader.h"
 #include "game_math.h"
 

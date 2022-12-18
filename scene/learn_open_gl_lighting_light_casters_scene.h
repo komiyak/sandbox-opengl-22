@@ -6,8 +6,8 @@
 #include "../shader.h"
 #include "../texture.h"
 #include "../vertex_render_object.h"
-#include "../learnopengl_lighting_directional_light_shader_uniform.h"
-#include "../basic_shader_uniform.h"
+#include "../shader_uniform/learnopengl_lighting_directional_light_shader_uniform.h"
+#include "../shader_uniform/basic_shader_uniform.h"
 
 class BitmapFontRender;
 
