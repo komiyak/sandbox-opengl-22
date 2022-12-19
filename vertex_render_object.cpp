@@ -71,3 +71,15 @@ void VertexRenderObject::Render() const {
     }
 }
 
+void VertexRenderObject::ChangeShader(
+        const Shader *p_shader,
+        const ShaderUniform *p_shader_uniform) {
+    DEBUG_ASSERT(initialized_);
+    DEBUG_ASSERT(p_shader);
+    DEBUG_ASSERT(p_shader_uniform);
+    if (!initialized_) return;
+
+    p_shader_ = p_shader;
+    p_shader_uniform_ = p_shader_uniform;
+}
+

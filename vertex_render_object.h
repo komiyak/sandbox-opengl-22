@@ -34,6 +34,13 @@ public:
 
     void Render() const;
 
+    // 初期化後に任意の shader に切り替える
+    // 頂点データの意味が変わってしまう(glVertexAttribPointer 再実行)レベルでの
+    // shader の変更には対応していない
+    void ChangeShader(
+            const Shader *p_shader,
+            const ShaderUniform *p_shader_uniform);
+
 private:
     // Already initialized
     bool initialized_{};
