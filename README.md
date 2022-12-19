@@ -63,6 +63,7 @@ These words are hard to understand. You should use full spelling.
 | --- | --- |
 | font.frag/vert | A vertex with 4 data as Vertex(x, y) and texcoord (s, t). 2D bitmap font rendering with color by uniform. |
 | learnopengl_lighting_directional_light.frag/vert | In LearnOpenGL.com the Lighting chapter, A vertex with 8 data as Vertex (x, y, z), normal (x, y, z) and texcoord (s, t). It's a directional light shader. |
+| learnopengl_lighting_point_light.frag/vert | In LearnOpenGL.com the Lighting chapter, A vertex with 8 data as Vertex (x, y, z), normal (x, y, z) and texcoord (s, t). It's a point light shader. |
 | practice_lighting_gouraud_shading.frag/vert | A vertex with 6 data as Vertex (x, y, z) and normal (x, y, z). To practice lighting with gouraud shading. |
 | practice_lighting_lighting_map.frag/vert | A vertex with 8 data as Vertex (x, y, z), normal (x, y, z) and texcoord (s, t). To practice lighting map. |
 | practice_lighting_phong_shading.frag/vert | A vertex with 6 data as Vertex (x, y, z) and normal (x, y, z). To practice lighting with phong shading. |
