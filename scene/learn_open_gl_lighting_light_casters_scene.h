@@ -8,6 +8,7 @@
 #include "../vertex_render_object.h"
 #include "../shader_uniform/learnopengl_lighting_directional_light_shader_uniform.h"
 #include "../shader_uniform/learnopengl_lighting_point_light_shader_uniform.h"
+#include "../shader_uniform/learnopengl_lighting_spotlight_shader_uniform.h"
 #include "../shader_uniform/basic_shader_uniform.h"
 
 class BitmapFontRender;
@@ -52,6 +53,8 @@ private:
     Shader container_shader_;
     // コンテナ用 shader (For point light)
     Shader container_point_light_shader_;
+    // コンテナ用 shader (For spotlight)
+    Shader container_spotlight_shader_;
     // 頂点カラー shader
     Shader vertex_color_shader_;
     // Font 用 shader
@@ -73,6 +76,8 @@ private:
     LearnopenglLightingDirectionalLightShaderUniform container_shader_uniform_;
     // コンテナ用 (For point light) shader uniform
     LearnopenglLightingPointLightShaderUniform container_point_light_shader_uniform_;
+    // コンテナ用 (For spotlight) shader uniform
+    LearnopenglLightingSpotlightShaderUniform container_spotlight_shader_uniform_;
     // 原点用の３軸用の shader uniform
     BasicShaderUniform axis_shader_uniform_;
 

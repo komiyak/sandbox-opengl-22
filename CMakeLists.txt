@@ -43,6 +43,7 @@ add_executable(
         shader_uniform/practice_lighting_lighting_map_shader_uniform.cpp
         shader_uniform/learnopengl_lighting_directional_light_shader_uniform.cpp
         shader_uniform/learnopengl_lighting_point_light_shader_uniform.cpp
+        shader_uniform/learnopengl_lighting_spotlight_shader_uniform.cpp
         bitmap_font_render.cpp
         application/frame.cpp
         png_load.cpp

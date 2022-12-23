@@ -62,6 +62,8 @@ void VertexRenderObject::Render() const {
         if (p_shader_uniform_ && p_shader_uniform_->IsActivated()) {
             p_shader_uniform_->Transfer();
         }
+        DEBUG_ASSERT_MESSAGE(p_shader_ && p_shader_uniform_ && p_shader_uniform_->IsActivated(),
+                             "The shader uniform is not activated.");
 
         // draw 実行
         glBindVertexArray(vao_);

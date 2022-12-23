@@ -17,6 +17,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_point_light_shader_.BuildFromFile(
             "shader/learnopengl_lighting_point_light.vert",
             "shader/learnopengl_lighting_point_light.frag");
+    container_spotlight_shader_.BuildFromFile(
+            "shader/learnopengl_lighting_spotlight.vert",
+            "shader/learnopengl_lighting_spotlight.frag");
     vertex_color_shader_.BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag");
@@ -52,6 +55,23 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             container_point_light_shader_.GetUniformVariableLocation("material.specular"),
             container_point_light_shader_.GetUniformVariableLocation("material.shininess"),
             container_point_light_shader_.GetUniformVariableLocation("viewPosition"));
+    container_spotlight_shader_uniform_.SetUniformLocations(
+            container_spotlight_shader_.GetUniformVariableLocation("projection_mat"),
+            container_spotlight_shader_.GetUniformVariableLocation("view_mat"),
+            container_spotlight_shader_.GetUniformVariableLocation("model_mat"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.position"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.direction"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.cutoff"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.ambient"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.diffuse"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.specular"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.constant"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.linear"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.quadratic"),
+            container_spotlight_shader_.GetUniformVariableLocation("material.diffuse"),
+            container_spotlight_shader_.GetUniformVariableLocation("material.specular"),
+            container_spotlight_shader_.GetUniformVariableLocation("material.shininess"),
+            container_spotlight_shader_.GetUniformVariableLocation("viewPosition"));
     container_.Initialize(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
@@ -119,6 +139,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
     container_shader_uniform_.SetProjectionMat(projection_mat);
     container_point_light_shader_uniform_.SetProjectionMat(projection_mat);
+    container_spotlight_shader_uniform_.SetProjectionMat(projection_mat);
     axis_shader_uniform_.SetProjectionMat(projection_mat);
 
     // container の設定
@@ -131,6 +152,14 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_point_light_shader_uniform_.SetLightConstant(1.0f);
     container_point_light_shader_uniform_.SetLightLinear(0.09f);
     container_point_light_shader_uniform_.SetLightQuadratic(0.032f);
+
+    // spotlight の設定
+    container_spotlight_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
+    container_spotlight_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
+    container_spotlight_shader_uniform_.SetLightCutoff(glm::cos(glm::pi<float>() / 16));
+    container_spotlight_shader_uniform_.SetLightConstant(1.0f);
+    container_spotlight_shader_uniform_.SetLightLinear(0.027f);
+    container_spotlight_shader_uniform_.SetLightQuadratic(0.0028f);
 }
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
@@ -199,6 +228,14 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
     container_point_light_shader_uniform_.SetViewPosition(view_position);
     container_point_light_shader_uniform_.SetMaterialShininess(32.0f);
     container_point_light_shader_uniform_.SetLightPosition(point_light_position);
+    container_spotlight_shader_uniform_.SetViewMat(view_mat);
+    container_spotlight_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
+    container_spotlight_shader_uniform_.SetLightDiffuse(glm::vec3(0.8f));
+    container_spotlight_shader_uniform_.SetLightSpecular(glm::vec3(1.0f));
+    container_spotlight_shader_uniform_.SetViewPosition(view_position);
+    container_spotlight_shader_uniform_.SetMaterialShininess(32.0f);
+    container_spotlight_shader_uniform_.SetLightPosition(view_position);
+    container_spotlight_shader_uniform_.SetLightDirection(glm::normalize(-view_position));
     for (const auto &container_location: container_locations) {
         glm::mat4 model_mat = glm::mat4(1);
         model_mat = glm::translate(model_mat, container_location.position);
@@ -207,6 +244,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.x * angle_, glm::vec3(1, 0, 0));
         container_shader_uniform_.SetModelMat(model_mat);
         container_point_light_shader_uniform_.SetModelMat(model_mat);
+        container_spotlight_shader_uniform_.SetModelMat(model_mat);
         container_.Render();
     }
 
@@ -271,6 +309,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
     container_shader_.Finalize();
     container_point_light_shader_.Finalize();
+    container_spotlight_shader_.Finalize();
     vertex_color_shader_.Finalize();
     font_shader_.Finalize();
 
@@ -309,6 +348,12 @@ void LearnOpenGlLightingLightCastersScene::OnKey(int glfw_key, int glfw_action) 
         mode_ = kPointLight;
     }
     if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
+        if (mode_ != kSpotlight) {
+            container_.ChangeShader(
+                    &container_spotlight_shader_,
+                    &container_spotlight_shader_uniform_);
+
+        }
         mode_ = kSpotlight;
     }
 
