@@ -62,6 +62,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             container_spotlight_shader_.GetUniformVariableLocation("light.position"),
             container_spotlight_shader_.GetUniformVariableLocation("light.direction"),
             container_spotlight_shader_.GetUniformVariableLocation("light.cutoff"),
+            container_spotlight_shader_.GetUniformVariableLocation("light.outer_cutoff"),
             container_spotlight_shader_.GetUniformVariableLocation("light.ambient"),
             container_spotlight_shader_.GetUniformVariableLocation("light.diffuse"),
             container_spotlight_shader_.GetUniformVariableLocation("light.specular"),
@@ -157,6 +158,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_spotlight_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
     container_spotlight_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
     container_spotlight_shader_uniform_.SetLightCutoff(glm::cos(glm::pi<float>() / 16));
+    container_spotlight_shader_uniform_.SetLightOuterCutoff(glm::cos((glm::pi<float>() / 16) + (glm::pi<float>() / 64)));
     container_spotlight_shader_uniform_.SetLightConstant(1.0f);
     container_spotlight_shader_uniform_.SetLightLinear(0.027f);
     container_spotlight_shader_uniform_.SetLightQuadratic(0.0028f);

@@ -10,6 +10,7 @@ void LearnopenglLightingSpotlightShaderUniform::Transfer() const {
     glUniform3f(uniform_light_position_, light_position_.x, light_position_.y, light_position_.z);
     glUniform3f(uniform_light_direction_, light_direction_.x, light_direction_.y, light_direction_.z);
     glUniform1f(uniform_light_cutoff_, light_cutoff_);
+    glUniform1f(uniform_light_outer_cutoff_, light_outer_cutoff_);
     glUniform3f(uniform_light_ambient_, light_ambient_.x, light_ambient_.y, light_ambient_.z);
     glUniform3f(uniform_light_diffuse_, light_diffuse_.x, light_diffuse_.y, light_diffuse_.z);
     glUniform3f(uniform_light_specular_, light_specular_.x, light_specular_.y, light_specular_.z);

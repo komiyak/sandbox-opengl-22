@@ -15,6 +15,7 @@ public:
             GLint uniform_light_position,
             GLint uniform_light_direction,
             GLint uniform_light_cutoff,
+            GLint uniform_light_outer_cutoff,
             GLint uniform_light_ambient,
             GLint uniform_light_diffuse,
             GLint uniform_light_specular,
@@ -31,6 +32,7 @@ public:
         uniform_light_position_ = uniform_light_position;
         uniform_light_direction_ = uniform_light_direction;
         uniform_light_cutoff_ = uniform_light_cutoff;
+        uniform_light_outer_cutoff_ = uniform_light_outer_cutoff;
         uniform_light_ambient_ = uniform_light_ambient;
         uniform_light_diffuse_ = uniform_light_diffuse;
         uniform_light_specular_ = uniform_light_specular;
@@ -68,6 +70,10 @@ public:
 
     void SetLightCutoff(GLfloat light_cutoff) {
         light_cutoff_ = light_cutoff;
+    }
+
+    void SetLightOuterCutoff(GLfloat light_outer_cutoff) {
+        light_outer_cutoff_ = light_outer_cutoff;
     }
 
     void SetLightAmbient(const glm::vec3 &light_ambient) {
@@ -117,6 +123,7 @@ private:
     GLint uniform_light_position_{-1};
     GLint uniform_light_direction_{-1};
     GLint uniform_light_cutoff_{-1};
+    GLint uniform_light_outer_cutoff_{-1};
     GLint uniform_light_ambient_{-1};
     GLint uniform_light_diffuse_{-1};
     GLint uniform_light_specular_{-1};
@@ -134,6 +141,7 @@ private:
     glm::vec3 light_position_{glm::vec3(0)};
     glm::vec3 light_direction_{glm::vec3(0)};
     GLfloat light_cutoff_{};
+    GLfloat light_outer_cutoff_{};
     glm::vec3 light_ambient_{glm::vec3(0)};
     glm::vec3 light_diffuse_{glm::vec3(0)};
     glm::vec3 light_specular_{glm::vec3(0)};
