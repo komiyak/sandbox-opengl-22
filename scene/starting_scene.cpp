@@ -8,6 +8,7 @@
 #include "sandbox_scene.h"
 #include "learn_open_gl_lighting_scene.h"
 #include "learn_open_gl_lighting_light_casters_scene.h"
+#include "learn_open_gl_lighting_multiple_lights_scene.h"
 
 void StartingScene::OnStart() {
     up_font_shader_ = new Shader();
@@ -73,6 +74,9 @@ void StartingScene::OnFrame() {
         up_bitmap_font_render_->RenderWhiteAsciiText(
                 "[3] Move to 'LearnOpenGlLightingLightCastersScene'",
                 40, 320, 16);
+        up_bitmap_font_render_->RenderWhiteAsciiText(
+                "[4] Move to 'LearnOpenGlLightingMultipleLightsScene'",
+                40, 360, 16);
     }
 }
 
@@ -97,5 +101,8 @@ void StartingScene::OnKey(int glfw_key, int glfw_action) {
     }
     if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
         LaunchNextScene(LearnOpenGlLightingLightCastersScene::CreateFactory);
+    }
+    if (glfw_key == GLFW_KEY_4 && glfw_action == GLFW_PRESS) {
+        LaunchNextScene(LearnOpenGlLightingMultipleLightsScene::CreateFactory);
     }
 }

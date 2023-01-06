@@ -62,6 +62,7 @@ add_executable(
         scene/sandbox_scene.cpp
         scene/learn_open_gl_lighting_scene.cpp
         scene/learn_open_gl_lighting_light_casters_scene.cpp
+        scene/learn_open_gl_lighting_multiple_lights_scene.cpp
         application/application.cpp)
 
 target_link_libraries(

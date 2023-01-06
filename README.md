@@ -56,6 +56,7 @@ These words are hard to understand. You should use full spelling.
 | SandboxScene | A sandbox with no purpose. It's OK if it breaks. |
 | LearnOpenGlLightingScene | A scene to learn lighting from LearnOpenGL.com |
 | LearnOpenGlLightingLightCastersScene | A scene to learn light casters from LearnOpenGL.com |
+| LearnOpenGlLightingMultipleLightsScene | A scene to learn multiple lights from LearnOpenGL.com |
 
 ## Shader files
 
