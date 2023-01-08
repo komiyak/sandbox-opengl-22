@@ -14,7 +14,8 @@ void StartingScene::OnStart() {
     up_font_shader_ = new Shader();
     up_font_shader_->BuildFromFile(
             "shader/font.vert",
-            "shader/font.frag");
+            "shader/font.frag",
+            "outColor");
 
     texture_.Load(
             "./texture/ascii_bitmap_font.png",

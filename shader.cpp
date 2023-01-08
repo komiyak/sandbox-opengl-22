@@ -16,7 +16,8 @@ std::string Shader::LoadShaderSourceFromFile(const char *filepath) {
 
 void Shader::BuildFromFile(
         const char *vertex_shader_filepath,
-        const char *fragment_shader_filepath) {
+        const char *fragment_shader_filepath,
+        const char *p_fragment_data_location_name) {
 
     DEBUG_ASSERT_MESSAGE(
             cstring_util::EqualLast(vertex_shader_filepath, ".vert"),
@@ -40,7 +41,9 @@ void Shader::BuildFromFile(
     program_object_ = glCreateProgram();
     glAttachShader(program_object_, vertex_shader_);
     glAttachShader(program_object_, fragment_shader_);
-    glBindFragDataLocation(program_object_, 0, "outColor"); // outColor に色を出力する
+    if (p_fragment_data_location_name) {
+        glBindFragDataLocation(program_object_, 0, p_fragment_data_location_name);
+    }
     glLinkProgram(program_object_);
     OPENGL_DEBUG_CHECK();
 }

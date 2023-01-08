@@ -35,22 +35,26 @@ void SandboxScene::OnStart() {
     up_grid_shader_ = new Shader();
     up_grid_shader_->BuildFromFile(
             "shader/white_vertex.vert",
-            "shader/white_vertex.frag");
+            "shader/white_vertex.frag",
+            "outColor");
 
     up_shader_ = new Shader();
     up_shader_->BuildFromFile(
             "shader/vertex_color.vert",
-            "shader/vertex_color.frag");
+            "shader/vertex_color.frag",
+            "outColor");
 
     up_texture_shader_ = new Shader();
     up_texture_shader_->BuildFromFile(
             "shader/texture.vert",
-            "shader/texture.frag");
+            "shader/texture.frag",
+            "outColor");
 
     up_texture_2d_shader_ = new Shader();
     up_texture_2d_shader_->BuildFromFile(
             "shader/texture_2d.vert",
-            "shader/texture_2d.frag");
+            "shader/texture_2d.frag",
+            "outColor");
 
 
     texture_grass_.Load(

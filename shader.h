@@ -16,7 +16,8 @@ public:
     // param fragment_shader_filepath Fragment shader ファイル
     void BuildFromFile(
             const char *vertex_shader_filepath,
-            const char *fragment_shader_filepath);
+            const char *fragment_shader_filepath,
+            const char *p_fragment_data_location_name);
 
     void Finalize() override;
 

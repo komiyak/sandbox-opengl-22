@@ -126,22 +126,26 @@ void LearnOpenGlLightingScene::OnStart() {
     up_white_vertex_shader_ = new Shader();
     up_white_vertex_shader_->BuildFromFile(
             "shader/white_vertex.vert",
-            "shader/white_vertex.frag");
+            "shader/white_vertex.frag",
+            "outColor");
 
     up_vertex_color_shader_ = new Shader();
     up_vertex_color_shader_->BuildFromFile(
             "shader/vertex_color.vert",
-            "shader/vertex_color.frag");
+            "shader/vertex_color.frag",
+            "outColor");
 
     up_sample_lighting_cube_shader_ = new Shader();
     up_sample_lighting_cube_shader_->BuildFromFile(
             "shader/practice_lighting_phong_shading.vert",
-            "shader/practice_lighting_phong_shading.frag");
+            "shader/practice_lighting_phong_shading.frag",
+            "outColor");
 
     up_lighting_map_shader_ = new Shader();
     up_lighting_map_shader_->BuildFromFile(
             "shader/practice_lighting_lighting_map.vert",
-            "shader/practice_lighting_lighting_map.frag");
+            "shader/practice_lighting_lighting_map.frag",
+            "outColor");
 
     up_grid_shader_uniform_ = new BasicShaderUniform();
     up_grid_shader_uniform_->SetUniformLocations(

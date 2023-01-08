@@ -13,19 +13,24 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     // Preparing shaders
     container_shader_.BuildFromFile(
             "shader/learnopengl_lighting_directional_light.vert",
-            "shader/learnopengl_lighting_directional_light.frag");
+            "shader/learnopengl_lighting_directional_light.frag",
+            "outColor");
     container_point_light_shader_.BuildFromFile(
             "shader/learnopengl_lighting_point_light.vert",
-            "shader/learnopengl_lighting_point_light.frag");
+            "shader/learnopengl_lighting_point_light.frag",
+            "outColor");
     container_spotlight_shader_.BuildFromFile(
             "shader/learnopengl_lighting_spotlight.vert",
-            "shader/learnopengl_lighting_spotlight.frag");
+            "shader/learnopengl_lighting_spotlight.frag",
+            "outColor");
     vertex_color_shader_.BuildFromFile(
             "shader/vertex_color.vert",
-            "shader/vertex_color.frag");
+            "shader/vertex_color.frag",
+            "outColor");
     font_shader_.BuildFromFile(
             "shader/font.vert",
-            "shader/font.frag");
+            "shader/font.frag",
+            "outColor");
 
     // Preparing containers.
     container_shader_uniform_.SetUniformLocations(
@@ -158,7 +163,8 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_spotlight_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
     container_spotlight_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
     container_spotlight_shader_uniform_.SetLightCutoff(glm::cos(glm::pi<float>() / 16));
-    container_spotlight_shader_uniform_.SetLightOuterCutoff(glm::cos((glm::pi<float>() / 16) + (glm::pi<float>() / 64)));
+    container_spotlight_shader_uniform_.SetLightOuterCutoff(
+            glm::cos((glm::pi<float>() / 16) + (glm::pi<float>() / 64)));
     container_spotlight_shader_uniform_.SetLightConstant(1.0f);
     container_spotlight_shader_uniform_.SetLightLinear(0.027f);
     container_spotlight_shader_uniform_.SetLightQuadratic(0.0028f);
