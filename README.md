@@ -26,6 +26,7 @@ These words can be abbreviated as another one.
 | --- | --- |
 | Attribute | Attrib |
 | Function | Func |
+| Iterator (C++) | Iter |
 | Length | Len |
 | Matrix | Mat |
 | Parameter, Parameters | Param, Params |

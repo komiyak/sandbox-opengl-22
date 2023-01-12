@@ -1,8 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_
 #define SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_
 
-#include <glad/glad.h>
-
+#include "../opengl_glfw.h"
 #include "../application/scene.h"
 #include "../texture.h"
 

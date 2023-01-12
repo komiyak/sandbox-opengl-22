@@ -35,6 +35,7 @@ add_executable(
         main.cpp
         vertex_render_object.cpp
         shader.cpp
+        shader_uniform/shader_uniform.cpp
         shader_uniform/basic_shader_uniform.cpp
         shader_uniform/texture_shader_uniform.cpp
         shader_uniform/texture_2d_shader_uniform.cpp

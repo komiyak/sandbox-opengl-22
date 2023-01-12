@@ -13,9 +13,9 @@
 class BasicShaderUniform : public ShaderUniform {
 public:
     void SetUniformLocations(GLint uniform_projection_mat, GLint uniform_view_mat, GLint uniform_model_mat) {
-        uniform_projection_mat_ = uniform_projection_mat;
-        uniform_view_mat_ = uniform_view_mat;
-        uniform_model_mat_ = uniform_model_mat;
+        AddUniformVariableLocation("projection_mat", uniform_projection_mat);
+        AddUniformVariableLocation("view_mat", uniform_view_mat);
+        AddUniformVariableLocation("model_mat", uniform_model_mat);
         Activate();
     }
 
@@ -37,10 +37,6 @@ private:
     glm::mat4 projection_mat_{glm::mat4(1.f)};
     glm::mat4 view_mat_{glm::mat4(1.f)};
     glm::mat4 model_mat_{glm::mat4(1.f)};
-
-    GLint uniform_projection_mat_{-1};
-    GLint uniform_view_mat_{-1};
-    GLint uniform_model_mat_{-1};
 };
 
 #endif //SANDBOX_OPENGL_22_BASIC_SHADER_UNIFORM_H_
