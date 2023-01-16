@@ -6,17 +6,14 @@
 
 class TextureVertexSpecification : public VertexSpecification {
 public:
-    TextureVertexSpecification(GLint position_attrib_location, GLint texcoord_attrib_location)
-            : position_attrib_location_(position_attrib_location),
-              texcoord_attrib_location_(texcoord_attrib_location) {}
-
     void Specify() const override;
 
+    static void UseSpecification(const Shader *p_shader) {
+        TextureVertexSpecification{p_shader}.Specify();
+    }
+
 private:
-    // shader に含まれる 'position' の属性変数の位置
-    GLint position_attrib_location_{};
-    // shader に含まれる 'texcoord' の属性変数の位置
-    GLint texcoord_attrib_location_{};
+    explicit TextureVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {}
 };
 
 

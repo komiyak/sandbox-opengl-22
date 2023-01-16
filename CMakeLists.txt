@@ -50,9 +50,11 @@ add_executable(
         application/frame.cpp
         png_load.cpp
         game_math.cpp
+        vertex_specification/vertex_specification.cpp
         vertex_specification/position_vertex_specification.cpp
         vertex_specification/position_with_normal_vector_vertex_specification.cpp
         vertex_specification/position_with_normal_and_texcoord_vertex_specification.cpp
+        vertex_specification/position_and_normal_and_texcoord_vertex_specification.cpp
         vertex_specification/color_vertex_specification.cpp
         vertex_specification/texture_vertex_specification.cpp
         vertex_specification/texture_2d_vertex_specification.cpp

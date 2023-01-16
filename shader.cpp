@@ -151,7 +151,7 @@ GLint Shader::GetAttribVariableLocationFromProgramObject(
     return location;
 }
 
-GLint Shader::GetAttribVariableLocation(const char *name) {
+GLint Shader::GetAttribVariableLocation(const char *name) const {
     if (!prepared_) return -1;
 
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする

@@ -3,14 +3,13 @@
 #include "debug.h"
 #include "shader.h"
 #include "shader_uniform/shader_uniform.h"
-#include "vertex_specification/vertex_specification.h"
 
 void VertexRenderObject::Initialize(
         GLsizeiptr vertex_size,
         const void *p_vertex_data,
-        const VertexSpecification &vertex_specification,
         const Shader *p_shader,
         const ShaderUniform *p_shader_uniform,
+        void (*use_specification)(const Shader *),
         GLenum usage,
         GLenum draw_mode,
         GLsizei draw_count) {
@@ -38,7 +37,7 @@ void VertexRenderObject::Initialize(
 
     // Specify the layout of the vertex data.
     p_shader_->UseProgram();
-    vertex_specification.Specify();
+    use_specification(p_shader_);
 }
 
 void VertexRenderObject::Finalize() {

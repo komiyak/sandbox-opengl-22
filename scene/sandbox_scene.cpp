@@ -98,47 +98,36 @@ void SandboxScene::OnStart() {
     up_grid_->Initialize(
             sizeof(GameData::kGridVertices),
             (void *) GameData::kGridVertices,
-            PositionVertexSpecification{
-                    up_grid_shader_->GetAttribVariableLocation("position")
-            },
             up_grid_shader_,
             up_grid_shader_uniform_,
+            PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2);
     up_axis_->Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            ColorVertexSpecification{
-                    up_shader_->GetAttribVariableLocation("position"),
-                    up_shader_->GetAttribVariableLocation("color")
-            },
             up_shader_,
             up_axis_shader_uniform_,
+            ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);
     up_triangle_->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
-            ColorVertexSpecification{
-                    up_shader_->GetAttribVariableLocation("position"),
-                    up_shader_->GetAttribVariableLocation("color")
-            },
             up_shader_,
             up_triangle_shader_uniform_,
+            ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             3);
     up_grass_->Initialize(
             sizeof(kGrassVertices),
             (void *) kGrassVertices,
-            TextureVertexSpecification{
-                    up_texture_shader_->GetAttribVariableLocation("position"),
-                    up_texture_shader_->GetAttribVariableLocation("texcoord")
-            },
             up_texture_shader_,
             up_grass_shader_uniform_,
+            TextureVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);
@@ -146,11 +135,9 @@ void SandboxScene::OnStart() {
     up_cube_->Initialize(
             sizeof(GameData::kCubeVertices),
             (void *) GameData::kCubeVertices,
-            PositionVertexSpecification{
-                    up_grid_shader_->GetAttribVariableLocation("position")
-            },
             up_grid_shader_,
             up_cube_shader_uniform_,
+            PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);

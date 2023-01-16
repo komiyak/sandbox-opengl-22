@@ -13,11 +13,9 @@ void BitmapFontRender::Initialize() {
     up_vertex_render_object_->Initialize(
             sizeof(GameData::kQuad2dPivotTopLeftVertices),
             (void *) GameData::kQuad2dPivotTopLeftVertices,
-            Texture2dVertexSpecification{
-                    p_shader_->GetAttribVariableLocation("position"),
-                    p_shader_->GetAttribVariableLocation("texcoord")},
             p_shader_,
             &font_shader_uniform_,
+            Texture2dVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);

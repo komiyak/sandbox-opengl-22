@@ -6,14 +6,14 @@
 
 class PositionVertexSpecification : public VertexSpecification {
 public:
-    explicit PositionVertexSpecification(GLint position_attrib_location)
-            : position_attrib_location_(position_attrib_location) {}
-
     void Specify() const override;
 
+    static void UseSpecification(const Shader *p_shader) {
+        PositionVertexSpecification{p_shader}.Specify();
+    }
+
 private:
-    // shader に含まれる 'position' の属性変数の位置
-    GLint position_attrib_location_{};
+    explicit PositionVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {};
 };
 
 #endif //SANDBOX_OPENGL_22_POSITION_VERTEX_SPECIFICATION_H_

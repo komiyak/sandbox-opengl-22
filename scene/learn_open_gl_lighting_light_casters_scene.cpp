@@ -81,13 +81,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_.Initialize(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            PositionWithNormalAndTexcoordVertexSpecification{
-                    container_shader_.GetAttribVariableLocation("position"),
-                    container_shader_.GetAttribVariableLocation("normal"),
-                    container_shader_.GetAttribVariableLocation("texcoord")
-            },
             &container_shader_,
             &container_shader_uniform_,
+            PositionWithNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);
@@ -97,12 +93,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     axis_.Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            ColorVertexSpecification{
-                    vertex_color_shader_.GetAttribVariableLocation("position"),
-                    vertex_color_shader_.GetAttribVariableLocation("color")
-            },
             &vertex_color_shader_,
             &axis_shader_uniform_,
+            ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);

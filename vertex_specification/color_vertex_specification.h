@@ -6,17 +6,14 @@
 
 class ColorVertexSpecification : public VertexSpecification {
 public:
-    explicit ColorVertexSpecification(GLint position_attrib_location, GLint color_attrib_location)
-            : position_attrib_location_(position_attrib_location),
-              color_attrib_location_(color_attrib_location) {}
-
     void Specify() const override;
 
+    static void UseSpecification(const Shader *p_shader) {
+        ColorVertexSpecification{p_shader}.Specify();
+    }
+
 private:
-    // shader に含まれる 'position' の属性変数の位置
-    GLint position_attrib_location_;
-    // shader に含まれる 'color' の属性変数の位置
-    GLint color_attrib_location_;
+    explicit ColorVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {};
 };
 
 #endif //SANDBOX_OPENGL_22_COLOR_VERTEX_SPECIFICATION_H_

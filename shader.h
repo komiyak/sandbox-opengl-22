@@ -22,7 +22,7 @@ public:
     void Finalize() override;
 
     // Get the location of attribute variable in the shader.
-    [[maybe_unused]] GLint GetAttribVariableLocation(const char *name);
+    [[maybe_unused]] GLint GetAttribVariableLocation(const char *name) const;
 
     // Get the location of uniform variable in the shader.
     [[maybe_unused]] GLint GetUniformVariableLocation(const char *name) const;

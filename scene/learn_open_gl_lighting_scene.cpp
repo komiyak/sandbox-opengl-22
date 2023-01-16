@@ -182,11 +182,9 @@ void LearnOpenGlLightingScene::OnStart() {
     up_grid_->Initialize(
             sizeof(GameData::kGridVertices),
             (void *) GameData::kGridVertices,
-            PositionVertexSpecification{
-                    up_white_vertex_shader_->GetAttribVariableLocation("position")
-            },
             up_white_vertex_shader_,
             up_grid_shader_uniform_,
+            PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2);
@@ -194,12 +192,9 @@ void LearnOpenGlLightingScene::OnStart() {
     up_light_source_->Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            ColorVertexSpecification{
-                    up_vertex_color_shader_->GetAttribVariableLocation("position"),
-                    up_vertex_color_shader_->GetAttribVariableLocation("color")
-            },
             up_vertex_color_shader_,
             up_light_source_shader_uniform_,
+            ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);
@@ -208,12 +203,9 @@ void LearnOpenGlLightingScene::OnStart() {
     up_lighting_target_->Initialize(
             sizeof(GameData::kCubeWithNormalVertices),
             (void *) GameData::kCubeWithNormalVertices,
-            PositionWithNormalVectorVertexSpecification{
-                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("position"),
-                    up_sample_lighting_cube_shader_->GetAttribVariableLocation("normal")
-            },
             up_sample_lighting_cube_shader_,
             up_lighting_target_shader_uniform_,
+            PositionWithNormalVectorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);
@@ -222,13 +214,9 @@ void LearnOpenGlLightingScene::OnStart() {
     up_lighting_map_cube_->Initialize(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            PositionWithNormalAndTexcoordVertexSpecification{
-                    up_lighting_map_shader_->GetAttribVariableLocation("position"),
-                    up_lighting_map_shader_->GetAttribVariableLocation("normal"),
-                    up_lighting_map_shader_->GetAttribVariableLocation("texcoord")
-            },
             up_lighting_map_shader_,
             up_lighting_map_shader_uniform_,
+            PositionWithNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);

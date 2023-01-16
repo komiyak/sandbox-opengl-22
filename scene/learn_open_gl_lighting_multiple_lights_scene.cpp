@@ -5,7 +5,7 @@
 #include "../application/application.h"
 #include "../game_data.h"
 #include "../vertex_specification/color_vertex_specification.h"
-#include "../vertex_specification/position_with_normal_and_texcoord_vertex_specification.h"
+#include "../vertex_specification/position_and_normal_and_texcoord_vertex_specification.h"
 
 void LearnOpenGlLightingMultipleLightsScene::OnStart() {
     // Preparing shaders
@@ -23,12 +23,9 @@ void LearnOpenGlLightingMultipleLightsScene::OnStart() {
     axis_.Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            ColorVertexSpecification{
-                    vertex_color_shader_.GetAttribVariableLocation("position"),
-                    vertex_color_shader_.GetAttribVariableLocation("color")
-            },
             &vertex_color_shader_,
             &axis_shader_uniform_,
+            ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);
@@ -37,13 +34,9 @@ void LearnOpenGlLightingMultipleLightsScene::OnStart() {
     container_.Initialize(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            PositionWithNormalAndTexcoordVertexSpecification{
-                    multiple_lights_shader_.GetAttribVariableLocation("vertex_position"),
-                    multiple_lights_shader_.GetAttribVariableLocation("vertex_normal"),
-                    multiple_lights_shader_.GetAttribVariableLocation("vertex_texcoord")
-            },
             &multiple_lights_shader_,
             &container_shader_uniform_,
+            PositionAndNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);
