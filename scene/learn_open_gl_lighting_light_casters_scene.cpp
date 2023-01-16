@@ -93,10 +93,7 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             36);
 
     // Preparing the axis on the origin.
-    axis_shader_uniform_.SetUniformLocations(
-            vertex_color_shader_.GetUniformVariableLocation("projection_mat"),
-            vertex_color_shader_.GetUniformVariableLocation("view_mat"),
-            vertex_color_shader_.GetUniformVariableLocation("model_mat"));
+    axis_shader_uniform_.SetShader(&vertex_color_shader_);
     axis_.Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,

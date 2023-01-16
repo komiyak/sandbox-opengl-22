@@ -69,22 +69,13 @@ void SandboxScene::OnStart() {
 
 
     up_grid_shader_uniform_ = new BasicShaderUniform();
-    up_grid_shader_uniform_->SetUniformLocations(
-            up_grid_shader_->GetUniformVariableLocation("projection_mat"),
-            up_grid_shader_->GetUniformVariableLocation("view_mat"),
-            up_grid_shader_->GetUniformVariableLocation("model_mat"));
+    up_grid_shader_uniform_->SetShader(up_grid_shader_);
 
     up_axis_shader_uniform_ = new BasicShaderUniform();
-    up_axis_shader_uniform_->SetUniformLocations(
-            up_shader_->GetUniformVariableLocation("projection_mat"),
-            up_shader_->GetUniformVariableLocation("view_mat"),
-            up_shader_->GetUniformVariableLocation("model_mat"));
+    up_axis_shader_uniform_->SetShader(up_shader_);
 
     up_triangle_shader_uniform_ = new BasicShaderUniform();
-    up_triangle_shader_uniform_->SetUniformLocations(
-            up_shader_->GetUniformVariableLocation("projection_mat"),
-            up_shader_->GetUniformVariableLocation("view_mat"),
-            up_shader_->GetUniformVariableLocation("model_mat"));
+    up_triangle_shader_uniform_->SetShader(up_shader_);
 
     up_grass_shader_uniform_ = new TextureShaderUniform{
             up_texture_shader_->GetUniformVariableLocation("projection_mat"),
@@ -93,10 +84,7 @@ void SandboxScene::OnStart() {
             up_texture_shader_->GetUniformVariableLocation("tex")};
 
     up_cube_shader_uniform_ = new BasicShaderUniform();
-    up_cube_shader_uniform_->SetUniformLocations(
-            up_grid_shader_->GetUniformVariableLocation("projection_mat"),
-            up_grid_shader_->GetUniformVariableLocation("view_mat"),
-            up_grid_shader_->GetUniformVariableLocation("model_mat"));
+    up_cube_shader_uniform_->SetShader(up_grid_shader_);
 
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);

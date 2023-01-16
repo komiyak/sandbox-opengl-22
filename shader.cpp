@@ -159,7 +159,7 @@ GLint Shader::GetAttribVariableLocation(const char *name) {
             program_object_, name, p_vertex_shader_filepath_, p_fragment_shader_filepath_);
 }
 
-GLint Shader::GetUniformVariableLocation(const char *name) {
+GLint Shader::GetUniformVariableLocation(const char *name) const {
     if (!prepared_) return -1;
 
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする

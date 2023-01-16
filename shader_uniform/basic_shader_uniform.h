@@ -12,13 +12,6 @@
 
 class BasicShaderUniform : public ShaderUniform {
 public:
-    void SetUniformLocations(GLint uniform_projection_mat, GLint uniform_view_mat, GLint uniform_model_mat) {
-        AddUniformVariableLocation("projection_mat", uniform_projection_mat);
-        AddUniformVariableLocation("view_mat", uniform_view_mat);
-        AddUniformVariableLocation("model_mat", uniform_model_mat);
-        Activate();
-    }
-
     void Transfer() const override;
 
     void SetProjectionMat(const glm::mat4 &projection_mat) {

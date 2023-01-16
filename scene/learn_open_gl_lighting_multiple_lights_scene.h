@@ -7,6 +7,7 @@
 #include "../texture.h"
 #include "../vertex_render_object.h"
 #include "../shader_uniform/basic_shader_uniform.h"
+#include "../shader_uniform/learnopengl_lighting_multiple_lights_shader_uniform.h"
 
 // LearnOpenGL.com の lighting / Multiple lights の学習用のシーン
 // https://learnopengl.com/Lighting/Multiple-lights
@@ -24,6 +25,8 @@ public:
         return new LearnOpenGlLightingMultipleLightsScene();
     }
 private:
+    float angle_{0.f};
+
     // 頂点カラー shader
     Shader vertex_color_shader_;
     // multiple lights shader
@@ -41,6 +44,8 @@ private:
 
     // 原点用の３軸用の shader uniform
     BasicShaderUniform axis_shader_uniform_;
+    // コンテナ用 shader uniform (For multiple lights)
+    LearnopenglLightingMultipleLightsShaderUniform container_shader_uniform_;
 };
 
 

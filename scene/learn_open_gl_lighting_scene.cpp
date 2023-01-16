@@ -148,15 +148,9 @@ void LearnOpenGlLightingScene::OnStart() {
             "outColor");
 
     up_grid_shader_uniform_ = new BasicShaderUniform();
-    up_grid_shader_uniform_->SetUniformLocations(
-            up_vertex_color_shader_->GetUniformVariableLocation("projection_mat"),
-            up_vertex_color_shader_->GetUniformVariableLocation("view_mat"),
-            up_vertex_color_shader_->GetUniformVariableLocation("model_mat"));
+    up_grid_shader_uniform_->SetShader(up_vertex_color_shader_);
     up_light_source_shader_uniform_ = new BasicShaderUniform();
-    up_light_source_shader_uniform_->SetUniformLocations(
-            up_white_vertex_shader_->GetUniformVariableLocation("projection_mat"),
-            up_white_vertex_shader_->GetUniformVariableLocation("view_mat"),
-            up_white_vertex_shader_->GetUniformVariableLocation("model_mat"));
+    up_light_source_shader_uniform_->SetShader(up_white_vertex_shader_);
     up_lighting_target_shader_uniform_ = new PracticeLightingPhongShadingShaderUniform{
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("projection_mat"),
             up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),

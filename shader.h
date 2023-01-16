@@ -25,7 +25,7 @@ public:
     [[maybe_unused]] GLint GetAttribVariableLocation(const char *name);
 
     // Get the location of uniform variable in the shader.
-    [[maybe_unused]] GLint GetUniformVariableLocation(const char *name);
+    [[maybe_unused]] GLint GetUniformVariableLocation(const char *name) const;
 
 private:
     static std::string LoadShaderSourceFromFile(const char *filepath);
