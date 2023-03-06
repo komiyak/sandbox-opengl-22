@@ -77,6 +77,13 @@ target_link_libraries(
 
 add_subdirectory(google_tests)
 
-# Coping resource files into the build dir.
-file(INSTALL shader DESTINATION "${CMAKE_BINARY_DIR}")
-file(INSTALL texture DESTINATION "${CMAKE_BINARY_DIR}")
+# Copy updated shader files and texture files to the binary directory when the project is built.
+# See: https://stackoverflow.com/a/34800230
+add_custom_command(
+        TARGET sandbox_opengl_22 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/shader/*.* ${CMAKE_CURRENT_BINARY_DIR}/shader)
+add_custom_command(
+        TARGET sandbox_opengl_22 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/texture/*.* ${CMAKE_CURRENT_BINARY_DIR}/texture)
