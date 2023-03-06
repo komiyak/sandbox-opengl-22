@@ -248,10 +248,10 @@ void LearnOpenGlLightingScene::OnDestroy() {
     texture_specular_map_.Finalize();
     texture_emission_map_.Finalize();
 
-    FINALIZE_AND_DELETE(up_white_vertex_shader_);
-    FINALIZE_AND_DELETE(up_vertex_color_shader_);
-    FINALIZE_AND_DELETE(up_sample_lighting_cube_shader_);
-    FINALIZE_AND_DELETE(up_lighting_map_shader_);
+    SAFE_DELETE(up_white_vertex_shader_);
+    SAFE_DELETE(up_vertex_color_shader_);
+    SAFE_DELETE(up_sample_lighting_cube_shader_);
+    SAFE_DELETE(up_lighting_map_shader_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_light_source_);

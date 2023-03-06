@@ -221,10 +221,10 @@ void SandboxScene::OnDestroy() {
     FINALIZE_AND_DELETE(up_grass_);
     FINALIZE_AND_DELETE(up_cube_);
 
-    FINALIZE_AND_DELETE(up_grid_shader_);
-    FINALIZE_AND_DELETE(up_shader_);
-    FINALIZE_AND_DELETE(up_texture_shader_);
-    FINALIZE_AND_DELETE(up_texture_2d_shader_);
+    SAFE_DELETE(up_grid_shader_);
+    SAFE_DELETE(up_shader_);
+    SAFE_DELETE(up_texture_shader_);
+    SAFE_DELETE(up_texture_2d_shader_);
 }
 
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {

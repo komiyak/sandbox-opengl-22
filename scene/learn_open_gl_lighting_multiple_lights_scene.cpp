@@ -144,9 +144,6 @@ void LearnOpenGlLightingMultipleLightsScene::OnFrame() {
 }
 
 void LearnOpenGlLightingMultipleLightsScene::OnDestroy() {
-    vertex_color_shader_.Finalize();
-    multiple_lights_shader_.Finalize();
-
     container_texture_.Finalize();
     container_specular_map_texture_.Finalize();
 

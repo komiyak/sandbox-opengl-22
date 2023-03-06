@@ -83,7 +83,7 @@ void StartingScene::OnFrame() {
 
 void StartingScene::OnDestroy() {
     texture_.Finalize();
-    FINALIZE_AND_DELETE(up_font_shader_);
+    SAFE_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }
 

@@ -2,14 +2,11 @@
 #define SANDBOX_OPENGL_22_SHADER_H_
 
 #include <string>
-
 #include "opengl_glfw.h"
-#include "base_object.h"
 
-class Shader : public BaseObject {
+class Shader {
 public:
-    // glUseProgram() を発行
-    void UseProgram() const;
+    virtual ~Shader();
 
     // shader file をビルドし、shader を利用可能にする
     // param vertex_shader_filepath Vertex shader ファイル
@@ -19,13 +16,17 @@ public:
             const std::string& fragment_shader_filepath,
             const std::string& fragment_data_location_name);
 
-    void Finalize() override;
+    // 利用中の shader を破壊する
+    void Destroy();
+
+    // glUseProgram() を発行
+    void UseProgram() const;
 
     // Get the location of attribute variable in the shader.
-    [[maybe_unused]] GLint GetAttribVariableLocation(const std::string& name) const;
+    [[maybe_unused]] [[nodiscard]] GLint GetAttribVariableLocation(const std::string& name) const;
 
     // Get the location of uniform variable in the shader.
-    [[maybe_unused]] GLint GetUniformVariableLocation(const std::string& name) const;
+    [[maybe_unused]] [[nodiscard]] GLint GetUniformVariableLocation(const std::string& name) const;
 
 private:
     // 任意のシェーダーファイルを読み取る
@@ -47,8 +48,8 @@ private:
             const std::string& vertex_shader_filepath,
             const std::string& fragment_shader_filepath);
 
-    // 利用準備ができていれば true
-    bool prepared_{};
+    // シェーダーを構築済みならば true
+    bool built_{};
 
     GLuint program_object_{};
     GLuint vertex_shader_{};

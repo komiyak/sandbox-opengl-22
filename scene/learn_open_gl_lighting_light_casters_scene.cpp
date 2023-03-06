@@ -305,12 +305,6 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
 }
 
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
-    container_shader_.Finalize();
-    container_point_light_shader_.Finalize();
-    container_spotlight_shader_.Finalize();
-    vertex_color_shader_.Finalize();
-    font_shader_.Finalize();
-
     font_texture_.Finalize();
     container_texture_.Finalize();
     container_specular_map_texture_.Finalize();
