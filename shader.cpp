@@ -6,7 +6,7 @@
 #include "debug.h"
 #include "cstring_util.h"
 
-std::string Shader::LoadShaderSourceFromFile(const char *filepath) {
+std::string Shader::LoadShaderSourceFromFile(const std::string& filepath) {
     std::ifstream input_file_stream;
     input_file_stream.open(filepath);
     std::stringstream string_stream;
@@ -15,35 +15,34 @@ std::string Shader::LoadShaderSourceFromFile(const char *filepath) {
 }
 
 void Shader::BuildFromFile(
-        const char *vertex_shader_filepath,
-        const char *fragment_shader_filepath,
-        const char *p_fragment_data_location_name) {
+        const std::string& vertex_shader_filepath,
+        const std::string& fragment_shader_filepath,
+        const std::string& fragment_data_location_name) {
 
+    // FIXME: std::string style の文字列比較に変更する
     DEBUG_ASSERT_MESSAGE(
-            cstring_util::EqualLast(vertex_shader_filepath, ".vert"),
+            cstring_util::EqualLast(vertex_shader_filepath.c_str(), ".vert"),
             "Vertex shader file must be with '.vert' extension.");
     DEBUG_ASSERT_MESSAGE(
-            cstring_util::EqualLast(fragment_shader_filepath, ".frag"),
+            cstring_util::EqualLast(fragment_shader_filepath.c_str(), ".frag"),
             "Vertex shader file must be with '.frag' extension.");
 
     prepared_ = true;
-    p_vertex_shader_filepath_ = vertex_shader_filepath;
-    p_fragment_shader_filepath_ = fragment_shader_filepath;
+    vertex_shader_filepath_ = vertex_shader_filepath;
+    fragment_shader_filepath_ = fragment_shader_filepath;
 
 
-    const std::string vertex_shader_source = LoadShaderSourceFromFile(p_vertex_shader_filepath_);
-    const std::string fragment_shader_source = LoadShaderSourceFromFile(p_fragment_shader_filepath_);
+    const std::string vertex_shader_source = LoadShaderSourceFromFile(vertex_shader_filepath_);
+    const std::string fragment_shader_source = LoadShaderSourceFromFile(fragment_shader_filepath_);
 
-    vertex_shader_ = BuildShader(GL_VERTEX_SHADER, vertex_shader_source.c_str());
-    fragment_shader_ = BuildShader(GL_FRAGMENT_SHADER, fragment_shader_source.c_str());
+    vertex_shader_ = BuildShader(GL_VERTEX_SHADER, vertex_shader_source);
+    fragment_shader_ = BuildShader(GL_FRAGMENT_SHADER, fragment_shader_source);
 
 
     program_object_ = glCreateProgram();
     glAttachShader(program_object_, vertex_shader_);
     glAttachShader(program_object_, fragment_shader_);
-    if (p_fragment_data_location_name) {
-        glBindFragDataLocation(program_object_, 0, p_fragment_data_location_name);
-    }
+    glBindFragDataLocation(program_object_, 0, fragment_data_location_name.c_str());
     glLinkProgram(program_object_);
     OPENGL_DEBUG_CHECK();
 }
@@ -51,9 +50,10 @@ void Shader::BuildFromFile(
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "UnreachableCode"
 
-GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
+GLuint Shader::BuildShader(GLenum shader_type, const std::string& shader_source) {
+    const GLchar *shader_source_c_str = shader_source.c_str();
     GLuint result = glCreateShader(shader_type);
-    glShaderSource(result, 1, &shader_source, nullptr);
+    glShaderSource(result, 1, &shader_source_c_str, nullptr);
     glCompileShader(result);
     OPENGL_DEBUG_CHECK();
 
@@ -61,7 +61,7 @@ GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
     glGetShaderiv(result, GL_COMPILE_STATUS, &status);
     OPENGL_DEBUG_CHECK();
     if (!status) {
-        const char *shader_type_name;
+        std::string shader_type_name;
 
         switch (shader_type) {
             case GL_VERTEX_SHADER:
@@ -74,7 +74,7 @@ GLuint Shader::BuildShader(GLenum shader_type, const GLchar *shader_source) {
                 shader_type_name = "unknown";
         }
 
-        fprintf(stderr, "Shader compile error [%s].\n", shader_type_name);
+        fprintf(stderr, "Shader compile error [%s].\n", shader_type_name.c_str());
         char buffer[512];
         glGetShaderInfoLog(result, 512, nullptr, buffer);
         fprintf(stderr, "%s\n", buffer);
@@ -110,18 +110,18 @@ void Shader::UseProgram() const {
 
 GLint Shader::GetUniformVariableLocationFromProgramObject(
         GLuint program_object,
-        const char *name,
-        const char *vertex_shader_filepath,
-        const char *fragment_shader_filepath) {
+        const std::string& name,
+        const std::string& vertex_shader_filepath,
+        const std::string& fragment_shader_filepath) {
 
-    const GLint location = glGetUniformLocation(program_object, name);
+    const GLint location = glGetUniformLocation(program_object, name.c_str());
     OPENGL_DEBUG_CHECK();
 
     if (kRuntimeAssertion && location == -1) {
         fprintf(stderr, "The uniform variable location '%s' is not found in '%s' or '%s'.\n",
-                name,
-                vertex_shader_filepath,
-                fragment_shader_filepath);
+                name.c_str(),
+                vertex_shader_filepath.c_str(),
+                fragment_shader_filepath.c_str());
         abort();
     }
     return location;
@@ -134,37 +134,37 @@ GLint Shader::GetUniformVariableLocationFromProgramObject(
 
 GLint Shader::GetAttribVariableLocationFromProgramObject(
         GLuint program_object,
-        const char *name,
-        const char *vertex_shader_filepath,
-        const char *fragment_shader_filepath) {
+        const std::string& name,
+        const std::string& vertex_shader_filepath,
+        const std::string& fragment_shader_filepath) {
 
-    const GLint location = glGetAttribLocation(program_object, name);
+    const GLint location = glGetAttribLocation(program_object, name.c_str());
     OPENGL_DEBUG_CHECK();
 
     if (kRuntimeAssertion && location == -1) {
         fprintf(stderr, "The attribute variable location '%s' is not found in '%s' or '%s'.\n",
-                name,
-                vertex_shader_filepath,
-                fragment_shader_filepath);
+                name.c_str(),
+                vertex_shader_filepath.c_str(),
+                fragment_shader_filepath.c_str());
         abort();
     }
     return location;
 }
 
-GLint Shader::GetAttribVariableLocation(const char *name) const {
+GLint Shader::GetAttribVariableLocation(const std::string& name) const {
     if (!prepared_) return -1;
 
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする
     return GetAttribVariableLocationFromProgramObject(
-            program_object_, name, p_vertex_shader_filepath_, p_fragment_shader_filepath_);
+            program_object_, name, vertex_shader_filepath_, fragment_shader_filepath_);
 }
 
-GLint Shader::GetUniformVariableLocation(const char *name) const {
+GLint Shader::GetUniformVariableLocation(const std::string& name) const {
     if (!prepared_) return -1;
 
     // Note: もし最適化が必要になった場合は、一度取得した値をキャッシュする
     return GetUniformVariableLocationFromProgramObject(
-            program_object_, name, p_vertex_shader_filepath_, p_fragment_shader_filepath_);
+            program_object_, name, vertex_shader_filepath_, fragment_shader_filepath_);
 }
 
 #pragma clang diagnostic pop

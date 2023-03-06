@@ -11,9 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS -rdynamic)
 
 
-add_subdirectory(
-        external_lib/glfw-3.3.8
-        external_lib/glfw-3.3.8-build)
+add_subdirectory(external_lib/glfw-3.3.8)
 add_library(glad STATIC external_lib/glad-opengl-version-4-6/src/glad.c)
 
 # Add glm library
