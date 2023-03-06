@@ -5,8 +5,7 @@
 #include "../texture.h"
 
 #include "../application/scene.h"
-
-class Shader;
+#include "../shader.h"
 
 class BitmapFontRender;
 
@@ -25,7 +24,7 @@ private:
     float count_{};
 
     Texture texture_;
-    Shader *up_font_shader_{};
+    Shader font_shader_;
     BitmapFontRender *up_bitmap_font_render_{};
 };
 

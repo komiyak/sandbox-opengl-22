@@ -32,26 +32,22 @@ void SandboxScene::OnStart() {
             0.5f, 0.5f, 0.f, 1.0f, 0.0f,
     };
 
-    up_grid_shader_ = new Shader();
-    up_grid_shader_->BuildFromFile(
+    grid_shader_.BuildFromFile(
             "shader/white_vertex.vert",
             "shader/white_vertex.frag",
             "outColor");
 
-    up_shader_ = new Shader();
-    up_shader_->BuildFromFile(
+    shader_.BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag",
             "outColor");
 
-    up_texture_shader_ = new Shader();
-    up_texture_shader_->BuildFromFile(
+    texture_shader_.BuildFromFile(
             "shader/texture.vert",
             "shader/texture.frag",
             "outColor");
 
-    up_texture_2d_shader_ = new Shader();
-    up_texture_2d_shader_->BuildFromFile(
+    texture_2d_shader_.BuildFromFile(
             "shader/texture_2d.vert",
             "shader/texture_2d.frag",
             "outColor");
@@ -69,22 +65,22 @@ void SandboxScene::OnStart() {
 
 
     up_grid_shader_uniform_ = new BasicShaderUniform();
-    up_grid_shader_uniform_->SetShader(up_grid_shader_);
+    up_grid_shader_uniform_->SetShader(&grid_shader_);
 
     up_axis_shader_uniform_ = new BasicShaderUniform();
-    up_axis_shader_uniform_->SetShader(up_shader_);
+    up_axis_shader_uniform_->SetShader(&shader_);
 
     up_triangle_shader_uniform_ = new BasicShaderUniform();
-    up_triangle_shader_uniform_->SetShader(up_shader_);
+    up_triangle_shader_uniform_->SetShader(&shader_);
 
     up_grass_shader_uniform_ = new TextureShaderUniform{
-            up_texture_shader_->GetUniformVariableLocation("projection_mat"),
-            up_texture_shader_->GetUniformVariableLocation("view_mat"),
-            up_texture_shader_->GetUniformVariableLocation("model_mat"),
-            up_texture_shader_->GetUniformVariableLocation("tex")};
+            texture_shader_.GetUniformVariableLocation("projection_mat"),
+            texture_shader_.GetUniformVariableLocation("view_mat"),
+            texture_shader_.GetUniformVariableLocation("model_mat"),
+            texture_shader_.GetUniformVariableLocation("tex")};
 
     up_cube_shader_uniform_ = new BasicShaderUniform();
-    up_cube_shader_uniform_->SetShader(up_grid_shader_);
+    up_cube_shader_uniform_->SetShader(&grid_shader_);
 
     // texture unit 0 を利用する
     up_grass_shader_uniform_->SetTextureUnit(0);
@@ -98,7 +94,7 @@ void SandboxScene::OnStart() {
     up_grid_->Initialize(
             sizeof(GameData::kGridVertices),
             (void *) GameData::kGridVertices,
-            up_grid_shader_,
+            &grid_shader_,
             up_grid_shader_uniform_,
             PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -107,7 +103,7 @@ void SandboxScene::OnStart() {
     up_axis_->Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            up_shader_,
+            &shader_,
             up_axis_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -116,7 +112,7 @@ void SandboxScene::OnStart() {
     up_triangle_->Initialize(
             sizeof(kVertices),
             (void *) kVertices,
-            up_shader_,
+            &shader_,
             up_triangle_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -125,7 +121,7 @@ void SandboxScene::OnStart() {
     up_grass_->Initialize(
             sizeof(kGrassVertices),
             (void *) kGrassVertices,
-            up_texture_shader_,
+            &texture_shader_,
             up_grass_shader_uniform_,
             TextureVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -135,7 +131,7 @@ void SandboxScene::OnStart() {
     up_cube_->Initialize(
             sizeof(GameData::kCubeVertices),
             (void *) GameData::kCubeVertices,
-            up_grid_shader_,
+            &grid_shader_,
             up_cube_shader_uniform_,
             PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -220,11 +216,6 @@ void SandboxScene::OnDestroy() {
     FINALIZE_AND_DELETE(up_triangle_);
     FINALIZE_AND_DELETE(up_grass_);
     FINALIZE_AND_DELETE(up_cube_);
-
-    SAFE_DELETE(up_grid_shader_);
-    SAFE_DELETE(up_shader_);
-    SAFE_DELETE(up_texture_shader_);
-    SAFE_DELETE(up_texture_2d_shader_);
 }
 
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {

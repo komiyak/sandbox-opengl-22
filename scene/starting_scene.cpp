@@ -11,8 +11,7 @@
 #include "learn_open_gl_lighting_multiple_lights_scene.h"
 
 void StartingScene::OnStart() {
-    up_font_shader_ = new Shader();
-    up_font_shader_->BuildFromFile(
+    font_shader_.BuildFromFile(
             "shader/font.vert",
             "shader/font.frag",
             "outColor");
@@ -31,13 +30,13 @@ void StartingScene::OnStart() {
             4,
             8,
             texture_.GetTextureUnitNumber(),
-            up_font_shader_->GetUniformVariableLocation("tex"),
-            up_font_shader_->GetUniformVariableLocation("color"),
-            up_font_shader_->GetUniformVariableLocation("translation_vec"),
-            up_font_shader_->GetUniformVariableLocation("scaling_vec"),
-            up_font_shader_->GetUniformVariableLocation("texcoord_translation_vec"),
-            up_font_shader_->GetUniformVariableLocation("texcoord_scaling_vec"),
-            up_font_shader_);
+            font_shader_.GetUniformVariableLocation("tex"),
+            font_shader_.GetUniformVariableLocation("color"),
+            font_shader_.GetUniformVariableLocation("translation_vec"),
+            font_shader_.GetUniformVariableLocation("scaling_vec"),
+            font_shader_.GetUniformVariableLocation("texcoord_translation_vec"),
+            font_shader_.GetUniformVariableLocation("texcoord_scaling_vec"),
+            &font_shader_);
 
     up_bitmap_font_render_->Initialize();
 }
@@ -83,7 +82,6 @@ void StartingScene::OnFrame() {
 
 void StartingScene::OnDestroy() {
     texture_.Finalize();
-    SAFE_DELETE(up_font_shader_);
     FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }
 

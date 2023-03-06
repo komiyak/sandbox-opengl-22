@@ -5,7 +5,6 @@
 #include "../application/application.h"
 #include "../opengl_debug.h"
 #include "../game_data.h"
-#include "../shader.h"
 #include "../vertex_render_object.h"
 #include "../shader_uniform/basic_shader_uniform.h"
 #include "../shader_uniform/practice_lighting_phong_shading_shader_uniform.h"
@@ -123,66 +122,62 @@ void LearnOpenGlLightingScene::OnKey(int glfw_key, int glfw_action) {
 }
 
 void LearnOpenGlLightingScene::OnStart() {
-    up_white_vertex_shader_ = new Shader();
-    up_white_vertex_shader_->BuildFromFile(
+    white_vertex_shader_.BuildFromFile(
             "shader/white_vertex.vert",
             "shader/white_vertex.frag",
             "outColor");
 
-    up_vertex_color_shader_ = new Shader();
-    up_vertex_color_shader_->BuildFromFile(
+    vertex_color_shader_.BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag",
             "outColor");
 
-    up_sample_lighting_cube_shader_ = new Shader();
-    up_sample_lighting_cube_shader_->BuildFromFile(
+    sample_lighting_cube_shader_.BuildFromFile(
             "shader/practice_lighting_phong_shading.vert",
             "shader/practice_lighting_phong_shading.frag",
             "outColor");
 
-    up_lighting_map_shader_ = new Shader();
-    up_lighting_map_shader_->BuildFromFile(
+    lighting_map_shader_.BuildFromFile(
             "shader/practice_lighting_lighting_map.vert",
             "shader/practice_lighting_lighting_map.frag",
             "outColor");
 
     up_grid_shader_uniform_ = new BasicShaderUniform();
-    up_grid_shader_uniform_->SetShader(up_vertex_color_shader_);
+    up_grid_shader_uniform_->SetShader(&vertex_color_shader_);
     up_light_source_shader_uniform_ = new BasicShaderUniform();
-    up_light_source_shader_uniform_->SetShader(up_white_vertex_shader_);
+    up_light_source_shader_uniform_->SetShader(&white_vertex_shader_);
     up_lighting_target_shader_uniform_ = new PracticeLightingPhongShadingShaderUniform{
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("projection_mat"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("view_mat"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("model_mat"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.position"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.ambient"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.diffuse"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("light.specular"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("viewPosition"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.ambient"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.diffuse"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.specular"),
-            up_sample_lighting_cube_shader_->GetUniformVariableLocation("material.shininess")};
+            sample_lighting_cube_shader_.GetUniformVariableLocation("projection_mat"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("view_mat"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("model_mat"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("light.position"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("light.ambient"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("light.diffuse"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("light.specular"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("viewPosition"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("material.ambient"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("material.diffuse"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("material.specular"),
+            sample_lighting_cube_shader_.GetUniformVariableLocation("material.shininess")};
     up_lighting_map_shader_uniform_ = new PracticeLightingLightingMapShaderUniform{
-            up_lighting_map_shader_->GetUniformVariableLocation("projection_mat"),
-            up_lighting_map_shader_->GetUniformVariableLocation("view_mat"),
-            up_lighting_map_shader_->GetUniformVariableLocation("model_mat"),
-            up_lighting_map_shader_->GetUniformVariableLocation("light.position"),
-            up_lighting_map_shader_->GetUniformVariableLocation("light.ambient"),
-            up_lighting_map_shader_->GetUniformVariableLocation("light.diffuse"),
-            up_lighting_map_shader_->GetUniformVariableLocation("light.specular"),
-            up_lighting_map_shader_->GetUniformVariableLocation("material.diffuse"),
-            up_lighting_map_shader_->GetUniformVariableLocation("material.specular"),
-            up_lighting_map_shader_->GetUniformVariableLocation("material.shininess"),
-            up_lighting_map_shader_->GetUniformVariableLocation("material.emission"),
-            up_lighting_map_shader_->GetUniformVariableLocation("viewPosition")};
+            lighting_map_shader_.GetUniformVariableLocation("projection_mat"),
+            lighting_map_shader_.GetUniformVariableLocation("view_mat"),
+            lighting_map_shader_.GetUniformVariableLocation("model_mat"),
+            lighting_map_shader_.GetUniformVariableLocation("light.position"),
+            lighting_map_shader_.GetUniformVariableLocation("light.ambient"),
+            lighting_map_shader_.GetUniformVariableLocation("light.diffuse"),
+            lighting_map_shader_.GetUniformVariableLocation("light.specular"),
+            lighting_map_shader_.GetUniformVariableLocation("material.diffuse"),
+            lighting_map_shader_.GetUniformVariableLocation("material.specular"),
+            lighting_map_shader_.GetUniformVariableLocation("material.shininess"),
+            lighting_map_shader_.GetUniformVariableLocation("material.emission"),
+            lighting_map_shader_.GetUniformVariableLocation("viewPosition")};
 
     up_grid_ = new VertexRenderObject();
     up_grid_->Initialize(
             sizeof(GameData::kGridVertices),
             (void *) GameData::kGridVertices,
-            up_white_vertex_shader_,
+            &white_vertex_shader_,
             up_grid_shader_uniform_,
             PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -192,7 +187,7 @@ void LearnOpenGlLightingScene::OnStart() {
     up_light_source_->Initialize(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            up_vertex_color_shader_,
+            &vertex_color_shader_,
             up_light_source_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -203,7 +198,7 @@ void LearnOpenGlLightingScene::OnStart() {
     up_lighting_target_->Initialize(
             sizeof(GameData::kCubeWithNormalVertices),
             (void *) GameData::kCubeWithNormalVertices,
-            up_sample_lighting_cube_shader_,
+            &sample_lighting_cube_shader_,
             up_lighting_target_shader_uniform_,
             PositionWithNormalVectorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -214,7 +209,7 @@ void LearnOpenGlLightingScene::OnStart() {
     up_lighting_map_cube_->Initialize(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            up_lighting_map_shader_,
+            &lighting_map_shader_,
             up_lighting_map_shader_uniform_,
             PositionWithNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
@@ -247,11 +242,6 @@ void LearnOpenGlLightingScene::OnDestroy() {
     texture_diffuse_map_.Finalize();
     texture_specular_map_.Finalize();
     texture_emission_map_.Finalize();
-
-    SAFE_DELETE(up_white_vertex_shader_);
-    SAFE_DELETE(up_vertex_color_shader_);
-    SAFE_DELETE(up_sample_lighting_cube_shader_);
-    SAFE_DELETE(up_lighting_map_shader_);
 
     FINALIZE_AND_DELETE(up_grid_);
     FINALIZE_AND_DELETE(up_light_source_);

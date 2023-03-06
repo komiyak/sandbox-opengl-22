@@ -4,8 +4,7 @@
 #include "../opengl_glfw.h"
 #include "../application/scene.h"
 #include "../texture.h"
-
-class Shader;
+#include "../shader.h"
 
 class VertexRenderObject;
 
@@ -40,10 +39,10 @@ private:
     Texture texture_specular_map_;
     Texture texture_emission_map_;
 
-    Shader *up_white_vertex_shader_{};
-    Shader *up_vertex_color_shader_{};
-    Shader *up_sample_lighting_cube_shader_{};
-    Shader *up_lighting_map_shader_{};
+    Shader white_vertex_shader_{};
+    Shader vertex_color_shader_{};
+    Shader sample_lighting_cube_shader_{};
+    Shader lighting_map_shader_{};
 
     VertexRenderObject *up_grid_{};
     VertexRenderObject *up_light_source_{};

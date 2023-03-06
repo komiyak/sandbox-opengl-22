@@ -19,6 +19,11 @@ void Shader::BuildFromFile(
         const std::string& vertex_shader_filepath,
         const std::string& fragment_shader_filepath,
         const std::string& fragment_data_location_name) {
+    // すでに構築中の場合は、一旦何もせずに処理を戻す
+    if (built_) {
+        std::cerr << "Skip to build shader because shader is already built by someone." << std::endl;
+        return;
+    }
 
     // FIXME: std::string style の文字列比較に変更する
     DEBUG_ASSERT_MESSAGE(

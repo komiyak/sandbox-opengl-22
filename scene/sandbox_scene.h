@@ -5,6 +5,7 @@
 
 #include "../application/scene.h"
 #include "../texture.h"
+#include "../shader.h"
 
 class BasicShaderUniform;
 
@@ -13,8 +14,6 @@ class TextureShaderUniform;
 class Texture2dShaderUniform;
 
 class VertexRenderObject;
-
-class Shader;
 
 class BitmapFontRender;
 
@@ -50,10 +49,10 @@ private:
     VertexRenderObject *up_grass_{};
     VertexRenderObject *up_cube_{};
 
-    Shader *up_grid_shader_{};
-    Shader *up_shader_{};
-    Shader *up_texture_shader_{};
-    Shader *up_texture_2d_shader_{};
+    Shader grid_shader_{};
+    Shader shader_{};
+    Shader texture_shader_{};
+    Shader texture_2d_shader_{};
 
     BitmapFontRender *up_bitmap_font_render_{};
 };
