@@ -21,8 +21,8 @@ public:
 
     void OnDestroy() override;
 
-    static Scene *CreateFactory() {
-        return new SandboxScene();
+    static std::shared_ptr<Scene> CreateFactory() {
+        return std::shared_ptr<Scene>{new SandboxScene()};
     }
 
 private:

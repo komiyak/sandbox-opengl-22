@@ -19,7 +19,7 @@ public:
 
     VertexRenderObject(const VertexRenderObject &) = delete;
 
-    VertexRenderObject &&operator=(const VertexRenderObject &) = delete;
+    VertexRenderObject &operator=(const VertexRenderObject &) = delete;
 
     // 描画関係のデータを作成する
     // vertex_data_size 頂点データのサイズ
@@ -35,7 +35,7 @@ public:
             const void *vertex_data,
             std::weak_ptr<Shader> shader,
             std::weak_ptr<ShaderUniform> shader_uniform,
-            void (*use_specification)(const Shader&),
+            void (*use_specification)(const Shader &),
             GLenum usage,
             GLenum draw_mode,
             GLsizei draw_count);

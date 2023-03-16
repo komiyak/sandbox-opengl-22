@@ -20,7 +20,7 @@ public:
 
     BitmapFontRender(const BitmapFontRender &) = delete;
 
-    BitmapFontRender &&operator=(const BitmapFontRender &) = delete;
+    BitmapFontRender &operator=(const BitmapFontRender &) = delete;
 
     // 白文字テキスト
     [[maybe_unused]] void RenderWhiteAsciiText(const std::string &ascii_text, int x, int y, int font_size);

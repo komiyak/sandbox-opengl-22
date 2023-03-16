@@ -1,6 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_SCENE_H_
 #define SANDBOX_OPENGL_22_SCENE_H_
 
+#include <memory>
 #include "frame.h"
 
 class ApplicationContext;
@@ -10,8 +11,8 @@ class Scene {
 public:
     virtual ~Scene() = default;
 
-    void OnAttach(const ApplicationContext *p_context) {
-        p_application_context_ = p_context;
+    void OnAttach(std::weak_ptr<ApplicationContext> application_context) {
+        application_context_ = application_context;
     }
 
     // 起動時に一度だけ実行されるコールバック
@@ -44,7 +45,7 @@ public:
         return (next_scene_);
     }
 
-    [[nodiscard]] Scene *NextScene() {
+    [[nodiscard]] std::shared_ptr<Scene> NextScene() {
         return next_scene_();
     }
 
@@ -58,29 +59,28 @@ protected:
         should_destroy_ = true;
     }
 
-    void LaunchNextScene(Scene *(*next_scene)()) {
+    void LaunchNextScene(std::shared_ptr<Scene> (*next_scene)()) {
         should_destroy_ = true;
         next_scene_ = next_scene;
     }
 
-    [[nodiscard]] const ApplicationContext *GetApplicationContext() const {
-        return p_application_context_;
+    [[nodiscard]] std::weak_ptr<ApplicationContext> GetApplicationContext() const {
+        return application_context_;
     }
 
 private:
     // フレーム管理
-    Frame frame_;
+    Frame frame_{};
 
-    // アプリケーションコンテキストへのリンク
-    const ApplicationContext *p_application_context_{};
+    // アプリケーションコンテキストへの参照
+    std::weak_ptr<ApplicationContext> application_context_{};
 
     // Application に終了を通知したいとき
     bool should_destroy_{};
 
-    // Scene 終了時に次に起動する Scene があればそれを指定しておく
+    // Scene 終了時に、次に起動する Scene があればそのファクトリを指定する
     // TODO: いつかメッセージ方式に変更したい。
-    Scene *(*next_scene_)(){};
-
+    std::shared_ptr<Scene> (*next_scene_)(){};
 };
 
 #endif //SANDBOX_OPENGL_22_SCENE_H_

@@ -24,8 +24,8 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
-    static Scene *CreateFactory() {
-        return new LearnOpenGlLightingScene();
+    static std::shared_ptr<Scene> CreateFactory() {
+        return std::shared_ptr<Scene>{new LearnOpenGlLightingScene()};
     }
 
 private:
@@ -49,8 +49,10 @@ private:
 
     std::shared_ptr<BasicShaderUniform> grid_shader_uniform_{new BasicShaderUniform()};
     std::shared_ptr<BasicShaderUniform> light_source_shader_uniform_{new BasicShaderUniform()};
-    std::shared_ptr<PracticeLightingPhongShadingShaderUniform> lighting_target_shader_uniform_{new PracticeLightingPhongShadingShaderUniform()};
-    std::shared_ptr<PracticeLightingLightingMapShaderUniform> lighting_map_shader_uniform_{new PracticeLightingLightingMapShaderUniform()};
+    std::shared_ptr<PracticeLightingPhongShadingShaderUniform> lighting_target_shader_uniform_{
+            new PracticeLightingPhongShadingShaderUniform()};
+    std::shared_ptr<PracticeLightingLightingMapShaderUniform> lighting_map_shader_uniform_{
+            new PracticeLightingLightingMapShaderUniform()};
 };
 
 #endif //SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_

@@ -20,15 +20,17 @@ void StartingScene::OnStart() {
             0);
 
     // フォント準備
-    bitmap_font_render_.Create(
-            GetApplicationContext()->GetWindowScreenWidth(),
-            GetApplicationContext()->GetWindowScreenHeight(),
-            texture_.GetTextureWidth(),
-            texture_.GetTextureHeight(),
-            4,
-            8,
-            texture_.GetTextureUnitNumber(),
-            font_shader_);
+    if (auto application_context = GetApplicationContext().lock()) {
+        bitmap_font_render_.Create(
+                application_context->GetWindowScreenWidth(),
+                application_context->GetWindowScreenHeight(),
+                texture_.GetTextureWidth(),
+                texture_.GetTextureHeight(),
+                4,
+                8,
+                texture_.GetTextureUnitNumber(),
+                font_shader_);
+    }
 }
 
 void StartingScene::OnFrame() {

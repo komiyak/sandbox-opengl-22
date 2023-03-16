@@ -22,8 +22,8 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
-    static Scene *CreateFactory() {
-        return new LearnOpenGlLightingMultipleLightsScene();
+    static std::shared_ptr<Scene> CreateFactory() {
+        return std::shared_ptr<Scene>{new LearnOpenGlLightingMultipleLightsScene()};
     }
 
 private:

@@ -178,8 +178,7 @@ void SandboxScene::OnFrame() {
     }
 }
 
-void SandboxScene::OnDestroy() {
-}
+void SandboxScene::OnDestroy() {}
 
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する

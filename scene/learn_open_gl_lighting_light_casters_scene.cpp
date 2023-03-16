@@ -71,15 +71,17 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             2);
 
     // フォント準備
-    bitmap_font_render_.Create(
-            GetApplicationContext()->GetWindowScreenWidth(),
-            GetApplicationContext()->GetWindowScreenHeight(),
-            font_texture_.GetTextureWidth(),
-            font_texture_.GetTextureHeight(),
-            4,
-            8,
-            font_texture_.GetTextureUnitNumber(),
-            font_shader_);
+    if (auto application_context = GetApplicationContext().lock()) {
+        bitmap_font_render_.Create(
+                application_context->GetWindowScreenWidth(),
+                application_context->GetWindowScreenHeight(),
+                font_texture_.GetTextureWidth(),
+                font_texture_.GetTextureHeight(),
+                4,
+                8,
+                font_texture_.GetTextureUnitNumber(),
+                font_shader_);
+    }
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
