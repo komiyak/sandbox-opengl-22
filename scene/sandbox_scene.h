@@ -1,21 +1,15 @@
 #ifndef SANDBOX_OPENGL_22_SANDBOX_SCENE_H_
 #define SANDBOX_OPENGL_22_SANDBOX_SCENE_H_
 
-#include <glad/glad.h>
+#include <memory>
+#include "../opengl_glfw.h"
 
 #include "../application/scene.h"
 #include "../texture.h"
 #include "../shader.h"
-
-class BasicShaderUniform;
-
-class TextureShaderUniform;
-
-class Texture2dShaderUniform;
-
-class VertexRenderObject;
-
-class BitmapFontRender;
+#include "../vertex_render_object.h"
+#include "../shader_uniform/basic_shader_uniform.h"
+#include "../shader_uniform/texture_shader_uniform.h"
 
 class SandboxScene : public Scene {
 public:
@@ -34,27 +28,26 @@ public:
 private:
     float angle_{0.f};
 
-    Texture texture_grass_;
-    Texture texture_bitmap_font_;
+    Texture texture_grass_{};
+    Texture texture_bitmap_font_{};
 
-    BasicShaderUniform *up_grid_shader_uniform_{};
-    BasicShaderUniform *up_axis_shader_uniform_{};
-    BasicShaderUniform *up_triangle_shader_uniform_{};
-    TextureShaderUniform *up_grass_shader_uniform_{};
-    BasicShaderUniform *up_cube_shader_uniform_{};
+    std::shared_ptr<BasicShaderUniform> grid_shader_uniform_{new BasicShaderUniform()};
+    std::shared_ptr<BasicShaderUniform> axis_shader_uniform_{new BasicShaderUniform()};
+    std::shared_ptr<BasicShaderUniform> triangle_shader_uniform_{new BasicShaderUniform()};
+    std::shared_ptr<TextureShaderUniform> grass_shader_uniform_{new TextureShaderUniform()};
+    std::shared_ptr<BasicShaderUniform> cube_shader_uniform_{new BasicShaderUniform()};
 
-    VertexRenderObject *up_grid_{};
-    VertexRenderObject *up_axis_{};
-    VertexRenderObject *up_triangle_{};
-    VertexRenderObject *up_grass_{};
-    VertexRenderObject *up_cube_{};
+    std::shared_ptr<Shader> grid_shader_{new Shader()};
+    std::shared_ptr<Shader> shader_{new Shader()};
+    std::shared_ptr<Shader> texture_shader_{new Shader()};
+    std::shared_ptr<Shader> texture_2d_shader_{new Shader()};
 
-    Shader grid_shader_{};
-    Shader shader_{};
-    Shader texture_shader_{};
-    Shader texture_2d_shader_{};
+    VertexRenderObject grid_{};
+    VertexRenderObject axis_{};
+    VertexRenderObject triangle_{};
+    VertexRenderObject grass_{};
+    VertexRenderObject cube_{};
 
-    BitmapFontRender *up_bitmap_font_render_{};
 };
 
 #endif //SANDBOX_OPENGL_22_SANDBOX_SCENE_H_

@@ -1,19 +1,40 @@
 #ifndef SANDBOX_OPENGL_22_BITMAP_FONT_RENDER_H_
 #define SANDBOX_OPENGL_22_BITMAP_FONT_RENDER_H_
 
+#include <memory>
+#include <string>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include "base_object.h"
+#include <utility>
 #include "shader_uniform/font_shader_uniform.h"
-
-class VertexRenderObject;
+#include "vertex_render_object.h"
 
 class Shader;
 
 // ASCII bitmap font をスクリーンに表示するシステム
-class BitmapFontRender : public BaseObject {
+class BitmapFontRender {
 public:
-    BitmapFontRender(
+    BitmapFontRender() = default;
+
+    ~BitmapFontRender();
+
+    BitmapFontRender(const BitmapFontRender &) = delete;
+
+    BitmapFontRender &&operator=(const BitmapFontRender &) = delete;
+
+    // 白文字テキスト
+    [[maybe_unused]] void RenderWhiteAsciiText(const std::string &ascii_text, int x, int y, int font_size);
+
+    // 黒文字テキスト
+    [[maybe_unused]] void RenderBlackAsciiText(const std::string &ascii_text, int x, int y, int font_size);
+
+    // ASCII テキストを任意の位置に描画する
+    // param font_size 文字の横幅をピクセルで指定
+    // param color 任意の文字色
+    void RenderAsciiText(const std::string &ascii_text, int x, int y, int font_size, const glm::vec3 &color);
+
+    // 描画準備のオブジェクト等を生成する
+    void Create(
             int screen_width,
             int screen_height,
             int texture_width,
@@ -21,45 +42,13 @@ public:
             int glyph_width,
             int glyph_height,
             GLint texture_unit_number,
-            GLint uniform_texture_unit,
-            GLint uniform_color,
-            GLint uniform_translation_vec,
-            GLint uniform_scaling_vec,
-            GLint uniform_texcoord_translation_vec,
-            GLint uniform_texcoord_scaling_vec,
-            Shader *p_shader)
-            : screen_width_(screen_width),
-              screen_height_(screen_height),
-              texture_width_(texture_width),
-              texture_height_(texture_height),
-              glyph_width_(glyph_width),
-              glyph_height_(glyph_height),
-              texture_unit_number_(texture_unit_number),
-              font_shader_uniform_(
-                      uniform_texture_unit,
-                      uniform_color,
-                      uniform_translation_vec,
-                      uniform_scaling_vec,
-                      uniform_texcoord_translation_vec,
-                      uniform_texcoord_scaling_vec),
-              p_shader_(p_shader) {}
+            std::weak_ptr<Shader> shader);
 
-    // 白文字テキスト
-    [[maybe_unused]] void RenderWhiteAsciiText(const char *ascii_text, int x, int y, int font_size);
-
-    // 黒文字テキスト
-    [[maybe_unused]] void RenderBlackAsciiText(const char *ascii_text, int x, int y, int font_size);
-
-    // ASCII テキストを任意の位置に描画する
-    // param font_size 文字の横幅をピクセルで指定
-    // param color 任意の文字色
-    void RenderAsciiText(const char *ascii_text, int x, int y, int font_size, const glm::vec3 &color);
-
-    void Initialize();
-
-    void Finalize() override;
+    void Destroy();
 
 private:
+    bool created_{};
+
     // スクリーンの横幅
     int screen_width_{};
     // スクリーンの縦幅
@@ -75,12 +64,12 @@ private:
     // ASCII bitmap font の texture unit
     GLint texture_unit_number_{};
 
-    // ASCII bitmap font の shader uniform
-    FontShaderUniform font_shader_uniform_;
     // ASCII bitmap font の vertex render object
-    VertexRenderObject *up_vertex_render_object_{};
+    VertexRenderObject vertex_render_object_{};
+    // ASCII bitmap font の shader uniform
+    std::shared_ptr<FontShaderUniform> font_shader_uniform_{new FontShaderUniform()};
     // ASCII bitmap font 用のセットアップされたシェーダへのリンク
-    Shader *p_shader_{};
+    std::weak_ptr<Shader> shader_{};
 };
 
 #endif //SANDBOX_OPENGL_22_BITMAP_FONT_RENDER_H_

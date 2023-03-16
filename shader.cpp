@@ -54,9 +54,6 @@ void Shader::BuildFromFile(
     built_ = true;
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "UnreachableCode"
-
 GLuint Shader::BuildShader(GLenum shader_type, const std::string& shader_source) {
     const GLchar *shader_source_c_str = shader_source.c_str();
     GLuint result = glCreateShader(shader_type);
@@ -90,8 +87,6 @@ GLuint Shader::BuildShader(GLenum shader_type, const std::string& shader_source)
 
     return result;
 }
-
-#pragma clang diagnostic pop
 
 void Shader::Destroy() {
     if (built_) {
@@ -177,10 +172,7 @@ GLint Shader::GetUniformVariableLocation(const std::string& name) const {
 Shader::~Shader() {
     try {
         Destroy();
-        std::cerr << vertex_shader_filepath_ << " is destroy." << std::endl;
     } catch (...) {
         std::cerr << "(Shader) Fatal error in destructor." << std::endl;
     }
 }
-
-#pragma clang diagnostic pop

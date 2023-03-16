@@ -6,14 +6,11 @@
 
 class PositionAndNormalAndTexcoordVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        PositionAndNormalAndTexcoordVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader& shader) {
+        PositionAndNormalAndTexcoordVertexSpecification{}.Specify(shader);
     }
-
-private:
-    PositionAndNormalAndTexcoordVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {}
 };
 
 

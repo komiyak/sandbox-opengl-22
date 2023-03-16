@@ -9,33 +9,33 @@
 
 void LearnOpenGlLightingMultipleLightsScene::OnStart() {
     // Preparing shaders
-    vertex_color_shader_.BuildFromFile(
+    vertex_color_shader_->BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag",
             "outColor");
-    multiple_lights_shader_.BuildFromFile(
+    multiple_lights_shader_->BuildFromFile(
             "shader/learnopengl_lighting_multiple_lights.vert",
             "shader/learnopengl_lighting_multiple_lights.frag",
             "io_color");
 
     // Preparing the axis on the origin.
-    axis_shader_uniform_.SetShader(&vertex_color_shader_);
-    axis_.Initialize(
+    axis_shader_uniform_->SetShader(vertex_color_shader_);
+    axis_.Create(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            &vertex_color_shader_,
-            &axis_shader_uniform_,
+            vertex_color_shader_,
+            axis_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);
 
-    container_shader_uniform_.SetShader(&multiple_lights_shader_);
-    container_.Initialize(
+    container_shader_uniform_->SetShader(multiple_lights_shader_);
+    container_.Create(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            &multiple_lights_shader_,
-            &container_shader_uniform_,
+            multiple_lights_shader_,
+            container_shader_uniform_,
             PositionAndNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
@@ -52,20 +52,20 @@ void LearnOpenGlLightingMultipleLightsScene::OnStart() {
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    axis_shader_uniform_.SetProjectionMat(projection_mat);
-    container_shader_uniform_.SetProjectionMat(projection_mat);
+    axis_shader_uniform_->SetProjectionMat(projection_mat);
+    container_shader_uniform_->SetProjectionMat(projection_mat);
 
     // container の設定
-    container_shader_uniform_.SetMaterial(LearnopenglLightingMultipleLightsShaderUniform::Material{
+    container_shader_uniform_->SetMaterial(LearnopenglLightingMultipleLightsShaderUniform::Material{
             container_texture_.GetTextureUnitNumber(),
             container_specular_map_texture_.GetTextureUnitNumber(),
             32.f});
-    container_shader_uniform_.SetDirectionalLight(LearnopenglLightingMultipleLightsShaderUniform::DirectionalLight{
+    container_shader_uniform_->SetDirectionalLight(LearnopenglLightingMultipleLightsShaderUniform::DirectionalLight{
             glm::vec3(0, -1, 0),
             glm::vec3(0.1f),
             glm::vec3(0.5f),
             glm::vec3(1.0f)});
-    container_shader_uniform_.SetSpotlight(LearnopenglLightingMultipleLightsShaderUniform::Spotlight{
+    container_shader_uniform_->SetSpotlight(LearnopenglLightingMultipleLightsShaderUniform::Spotlight{
             glm::vec3(0, 1.f, 6.f),
             -glm::vec3(0, 1.f, 6.f),
             glm::cos(glm::pi<float>() / 128),
@@ -84,7 +84,7 @@ void LearnOpenGlLightingMultipleLightsScene::OnStart() {
             glm::vec3(-2.0f, 0.f, 2.0f)
     };
     for (int i = 0; i < 4; i++) {
-        container_shader_uniform_.SetPointLight(LearnopenglLightingMultipleLightsShaderUniform::PointLight{
+        container_shader_uniform_->SetPointLight(LearnopenglLightingMultipleLightsShaderUniform::PointLight{
                 pointLightPositions[i],
                 1.0f,
                 0.09f,
@@ -110,12 +110,12 @@ void LearnOpenGlLightingMultipleLightsScene::OnFrame() {
             glm::vec3(0.f, 0.f, 0.f),
             glm::vec3(0.f, 1.f, 0.f));
 
-    axis_shader_uniform_.SetViewMat(view_mat);
-    axis_shader_uniform_.SetModelMat(glm::mat4(1));
+    axis_shader_uniform_->SetViewMat(view_mat);
+    axis_shader_uniform_->SetModelMat(glm::mat4(1));
     axis_.Render();
 
-    container_shader_uniform_.SetViewPosition(view_position);
-    container_shader_uniform_.SetViewMat(view_mat);
+    container_shader_uniform_->SetViewPosition(view_position);
+    container_shader_uniform_->SetViewMat(view_mat);
 
     constexpr static struct ContainerLocation {
         glm::vec3 position; // グローバル座標
@@ -138,17 +138,12 @@ void LearnOpenGlLightingMultipleLightsScene::OnFrame() {
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.z * angle_, glm::vec3(0, 0, 1));
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.y * angle_, glm::vec3(0, 1, 0));
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.x * angle_, glm::vec3(1, 0, 0));
-        container_shader_uniform_.SetModelMat(model_mat);
+        container_shader_uniform_->SetModelMat(model_mat);
         container_.Render();
     }
 }
 
 void LearnOpenGlLightingMultipleLightsScene::OnDestroy() {
-    container_texture_.Finalize();
-    container_specular_map_texture_.Finalize();
-
-    container_.Finalize();
-    axis_.Finalize();
 }
 
 void LearnOpenGlLightingMultipleLightsScene::OnKey(int glfw_key, int glfw_action) {

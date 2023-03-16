@@ -6,15 +6,11 @@
 
 class TextureVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        TextureVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader& shader) {
+        TextureVertexSpecification{}.Specify(shader);
     }
-
-private:
-    explicit TextureVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {}
 };
-
 
 #endif //SANDBOX_OPENGL_22_TEXTURE_VERTEX_SPECIFICATION_H_

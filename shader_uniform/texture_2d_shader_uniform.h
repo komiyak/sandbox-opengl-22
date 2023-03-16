@@ -18,7 +18,8 @@ public:
               uniform_translation_vec_(uniform_translation_vec),
               uniform_scaling_vec_(uniform_scaling_vec),
               uniform_texcoord_translation_vec_(uniform_texcoord_translation_vec),
-              uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) { Activate(); }
+              uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) { }
+    //uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) { Activate(); }
 
     void Transfer() const override;
 
