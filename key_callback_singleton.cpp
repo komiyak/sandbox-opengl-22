@@ -1,10 +1,10 @@
 #include "key_callback_singleton.h"
 
-KeyCallbackSingleton *KeyCallbackSingleton::singleton_ = nullptr;
+std::unique_ptr<KeyCallbackSingleton> KeyCallbackSingleton::singleton_ = nullptr;
 
-KeyCallbackSingleton *KeyCallbackSingleton::GetInstance() {
+KeyCallbackSingleton &KeyCallbackSingleton::GetInstance() {
     if (singleton_ == nullptr) {
-        singleton_ = new KeyCallbackSingleton();
+        singleton_ = std::unique_ptr<KeyCallbackSingleton>{new KeyCallbackSingleton()};
     }
-    return singleton_;
+    return *singleton_;
 }

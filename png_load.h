@@ -1,17 +1,24 @@
 #ifndef SANDBOX_OPENGL_22_PNG_LOAD_H
 #define SANDBOX_OPENGL_22_PNG_LOAD_H
 
+#include <string>
 #include <png.h>
 
-#include "base_object.h"
-
 // libpng を利用した png ファイル管理クラス
-class PngLoad : public BaseObject {
+class PngLoad {
 public:
+    PngLoad() = default;
+
+    ~PngLoad();
+
+    PngLoad(const PngLoad &) = delete;
+
+    PngLoad &operator=(const PngLoad &) = delete;
+
     // png file ロード
-    // params p_file_name 画像ファイルパス
+    // params file_name 画像ファイルパス
     // params format 画像ファイルフォーマット (PNG_FORMAT_RGB, PNG_FORMAT_RGBA ... from libpng)
-    void LoadFile(const char *p_file_name, png_uint_32 format);
+    void LoadFile(const std::string &file_name, png_uint_32 format);
 
     // png file ロード解除
     void Unload();
@@ -31,10 +38,6 @@ public:
         image_size.width = (int) png_image_.width;
         image_size.height = (int) png_image_.height;
         return image_size;
-    }
-
-    void Finalize() override {
-        Unload();
     }
 
 private:

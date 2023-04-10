@@ -6,95 +6,52 @@
 #include "../game_data.h"
 #include "../vertex_specification/position_with_normal_and_texcoord_vertex_specification.h"
 #include "../vertex_specification/color_vertex_specification.h"
-#include "../bitmap_font_render.h"
 #include "../debug.h"
 
 void LearnOpenGlLightingLightCastersScene::OnStart() {
     // Preparing shaders
-    container_shader_.BuildFromFile(
+    container_shader_->BuildFromFile(
             "shader/learnopengl_lighting_directional_light.vert",
             "shader/learnopengl_lighting_directional_light.frag",
             "outColor");
-    container_point_light_shader_.BuildFromFile(
+    container_point_light_shader_->BuildFromFile(
             "shader/learnopengl_lighting_point_light.vert",
             "shader/learnopengl_lighting_point_light.frag",
             "outColor");
-    container_spotlight_shader_.BuildFromFile(
+    container_spotlight_shader_->BuildFromFile(
             "shader/learnopengl_lighting_spotlight.vert",
             "shader/learnopengl_lighting_spotlight.frag",
             "outColor");
-    vertex_color_shader_.BuildFromFile(
+    vertex_color_shader_->BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag",
             "outColor");
-    font_shader_.BuildFromFile(
+    font_shader_->BuildFromFile(
             "shader/font.vert",
             "shader/font.frag",
             "outColor");
 
     // Preparing containers.
-    container_shader_uniform_.SetUniformLocations(
-            container_shader_.GetUniformVariableLocation("projection_mat"),
-            container_shader_.GetUniformVariableLocation("view_mat"),
-            container_shader_.GetUniformVariableLocation("model_mat"),
-            container_shader_.GetUniformVariableLocation("light.direction"),
-            container_shader_.GetUniformVariableLocation("light.ambient"),
-            container_shader_.GetUniformVariableLocation("light.diffuse"),
-            container_shader_.GetUniformVariableLocation("light.specular"),
-            container_shader_.GetUniformVariableLocation("material.diffuse"),
-            container_shader_.GetUniformVariableLocation("material.specular"),
-            container_shader_.GetUniformVariableLocation("material.shininess"),
-            container_shader_.GetUniformVariableLocation("viewPosition"));
-    container_point_light_shader_uniform_.SetUniformLocations(
-            container_point_light_shader_.GetUniformVariableLocation("projection_mat"),
-            container_point_light_shader_.GetUniformVariableLocation("view_mat"),
-            container_point_light_shader_.GetUniformVariableLocation("model_mat"),
-            container_point_light_shader_.GetUniformVariableLocation("light.position"),
-            container_point_light_shader_.GetUniformVariableLocation("light.ambient"),
-            container_point_light_shader_.GetUniformVariableLocation("light.diffuse"),
-            container_point_light_shader_.GetUniformVariableLocation("light.specular"),
-            container_point_light_shader_.GetUniformVariableLocation("light.constant"),
-            container_point_light_shader_.GetUniformVariableLocation("light.linear"),
-            container_point_light_shader_.GetUniformVariableLocation("light.quadratic"),
-            container_point_light_shader_.GetUniformVariableLocation("material.diffuse"),
-            container_point_light_shader_.GetUniformVariableLocation("material.specular"),
-            container_point_light_shader_.GetUniformVariableLocation("material.shininess"),
-            container_point_light_shader_.GetUniformVariableLocation("viewPosition"));
-    container_spotlight_shader_uniform_.SetUniformLocations(
-            container_spotlight_shader_.GetUniformVariableLocation("projection_mat"),
-            container_spotlight_shader_.GetUniformVariableLocation("view_mat"),
-            container_spotlight_shader_.GetUniformVariableLocation("model_mat"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.position"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.direction"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.cutoff"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.outer_cutoff"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.ambient"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.diffuse"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.specular"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.constant"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.linear"),
-            container_spotlight_shader_.GetUniformVariableLocation("light.quadratic"),
-            container_spotlight_shader_.GetUniformVariableLocation("material.diffuse"),
-            container_spotlight_shader_.GetUniformVariableLocation("material.specular"),
-            container_spotlight_shader_.GetUniformVariableLocation("material.shininess"),
-            container_spotlight_shader_.GetUniformVariableLocation("viewPosition"));
-    container_.Initialize(
+    container_shader_uniform_->SetShader(container_shader_);
+    container_point_light_shader_uniform_->SetShader(container_point_light_shader_);
+    container_spotlight_shader_uniform_->SetShader(container_spotlight_shader_);
+    container_.Create(
             sizeof(GameData::kCubeWithNormalAndTexcoordVertices),
             (void *) GameData::kCubeWithNormalAndTexcoordVertices,
-            &container_shader_,
-            &container_shader_uniform_,
+            container_shader_,
+            container_shader_uniform_,
             PositionWithNormalAndTexcoordVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             36);
 
     // Preparing the axis on the origin.
-    axis_shader_uniform_.SetShader(&vertex_color_shader_);
-    axis_.Initialize(
+    axis_shader_uniform_->SetShader(vertex_color_shader_);
+    axis_.Create(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            &vertex_color_shader_,
-            &axis_shader_uniform_,
+            vertex_color_shader_,
+            axis_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
@@ -114,50 +71,45 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
             2);
 
     // フォント準備
-    up_bitmap_font_render_ = new BitmapFontRender(
-            GetApplicationContext()->GetWindowScreenWidth(),
-            GetApplicationContext()->GetWindowScreenHeight(),
-            font_texture_.GetTextureWidth(),
-            font_texture_.GetTextureHeight(),
-            4,
-            8,
-            font_texture_.GetTextureUnitNumber(),
-            font_shader_.GetUniformVariableLocation("tex"),
-            font_shader_.GetUniformVariableLocation("color"),
-            font_shader_.GetUniformVariableLocation("translation_vec"),
-            font_shader_.GetUniformVariableLocation("scaling_vec"),
-            font_shader_.GetUniformVariableLocation("texcoord_translation_vec"),
-            font_shader_.GetUniformVariableLocation("texcoord_scaling_vec"),
-            &font_shader_);
-    up_bitmap_font_render_->Initialize();
+    if (auto application_context = GetApplicationContext().lock()) {
+        bitmap_font_render_.Create(
+                application_context->GetWindowScreenWidth(),
+                application_context->GetWindowScreenHeight(),
+                font_texture_.GetTextureWidth(),
+                font_texture_.GetTextureHeight(),
+                4,
+                8,
+                font_texture_.GetTextureUnitNumber(),
+                font_shader_);
+    }
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    container_shader_uniform_.SetProjectionMat(projection_mat);
-    container_point_light_shader_uniform_.SetProjectionMat(projection_mat);
-    container_spotlight_shader_uniform_.SetProjectionMat(projection_mat);
-    axis_shader_uniform_.SetProjectionMat(projection_mat);
+    container_shader_uniform_->SetProjectionMat(projection_mat);
+    container_point_light_shader_uniform_->SetProjectionMat(projection_mat);
+    container_spotlight_shader_uniform_->SetProjectionMat(projection_mat);
+    axis_shader_uniform_->SetProjectionMat(projection_mat);
 
     // container の設定
-    container_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
-    container_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
+    container_shader_uniform_->SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
+    container_shader_uniform_->SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
 
     // point light の設定
-    container_point_light_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
-    container_point_light_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
-    container_point_light_shader_uniform_.SetLightConstant(1.0f);
-    container_point_light_shader_uniform_.SetLightLinear(0.09f);
-    container_point_light_shader_uniform_.SetLightQuadratic(0.032f);
+    container_point_light_shader_uniform_->SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
+    container_point_light_shader_uniform_->SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
+    container_point_light_shader_uniform_->SetLightConstant(1.0f);
+    container_point_light_shader_uniform_->SetLightLinear(0.09f);
+    container_point_light_shader_uniform_->SetLightQuadratic(0.032f);
 
     // spotlight の設定
-    container_spotlight_shader_uniform_.SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
-    container_spotlight_shader_uniform_.SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
-    container_spotlight_shader_uniform_.SetLightCutoff(glm::cos(glm::pi<float>() / 16));
-    container_spotlight_shader_uniform_.SetLightOuterCutoff(
+    container_spotlight_shader_uniform_->SetMaterialDiffuse(container_texture_.GetTextureUnitNumber());
+    container_spotlight_shader_uniform_->SetMaterialSpecular(container_specular_map_texture_.GetTextureUnitNumber());
+    container_spotlight_shader_uniform_->SetLightCutoff(glm::cos(glm::pi<float>() / 16));
+    container_spotlight_shader_uniform_->SetLightOuterCutoff(
             glm::cos((glm::pi<float>() / 16) + (glm::pi<float>() / 64)));
-    container_spotlight_shader_uniform_.SetLightConstant(1.0f);
-    container_spotlight_shader_uniform_.SetLightLinear(0.027f);
-    container_spotlight_shader_uniform_.SetLightQuadratic(0.0028f);
+    container_spotlight_shader_uniform_->SetLightConstant(1.0f);
+    container_spotlight_shader_uniform_->SetLightLinear(0.027f);
+    container_spotlight_shader_uniform_->SetLightQuadratic(0.0028f);
 }
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
@@ -197,13 +149,13 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
     if (mode_ == kDirectionalLight) {
         switch (directional_light_mode_) {
             case kDirectionalLightA:
-                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, -2));
+                container_shader_uniform_->SetLightDirection(glm::vec3(-0.1, -1, -2));
                 break;
             case kDirectionalLightB:
-                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, -1, 1));
+                container_shader_uniform_->SetLightDirection(glm::vec3(-0.1, -1, 1));
                 break;
             case kDirectionalLightC:
-                container_shader_uniform_.SetLightDirection(glm::vec3(-0.1, 1, -0.1)); // 下からの光
+                container_shader_uniform_->SetLightDirection(glm::vec3(-0.1, 1, -0.1)); // 下からの光
                 break;
             default:
                 DEBUG_ABORT_MESSAGE("Not reached");
@@ -213,53 +165,53 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
     const glm::vec3 point_light_position = glm::vec3(glm::sin(point_light_position_x_) * 2.5, 0, 0);
 
     // コンテナ関係の shader uniform
-    container_shader_uniform_.SetViewMat(view_mat);
-    container_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
-    container_shader_uniform_.SetLightDiffuse(glm::vec3(0.8f));
-    container_shader_uniform_.SetLightSpecular(glm::vec3(1.0f));
-    container_shader_uniform_.SetViewPosition(view_position);
-    container_shader_uniform_.SetMaterialShininess(32.0f);
-    container_point_light_shader_uniform_.SetViewMat(view_mat);
-    container_point_light_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
-    container_point_light_shader_uniform_.SetLightDiffuse(glm::vec3(0.8f));
-    container_point_light_shader_uniform_.SetLightSpecular(glm::vec3(1.0f));
-    container_point_light_shader_uniform_.SetViewPosition(view_position);
-    container_point_light_shader_uniform_.SetMaterialShininess(32.0f);
-    container_point_light_shader_uniform_.SetLightPosition(point_light_position);
-    container_spotlight_shader_uniform_.SetViewMat(view_mat);
-    container_spotlight_shader_uniform_.SetLightAmbient(glm::vec3(0.25f));
-    container_spotlight_shader_uniform_.SetLightDiffuse(glm::vec3(0.8f));
-    container_spotlight_shader_uniform_.SetLightSpecular(glm::vec3(1.0f));
-    container_spotlight_shader_uniform_.SetViewPosition(view_position);
-    container_spotlight_shader_uniform_.SetMaterialShininess(32.0f);
-    container_spotlight_shader_uniform_.SetLightPosition(view_position);
-    container_spotlight_shader_uniform_.SetLightDirection(glm::normalize(-view_position));
+    container_shader_uniform_->SetViewMat(view_mat);
+    container_shader_uniform_->SetLightAmbient(glm::vec3(0.25f));
+    container_shader_uniform_->SetLightDiffuse(glm::vec3(0.8f));
+    container_shader_uniform_->SetLightSpecular(glm::vec3(1.0f));
+    container_shader_uniform_->SetViewPosition(view_position);
+    container_shader_uniform_->SetMaterialShininess(32.0f);
+    container_point_light_shader_uniform_->SetViewMat(view_mat);
+    container_point_light_shader_uniform_->SetLightAmbient(glm::vec3(0.25f));
+    container_point_light_shader_uniform_->SetLightDiffuse(glm::vec3(0.8f));
+    container_point_light_shader_uniform_->SetLightSpecular(glm::vec3(1.0f));
+    container_point_light_shader_uniform_->SetViewPosition(view_position);
+    container_point_light_shader_uniform_->SetMaterialShininess(32.0f);
+    container_point_light_shader_uniform_->SetLightPosition(point_light_position);
+    container_spotlight_shader_uniform_->SetViewMat(view_mat);
+    container_spotlight_shader_uniform_->SetLightAmbient(glm::vec3(0.25f));
+    container_spotlight_shader_uniform_->SetLightDiffuse(glm::vec3(0.8f));
+    container_spotlight_shader_uniform_->SetLightSpecular(glm::vec3(1.0f));
+    container_spotlight_shader_uniform_->SetViewPosition(view_position);
+    container_spotlight_shader_uniform_->SetMaterialShininess(32.0f);
+    container_spotlight_shader_uniform_->SetLightPosition(view_position);
+    container_spotlight_shader_uniform_->SetLightDirection(glm::normalize(-view_position));
     for (const auto &container_location: container_locations) {
         glm::mat4 model_mat = glm::mat4(1);
         model_mat = glm::translate(model_mat, container_location.position);
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.z * angle_, glm::vec3(0, 0, 1));
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.y * angle_, glm::vec3(0, 1, 0));
         model_mat = glm::rotate(model_mat, container_location.rotation_speed.x * angle_, glm::vec3(1, 0, 0));
-        container_shader_uniform_.SetModelMat(model_mat);
-        container_point_light_shader_uniform_.SetModelMat(model_mat);
-        container_spotlight_shader_uniform_.SetModelMat(model_mat);
+        container_shader_uniform_->SetModelMat(model_mat);
+        container_point_light_shader_uniform_->SetModelMat(model_mat);
+        container_spotlight_shader_uniform_->SetModelMat(model_mat);
         container_.Render();
     }
 
-    axis_shader_uniform_.SetViewMat(view_mat);
-    axis_shader_uniform_.SetModelMat(glm::mat4(1));
+    axis_shader_uniform_->SetViewMat(view_mat);
+    axis_shader_uniform_->SetModelMat(glm::mat4(1));
     axis_.Render();
 
     if (mode_ == kPointLight) {
         // point light
         glm::mat4 point_light_model_mat = glm::mat4(1);
         point_light_model_mat = glm::translate(point_light_model_mat, point_light_position);
-        axis_shader_uniform_.SetModelMat(point_light_model_mat);
+        axis_shader_uniform_->SetModelMat(point_light_model_mat);
         axis_.Render();
     }
 
     // フォント描画
-    if (up_bitmap_font_render_) {
+    if (true) {
         const char *current_mode;
         const char *current_sub_mode = nullptr;
         switch (mode_) {
@@ -288,15 +240,15 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
             default:
                 DEBUG_ABORT_MESSAGE("Not reached");
         }
-        up_bitmap_font_render_->RenderWhiteAsciiText(current_mode, 40, 40, 20);
-        up_bitmap_font_render_->RenderAsciiText(
+        bitmap_font_render_.RenderWhiteAsciiText(current_mode, 40, 40, 20);
+        bitmap_font_render_.RenderAsciiText(
                 "To change the mode, [1]: Directional light, [2]: Point light, [3]: Spotlight",
                 40, 90, 14,
                 glm::vec3(0, 0.7, 0));
 
         if (current_sub_mode) {
-            up_bitmap_font_render_->RenderWhiteAsciiText(current_sub_mode, 40, 150, 20);
-            up_bitmap_font_render_->RenderAsciiText(
+            bitmap_font_render_.RenderWhiteAsciiText(current_sub_mode, 40, 150, 20);
+            bitmap_font_render_.RenderAsciiText(
                     "To change the sub mode, [A]: A, [S]: B, [D]: C",
                     40, 200, 14,
                     glm::vec3(0, 0.7, 0));
@@ -305,20 +257,6 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
 }
 
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
-    container_shader_.Finalize();
-    container_point_light_shader_.Finalize();
-    container_spotlight_shader_.Finalize();
-    vertex_color_shader_.Finalize();
-    font_shader_.Finalize();
-
-    font_texture_.Finalize();
-    container_texture_.Finalize();
-    container_specular_map_texture_.Finalize();
-
-    container_.Finalize();
-    axis_.Finalize();
-
-    FINALIZE_AND_DELETE(up_bitmap_font_render_);
 }
 
 void LearnOpenGlLightingLightCastersScene::OnKey(int glfw_key, int glfw_action) {
@@ -331,26 +269,24 @@ void LearnOpenGlLightingLightCastersScene::OnKey(int glfw_key, int glfw_action) 
     if (glfw_key == GLFW_KEY_1 && glfw_action == GLFW_PRESS) {
         if (mode_ != kDirectionalLight) {
             container_.ChangeShader(
-                    &container_shader_,
-                    &container_shader_uniform_);
+                    container_shader_,
+                    container_shader_uniform_);
         }
         mode_ = kDirectionalLight;
     }
     if (glfw_key == GLFW_KEY_2 && glfw_action == GLFW_PRESS) {
         if (mode_ != kPointLight) {
             container_.ChangeShader(
-                    &container_point_light_shader_,
-                    &container_point_light_shader_uniform_);
-
+                    container_point_light_shader_,
+                    container_point_light_shader_uniform_);
         }
         mode_ = kPointLight;
     }
     if (glfw_key == GLFW_KEY_3 && glfw_action == GLFW_PRESS) {
         if (mode_ != kSpotlight) {
             container_.ChangeShader(
-                    &container_spotlight_shader_,
-                    &container_spotlight_shader_uniform_);
-
+                    container_spotlight_shader_,
+                    container_spotlight_shader_uniform_);
         }
         mode_ = kSpotlight;
     }

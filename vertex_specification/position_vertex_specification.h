@@ -4,16 +4,15 @@
 #include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
+#include <utility>
+
 class PositionVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        PositionVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader& shader) {
+        PositionVertexSpecification{}.Specify(shader);
     }
-
-private:
-    explicit PositionVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {};
 };
 
 #endif //SANDBOX_OPENGL_22_POSITION_VERTEX_SPECIFICATION_H_

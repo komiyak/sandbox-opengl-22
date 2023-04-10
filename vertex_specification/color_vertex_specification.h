@@ -4,16 +4,15 @@
 #include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
+#include <utility>
+
 class ColorVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        ColorVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader &shader) {
+        ColorVertexSpecification{}.Specify(shader);
     }
-
-private:
-    explicit ColorVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {};
 };
 
 #endif //SANDBOX_OPENGL_22_COLOR_VERTEX_SPECIFICATION_H_

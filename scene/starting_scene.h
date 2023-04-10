@@ -1,14 +1,13 @@
 #ifndef SANDBOX_OPENGL_22_STARTING_SCENE_H_
 #define SANDBOX_OPENGL_22_STARTING_SCENE_H_
 
+#include <memory>
 #include "../opengl_glfw.h"
 #include "../texture.h"
+#include "../bitmap_font_render.h"
 
 #include "../application/scene.h"
-
-class Shader;
-
-class BitmapFontRender;
+#include "../shader.h"
 
 // 起動時のナビゲーション等を提供するシーン
 class StartingScene : public Scene {
@@ -24,9 +23,9 @@ public:
 private:
     float count_{};
 
-    Texture texture_;
-    Shader *up_font_shader_{};
-    BitmapFontRender *up_bitmap_font_render_{};
+    Texture texture_{};
+    std::shared_ptr<Shader> font_shader_{new Shader()};
+    BitmapFontRender bitmap_font_render_{};
 };
 
 #endif //SANDBOX_OPENGL_22_STARTING_SCENE_H_

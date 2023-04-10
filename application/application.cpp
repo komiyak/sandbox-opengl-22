@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cstdio>
 
 #include "application.h"
@@ -6,8 +7,10 @@
 #include "../key_callback_singleton.h"
 #include "scene.h"
 
-void Application::Initialize(Scene *(*p_scene_method)()) {
-    DEBUG_ASSERT_MESSAGE(p_scene_method, "p_scene_method is required.");
+void Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
+    if (created_) return;
+
+    DEBUG_ASSERT_MESSAGE(scene_method, "scene_method is required.");
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -22,27 +25,27 @@ void Application::Initialize(Scene *(*p_scene_method)()) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
 
-    up_glfw_window_ = glfwCreateWindow(
-            application_context_.GetWindowScreenWidth(),
-            application_context_.GetWindowScreenHeight(),
+    glfw_window_ = glfwCreateWindow(
+            application_context_->GetWindowScreenWidth(),
+            application_context_->GetWindowScreenHeight(),
             "The sandbox of OpenGL",
             nullptr,
             nullptr);
-    if (!up_glfw_window_) {
+    if (!glfw_window_) {
         fprintf(stderr, "Error: Failed to make GLFW window.\n");
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
     // Activate OpenGL context
-    glfwSetKeyCallback(up_glfw_window_, KeyCallback);
-    glfwMakeContextCurrent(up_glfw_window_);
+    glfwSetKeyCallback(glfw_window_, KeyCallback);
+    glfwMakeContextCurrent(glfw_window_);
 
     // Loading GLAD
     const int kGladResult = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     if (!kGladResult) {
         fprintf(stderr, "Error: Failed to initialize GLAD.\n");
-        glfwDestroyWindow(up_glfw_window_);
+        glfwDestroyWindow(glfw_window_);
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -69,36 +72,41 @@ void Application::Initialize(Scene *(*p_scene_method)()) {
     glEnable(GL_DEPTH_TEST);
 
     // 初回起動の Activity を登録する
-    Scene *up_scene = p_scene_method();
-    DEBUG_ASSERT(up_scene);
-    scenes_stack_.push(up_scene);
-    KeyCallbackSingleton::GetInstance()->SetActivity(up_scene);
-    up_scene->OnAttach(&application_context_);
+    std::shared_ptr<Scene> scene = scene_method();
+    scenes_stack_.push(scene);
+    KeyCallbackSingleton::GetInstance().SetActivity(scene);
+    scene->OnAttach(application_context_);
+
+    created_ = true;
 }
 
-void Application::Finalize() {
-    // 終了時には必ず stack を空っぽにする
-    while (!scenes_stack_.empty()) {
-        PopScene();
-    }
+void Application::Destroy() {
+    if (created_) {
+        // glfwDestroyWindow を実行する前に、すべての scene を削除する
+        while (!scenes_stack_.empty()) {
+            PopScene();
+        }
 
-    glfwDestroyWindow(up_glfw_window_);
-    up_glfw_window_ = nullptr;
-    glfwTerminate();
+        glfwDestroyWindow(glfw_window_);
+        glfw_window_ = nullptr;
+        glfwTerminate();
+    }
+    created_ = false;
 }
 
 void Application::RunLoop() {
-    DEBUG_ASSERT(up_glfw_window_);
+    DEBUG_ASSERT(created_);
+    DEBUG_ASSERT(glfw_window_);
 
     // 最初の scene を開始する
     scenes_stack_.top()->OnStart();
 
     // Application loop の実行
-    while (!glfwWindowShouldClose(up_glfw_window_) && !scenes_stack_.empty()) {
+    while (!glfwWindowShouldClose(glfw_window_) && !scenes_stack_.empty()) {
         scenes_stack_.top()->OnBeforeFrame();
         scenes_stack_.top()->OnFrame();
 
-        glfwSwapBuffers(up_glfw_window_);
+        glfwSwapBuffers(glfw_window_);
         glfwPollEvents();
 
         scenes_stack_.top()->OnFrameAfterSwap();
@@ -107,14 +115,14 @@ void Application::RunLoop() {
         if (scenes_stack_.top()->IsShouldDestroy()) {
             if (scenes_stack_.top()->HaveNextScene()) {
                 // Activity が push を要求している場合は、push する
-                Scene *p_next = scenes_stack_.top()->NextScene();
+                std::shared_ptr<Scene> next_scene = scenes_stack_.top()->NextScene();
 
                 PopScene();
 
-                scenes_stack_.push(p_next);
-                KeyCallbackSingleton::GetInstance()->SetActivity(p_next);
-                p_next->OnAttach(&application_context_);
-                p_next->OnStart();
+                scenes_stack_.push(next_scene);
+                KeyCallbackSingleton::GetInstance().SetActivity(next_scene);
+                next_scene->OnAttach(application_context_);
+                next_scene->OnStart();
             } else {
                 PopScene();
             }
@@ -133,19 +141,26 @@ void Application::KeyCallback(
         int action,
         [[maybe_unused]] int mods) {
 
-    Scene *p_scene = KeyCallbackSingleton::GetInstance()->GetActivity();
-    if (p_scene) {
-        p_scene->OnKey(key, action);
+    std::weak_ptr<Scene> scene = KeyCallbackSingleton::GetInstance().GetActivity();
+    if (auto p = scene.lock()) {
+        p->OnKey(key, action);
     }
 }
 
 void Application::PopScene() {
-    Scene *p_scene = scenes_stack_.top();
-    p_scene->OnDestroy();
-    delete p_scene; // Factory method で new しているため、ここで delete する
-    scenes_stack_.pop();
+    std::shared_ptr<Scene> scene = scenes_stack_.top();
+    scene->OnDestroy();
+    scenes_stack_.pop(); // shared_ptr なので pop によって自動的に delete される
 
     if (!scenes_stack_.empty()) {
-        KeyCallbackSingleton::GetInstance()->SetActivity(scenes_stack_.top());
+        KeyCallbackSingleton::GetInstance().SetActivity(scenes_stack_.top());
+    }
+}
+
+Application::~Application() {
+    try {
+        Destroy();
+    } catch (...) {
+        std::cerr << "(Application) Fatal error in destructor." << std::endl;
     }
 }

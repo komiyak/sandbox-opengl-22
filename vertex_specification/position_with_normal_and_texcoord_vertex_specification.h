@@ -4,16 +4,15 @@
 #include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
+#include <utility>
+
 class PositionWithNormalAndTexcoordVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        PositionWithNormalAndTexcoordVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader& shader) {
+        PositionWithNormalAndTexcoordVertexSpecification{}.Specify(shader);
     }
-
-private:
-    explicit PositionWithNormalAndTexcoordVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {}
 };
 
 

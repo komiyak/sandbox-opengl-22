@@ -1,10 +1,9 @@
 #include "shader_uniform.h"
 #include "../shader.h"
 
-GLint ShaderUniform::GetUniformVariableLocation(const char *key) const {
-    if (p_shader_) {
-        return p_shader_->GetUniformVariableLocation(key);
+GLint ShaderUniform::GetUniformVariableLocation(const std::string& key) const {
+    if (auto shader = shader_.lock()) {
+        return shader->GetUniformVariableLocation(key);
     }
     return -1;
 }
-

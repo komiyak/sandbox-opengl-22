@@ -4,16 +4,15 @@
 #include "../opengl_glfw.h"
 #include "vertex_specification.h"
 
+#include <utility>
+
 class Texture2dVertexSpecification : public VertexSpecification {
 public:
-    void Specify() const override;
+    void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader *p_shader) {
-        Texture2dVertexSpecification{p_shader}.Specify();
+    static void UseSpecification(const Shader &shader) {
+        Texture2dVertexSpecification{}.Specify(shader);
     }
-
-private:
-    Texture2dVertexSpecification(const Shader *p_shader) : VertexSpecification(p_shader) {}
 };
 
 #endif //SANDBOX_OPENGL_22_TEXTURE_2D_VERTEX_SPECIFICATION_H_

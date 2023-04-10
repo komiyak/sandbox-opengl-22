@@ -1,6 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_MULTIPLE_LIGHTS_SCENE_H_
 #define SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_MULTIPLE_LIGHTS_SCENE_H_
 
+#include <memory>
 #include "../opengl_glfw.h"
 #include "../application/scene.h"
 #include "../shader.h"
@@ -21,31 +22,33 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
-    static Scene *CreateFactory() {
-        return new LearnOpenGlLightingMultipleLightsScene();
+    static std::shared_ptr<Scene> CreateFactory() {
+        return std::shared_ptr<Scene>{new LearnOpenGlLightingMultipleLightsScene()};
     }
+
 private:
     float angle_{0.f};
 
     // 頂点カラー shader
-    Shader vertex_color_shader_;
+    std::shared_ptr<Shader> vertex_color_shader_{new Shader};
     // multiple lights shader
-    Shader multiple_lights_shader_;
+    std::shared_ptr<Shader> multiple_lights_shader_{new Shader};
 
     // コンテナ用 diffuse map
-    Texture container_texture_;
+    Texture container_texture_{};
     // コンテナ用 specular map
-    Texture container_specular_map_texture_;
+    Texture container_specular_map_texture_{};
 
     // コンテナオブジェクト
-    VertexRenderObject container_;
+    VertexRenderObject container_{};
     // 原点用の３軸表示
-    VertexRenderObject axis_;
+    VertexRenderObject axis_{};
 
     // 原点用の３軸用の shader uniform
-    BasicShaderUniform axis_shader_uniform_;
+    std::shared_ptr<BasicShaderUniform> axis_shader_uniform_{new BasicShaderUniform};
     // コンテナ用 shader uniform (For multiple lights)
-    LearnopenglLightingMultipleLightsShaderUniform container_shader_uniform_;
+    std::shared_ptr<LearnopenglLightingMultipleLightsShaderUniform> container_shader_uniform_{
+            new LearnopenglLightingMultipleLightsShaderUniform};
 };
 
 

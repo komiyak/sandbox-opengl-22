@@ -4,14 +4,9 @@
 #include "sandbox_scene.h"
 #include "../application/application.h"
 #include "../opengl_debug.h"
-#include "../vertex_render_object.h"
-#include "../shader.h"
 #include "../vertex_specification/position_vertex_specification.h"
 #include "../vertex_specification/color_vertex_specification.h"
 #include "../vertex_specification/texture_vertex_specification.h"
-#include "../shader_uniform/basic_shader_uniform.h"
-#include "../shader_uniform/texture_shader_uniform.h"
-#include "../bitmap_font_render.h"
 #include "../game_data.h"
 
 void SandboxScene::OnStart() {
@@ -32,26 +27,22 @@ void SandboxScene::OnStart() {
             0.5f, 0.5f, 0.f, 1.0f, 0.0f,
     };
 
-    up_grid_shader_ = new Shader();
-    up_grid_shader_->BuildFromFile(
+    grid_shader_->BuildFromFile(
             "shader/white_vertex.vert",
             "shader/white_vertex.frag",
             "outColor");
 
-    up_shader_ = new Shader();
-    up_shader_->BuildFromFile(
+    shader_->BuildFromFile(
             "shader/vertex_color.vert",
             "shader/vertex_color.frag",
             "outColor");
 
-    up_texture_shader_ = new Shader();
-    up_texture_shader_->BuildFromFile(
+    texture_shader_->BuildFromFile(
             "shader/texture.vert",
             "shader/texture.frag",
             "outColor");
 
-    up_texture_2d_shader_ = new Shader();
-    up_texture_2d_shader_->BuildFromFile(
+    texture_2d_shader_->BuildFromFile(
             "shader/texture_2d.vert",
             "shader/texture_2d.frag",
             "outColor");
@@ -68,75 +59,59 @@ void SandboxScene::OnStart() {
             1);
 
 
-    up_grid_shader_uniform_ = new BasicShaderUniform();
-    up_grid_shader_uniform_->SetShader(up_grid_shader_);
+    grid_shader_uniform_->SetShader(grid_shader_);
+    axis_shader_uniform_->SetShader(shader_);
+    triangle_shader_uniform_->SetShader(shader_);
+    grass_shader_uniform_->SetShader(texture_shader_);
+    cube_shader_uniform_->SetShader(grid_shader_);
 
-    up_axis_shader_uniform_ = new BasicShaderUniform();
-    up_axis_shader_uniform_->SetShader(up_shader_);
-
-    up_triangle_shader_uniform_ = new BasicShaderUniform();
-    up_triangle_shader_uniform_->SetShader(up_shader_);
-
-    up_grass_shader_uniform_ = new TextureShaderUniform{
-            up_texture_shader_->GetUniformVariableLocation("projection_mat"),
-            up_texture_shader_->GetUniformVariableLocation("view_mat"),
-            up_texture_shader_->GetUniformVariableLocation("model_mat"),
-            up_texture_shader_->GetUniformVariableLocation("tex")};
-
-    up_cube_shader_uniform_ = new BasicShaderUniform();
-    up_cube_shader_uniform_->SetShader(up_grid_shader_);
 
     // texture unit 0 を利用する
-    up_grass_shader_uniform_->SetTextureUnit(0);
+    grass_shader_uniform_->SetTextureUnit(0);
 
-    up_grid_ = new VertexRenderObject();
-    up_axis_ = new VertexRenderObject();
-    up_triangle_ = new VertexRenderObject();
-    up_grass_ = new VertexRenderObject();
-    up_cube_ = new VertexRenderObject();
 
-    up_grid_->Initialize(
+    grid_.Create(
             sizeof(GameData::kGridVertices),
             (void *) GameData::kGridVertices,
-            up_grid_shader_,
-            up_grid_shader_uniform_,
+            grid_shader_,
+            grid_shader_uniform_,
             PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             22 * 2);
-    up_axis_->Initialize(
+    axis_.Create(
             GameData::kAxisVerticesSize,
             (void *) GameData::kAxisVertices,
-            up_shader_,
-            up_axis_shader_uniform_,
+            shader_,
+            axis_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_LINES,
             6);
-    up_triangle_->Initialize(
+    triangle_.Create(
             sizeof(kVertices),
             (void *) kVertices,
-            up_shader_,
-            up_triangle_shader_uniform_,
+            shader_,
+            triangle_shader_uniform_,
             ColorVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
             3);
-    up_grass_->Initialize(
+    grass_.Create(
             sizeof(kGrassVertices),
             (void *) kGrassVertices,
-            up_texture_shader_,
-            up_grass_shader_uniform_,
+            texture_shader_,
+            grass_shader_uniform_,
             TextureVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLE_STRIP,
             4);
 
-    up_cube_->Initialize(
+    cube_.Create(
             sizeof(GameData::kCubeVertices),
             (void *) GameData::kCubeVertices,
-            up_grid_shader_,
-            up_cube_shader_uniform_,
+            grid_shader_,
+            cube_shader_uniform_,
             PositionVertexSpecification::UseSpecification,
             GL_STATIC_DRAW,
             GL_TRIANGLES,
@@ -144,11 +119,11 @@ void SandboxScene::OnStart() {
 
     // Projection 行列を設定
     const glm::mat4 projection_mat = glm::perspective(glm::radians(45.0f), 8.f / 6.f, 1.f, 50.0f);
-    up_grid_shader_uniform_->SetProjectionMat(projection_mat);
-    up_axis_shader_uniform_->SetProjectionMat(projection_mat);
-    up_triangle_shader_uniform_->SetProjectionMat(projection_mat);
-    up_grass_shader_uniform_->SetProjectionMat(projection_mat);
-    up_cube_shader_uniform_->SetProjectionMat(projection_mat);
+    grid_shader_uniform_->SetProjectionMat(projection_mat);
+    axis_shader_uniform_->SetProjectionMat(projection_mat);
+    triangle_shader_uniform_->SetProjectionMat(projection_mat);
+    grass_shader_uniform_->SetProjectionMat(projection_mat);
+    cube_shader_uniform_->SetProjectionMat(projection_mat);
 }
 
 void SandboxScene::OnFrame() {
@@ -166,66 +141,44 @@ void SandboxScene::OnFrame() {
 
     glm::mat4 model_mat = glm::mat4(1.0f);
     model_mat = glm::translate(model_mat, glm::vec3(0.0f, 0.5f, 0.0f));
-    if (up_triangle_shader_uniform_ && up_triangle_) {
-        up_triangle_shader_uniform_->SetViewMat(view_mat);
-        up_triangle_shader_uniform_->SetModelMat(model_mat);
-        up_triangle_->Render();
+    if (triangle_shader_uniform_) {
+        triangle_shader_uniform_->SetViewMat(view_mat);
+        triangle_shader_uniform_->SetModelMat(model_mat);
+        triangle_.Render();
     }
 
-    if (up_grid_shader_uniform_ && up_grid_) {
-        up_grid_shader_uniform_->SetViewMat(view_mat);
-        up_grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-        up_grid_->Render();
+    if (grid_shader_uniform_) {
+        grid_shader_uniform_->SetViewMat(view_mat);
+        grid_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        grid_.Render();
     }
 
-    if (up_axis_shader_uniform_ && up_axis_) {
-        up_axis_shader_uniform_->SetViewMat(view_mat);
-        up_axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
-        up_axis_->Render();
+    if (axis_shader_uniform_) {
+        axis_shader_uniform_->SetViewMat(view_mat);
+        axis_shader_uniform_->SetModelMat(glm::mat4(1.0f));
+        axis_.Render();
     }
 
-    if (up_grass_shader_uniform_ && up_grass_) {
+    if (grass_shader_uniform_) {
         glm::mat4 grass_model_mat = glm::mat4(1.0f);
         grass_model_mat = glm::translate(grass_model_mat, glm::vec3(0.0f, 1.f, 0.3f));
         grass_model_mat = glm::scale(grass_model_mat, glm::vec3(2.0f, 2.f, 2.f));
-        up_grass_shader_uniform_->SetViewMat(view_mat);
-        up_grass_shader_uniform_->SetModelMat(grass_model_mat);
-        up_grass_->Render();
+        grass_shader_uniform_->SetViewMat(view_mat);
+        grass_shader_uniform_->SetModelMat(grass_model_mat);
+        grass_.Render();
     }
 
-    if (up_cube_shader_uniform_ && up_cube_) {
+    if (cube_shader_uniform_) {
         glm::mat4 cube_mat = glm::mat4(1.0f);
         cube_mat = glm::translate(cube_mat, glm::vec3(0.0f, 2.f, 0.0f));
         cube_mat = glm::scale(cube_mat, glm::vec3(0.5, 0.5, 0.5));
-        up_cube_shader_uniform_->SetViewMat(view_mat);
-        up_cube_shader_uniform_->SetModelMat(cube_mat);
-        up_cube_->Render();
+        cube_shader_uniform_->SetViewMat(view_mat);
+        cube_shader_uniform_->SetModelMat(cube_mat);
+        cube_.Render();
     }
 }
 
-void SandboxScene::OnDestroy() {
-    texture_grass_.Finalize();
-    texture_bitmap_font_.Finalize();
-
-    FINALIZE_AND_DELETE(up_bitmap_font_render_);
-
-    SAFE_DELETE(up_grid_shader_uniform_);
-    SAFE_DELETE(up_axis_shader_uniform_);
-    SAFE_DELETE(up_triangle_shader_uniform_);
-    SAFE_DELETE(up_grass_shader_uniform_);
-    SAFE_DELETE(up_cube_shader_uniform_);
-
-    FINALIZE_AND_DELETE(up_grid_);
-    FINALIZE_AND_DELETE(up_axis_);
-    FINALIZE_AND_DELETE(up_triangle_);
-    FINALIZE_AND_DELETE(up_grass_);
-    FINALIZE_AND_DELETE(up_cube_);
-
-    FINALIZE_AND_DELETE(up_grid_shader_);
-    FINALIZE_AND_DELETE(up_shader_);
-    FINALIZE_AND_DELETE(up_texture_shader_);
-    FINALIZE_AND_DELETE(up_texture_2d_shader_);
-}
+void SandboxScene::OnDestroy() {}
 
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する

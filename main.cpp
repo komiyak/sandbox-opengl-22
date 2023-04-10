@@ -1,15 +1,16 @@
+#include <memory>
 #include "application/application.h"
 #include "scene/starting_scene.h"
 
 // 最初に実行する Scene
-static Scene *FirstSceneFactory() {
-    return new StartingScene();
+static std::shared_ptr<Scene> FirstSceneFactory() {
+    return std::shared_ptr<Scene>{new StartingScene()};
 }
 
 int main() {
     Application application;
-    application.Initialize(FirstSceneFactory);
+    application.CreateWindow(FirstSceneFactory);
     application.RunLoop();
-    application.Finalize();
+    application.Destroy();
     return 0;
 }

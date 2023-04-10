@@ -1,16 +1,20 @@
+#include <iostream>
+
 #include "texture.h"
 #include "debug.h"
 #include "opengl_debug.h"
 #include "png_load.h"
 
-void Texture::Load(const char *p_file_path, Texture::ImageFormat image_format, GLint texture_unit_number) {
+void Texture::Load(const std::string& file_path, Texture::ImageFormat image_format, GLint texture_unit_number) {
+    if (loaded_) return;
+
     glGenTextures(1, &texture_);
     glActiveTexture(GetGlTextureNumber(texture_unit_number));
     texture_unit_number_ = texture_unit_number;
     glBindTexture(GL_TEXTURE_2D, texture_);
 
     PngLoad png_load{};
-    png_load.LoadFile(p_file_path, GetPngFormat(image_format));
+    png_load.LoadFile(file_path, GetPngFormat(image_format));
     glTexImage2D(
             GL_TEXTURE_2D,
             0,
@@ -23,7 +27,7 @@ void Texture::Load(const char *p_file_path, Texture::ImageFormat image_format, G
             png_load.GetData());
     texture_width_ = png_load.GetImageSize().width;
     texture_height_ = png_load.GetImageSize().height;
-    png_load.Finalize(); // texture 転送後は不要なのですぐに削除する
+    png_load.Unload(); // texture 転送後は不要なのですぐに削除する
     OPENGL_DEBUG_CHECK();
 
     // Note: この設定は将来的には柔軟に行えるようにしたい
@@ -95,6 +99,10 @@ GLuint Texture::GetGlTextureNumber(GLint texture_unit_number) {
     }
 }
 
-void Texture::Finalize() {
-    Unload();
+Texture::~Texture() {
+    try {
+        Unload();
+    } catch (...) {
+        std::cerr << "(Texture) Fatal error in destructor." << std::endl;
+    }
 }

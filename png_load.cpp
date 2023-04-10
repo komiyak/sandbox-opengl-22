@@ -1,15 +1,15 @@
 #include <cstring>
 #include <cstdlib>
+#include <iostream>
 
 #include "png_load.h"
 
-void PngLoad::LoadFile(const char *p_file_name, png_uint_32 format) {
-    if (!p_file_name) return;
+void PngLoad::LoadFile(const std::string &file_name, png_uint_32 format) {
     if (loaded_) return;
 
     Initialize(PNG_IMAGE_VERSION);
 
-    if (png_image_begin_read_from_file(&(png_image_), p_file_name)) {
+    if (png_image_begin_read_from_file(&(png_image_), file_name.c_str())) {
         png_image_.format = format;
         png_bytep_ = static_cast<png_bytep>(malloc(PNG_IMAGE_SIZE(png_image_)));
 
@@ -43,4 +43,12 @@ void PngLoad::Unload() {
         png_image_free(&png_image_);
     }
     loaded_ = false;
+}
+
+PngLoad::~PngLoad() {
+    try {
+        Unload();
+    } catch (...) {
+        std::cerr << "(PngLoad) Fatal error in destructor." << std::endl;
+    }
 }

@@ -8,38 +8,6 @@
 
 class LearnopenglLightingPointLightShaderUniform : public ShaderUniform {
 public:
-    void SetUniformLocations(
-            GLint uniform_projection_mat,
-            GLint uniform_view_mat,
-            GLint uniform_model_mat,
-            GLint uniform_light_position,
-            GLint uniform_light_ambient,
-            GLint uniform_light_diffuse,
-            GLint uniform_light_specular,
-            GLint uniform_light_constant,
-            GLint uniform_light_linear,
-            GLint uniform_light_quadratic,
-            GLint uniform_material_diffuse,
-            GLint uniform_material_specular,
-            GLint uniform_material_shininess,
-            GLint uniform_view_position) {
-        uniform_projection_mat_ = uniform_projection_mat;
-        uniform_view_mat_ = uniform_view_mat;
-        uniform_model_mat_ = uniform_model_mat;
-        uniform_light_position_ = uniform_light_position;
-        uniform_light_ambient_ = uniform_light_ambient;
-        uniform_light_diffuse_ = uniform_light_diffuse;
-        uniform_light_specular_ = uniform_light_specular;
-        uniform_light_constant_ = uniform_light_constant;
-        uniform_light_linear_ = uniform_light_linear;
-        uniform_light_quadratic_ = uniform_light_quadratic;
-        uniform_material_diffuse_ = uniform_material_diffuse;
-        uniform_material_specular_ = uniform_material_specular;
-        uniform_material_shininess_ = uniform_material_shininess;
-        uniform_view_position_ = uniform_view_position;
-        Activate();
-    }
-
     void Transfer() const override;
 
     void SetProjectionMat(const glm::mat4 &projection_mat) {
@@ -99,21 +67,6 @@ public:
     }
 
 private:
-    GLint uniform_projection_mat_{-1};
-    GLint uniform_view_mat_{-1};
-    GLint uniform_model_mat_{-1};
-    GLint uniform_light_position_{-1};
-    GLint uniform_light_ambient_{-1};
-    GLint uniform_light_diffuse_{-1};
-    GLint uniform_light_specular_{-1};
-    GLint uniform_light_constant_{-1};
-    GLint uniform_light_linear_{-1};
-    GLint uniform_light_quadratic_{-1};
-    GLint uniform_material_diffuse_{-1};
-    GLint uniform_material_specular_{-1};
-    GLint uniform_material_shininess_{-1};
-    GLint uniform_view_position_{-1};
-
     glm::mat4 projection_mat_{glm::mat4(1.f)};
     glm::mat4 view_mat_{glm::mat4(1.f)};
     glm::mat4 model_mat_{glm::mat4(1.f)};
