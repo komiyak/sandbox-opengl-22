@@ -6,15 +6,19 @@
 #include "frame.h"
 #include "application_context.h"
 
-class ApplicationContext;
-
 namespace gl_app {
     // Application クラスから利用される任意の Scene の基底クラス
+    //
+    // Scene 生成直後 => OnAttach()
+    //   - override 不可
+    //   - Application からコンテキスト等の情報共有を受ける
+    // Scene 生成直後 => OnStart()
+    //   - 起動時に一度だけ実行される、初期化用処理
     class Scene {
     public:
         virtual ~Scene() = default;
 
-        void OnAttach(std::weak_ptr<ApplicationContext> application_context) {
+        void OnAttach(std::weak_ptr<gl_app::ApplicationContext> application_context) {
             application_context_ = std::move(application_context);
         }
 

@@ -72,20 +72,16 @@ void gl_app::Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)())
     glEnable(GL_DEPTH_TEST);
 
     // 初回起動の Activity を登録する
-    std::shared_ptr<Scene> scene = scene_method();
-    scenes_stack_.push(scene);
-    gl_app::KeyCallbackSingleton::GetInstance().SetActivity(scene);
-    scene->OnAttach(application_context_);
+    scene_ = scene_method();
+    gl_app::KeyCallbackSingleton::GetInstance().SetActivity(scene_);
+    scene_->OnAttach(application_context_);
 
     created_ = true;
 }
 
 void gl_app::Application::Destroy() {
     if (created_) {
-        // glfwDestroyWindow を実行する前に、すべての scene を削除する
-        while (!scenes_stack_.empty()) {
-            PopScene();
-        }
+        DestroySceneImmediately();
 
         glfwDestroyWindow(glfw_window_);
         glfw_window_ = nullptr;
@@ -99,32 +95,32 @@ void gl_app::Application::RunLoop() {
     GL_APP_DEBUG_ASSERT(glfw_window_);
 
     // 最初の scene を開始する
-    scenes_stack_.top()->OnStart();
+    scene_->OnStart();
 
     // Application loop の実行
-    while (!glfwWindowShouldClose(glfw_window_) && !scenes_stack_.empty()) {
-        scenes_stack_.top()->OnBeforeFrame();
-        scenes_stack_.top()->OnFrame();
+    while (!glfwWindowShouldClose(glfw_window_) && scene_) {
+        scene_->OnBeforeFrame();
+        scene_->OnFrame();
 
         glfwSwapBuffers(glfw_window_);
         glfwPollEvents();
 
-        scenes_stack_.top()->OnFrameAfterSwap();
+        scene_->OnFrameAfterSwap();
 
         // Activity が終了したがっている場合は、pop する
-        if (scenes_stack_.top()->IsShouldDestroy()) {
-            if (scenes_stack_.top()->HaveNextScene()) {
+        if (scene_->IsShouldDestroy()) {
+            if (scene_->HaveNextScene()) {
                 // Activity が push を要求している場合は、push する
-                std::shared_ptr<Scene> next_scene = scenes_stack_.top()->NextScene();
+                std::shared_ptr<Scene> next_scene = scene_->NextScene();
 
-                PopScene();
+                DestroySceneImmediately();
+                scene_ = next_scene;
 
-                scenes_stack_.push(next_scene);
                 gl_app::KeyCallbackSingleton::GetInstance().SetActivity(next_scene);
                 next_scene->OnAttach(application_context_);
                 next_scene->OnStart();
             } else {
-                PopScene();
+                DestroySceneImmediately();
             }
         }
     }
@@ -147,13 +143,10 @@ void gl_app::Application::KeyCallback(
     }
 }
 
-void gl_app::Application::PopScene() {
-    std::shared_ptr<Scene> scene = scenes_stack_.top();
-    scene->OnDestroy();
-    scenes_stack_.pop(); // shared_ptr なので pop によって自動的に delete される
-
-    if (!scenes_stack_.empty()) {
-        gl_app::KeyCallbackSingleton::GetInstance().SetActivity(scenes_stack_.top());
+void gl_app::Application::DestroySceneImmediately() {
+    if (scene_) {
+        scene_->OnDestroy();
+        scene_.reset(); // Note: scene_ デストラクタに OnDestroy() を仕込んでおくべきかもしれない
     }
 }
 
