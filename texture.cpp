@@ -1,8 +1,8 @@
 #include <iostream>
+#include <gl_app/debug.h>
+#include <gl_app/debug_util.h>
 
 #include "texture.h"
-#include "debug.h"
-#include "opengl_debug.h"
 #include "png_load.h"
 
 void Texture::Load(const std::string& file_path, Texture::ImageFormat image_format, GLint texture_unit_number) {
@@ -28,14 +28,14 @@ void Texture::Load(const std::string& file_path, Texture::ImageFormat image_form
     texture_width_ = png_load.GetImageSize().width;
     texture_height_ = png_load.GetImageSize().height;
     png_load.Unload(); // texture 転送後は不要なのですぐに削除する
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     // Note: この設定は将来的には柔軟に行えるようにしたい
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     loaded_ = true;
 }
@@ -54,7 +54,7 @@ GLuint Texture::GetPngFormat(Texture::ImageFormat image_format) {
         case RGBA:
             return PNG_FORMAT_RGBA;
         default:
-            DEBUG_ABORT_MESSAGE("Not implemented");
+            GL_APP_DEBUG_ABORT_MESSAGE("Not implemented");
     }
 }
 
@@ -65,7 +65,7 @@ GLint Texture::GetGlTextureFormat(Texture::ImageFormat image_format) {
         case RGBA:
             return GL_RGBA;
         default:
-            DEBUG_ABORT_MESSAGE("Not implemented");
+            GL_APP_DEBUG_ABORT_MESSAGE("Not implemented");
     }
 }
 
@@ -95,7 +95,7 @@ GLuint Texture::GetGlTextureNumber(GLint texture_unit_number) {
         case 10:
             return GL_TEXTURE10;
         default:
-            DEBUG_ABORT_MESSAGE("Not implemented");
+            GL_APP_DEBUG_ABORT_MESSAGE("Not implemented");
     }
 }
 

@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 
 class Shader;
 

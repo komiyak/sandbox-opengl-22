@@ -2,7 +2,7 @@
 #define SANDBOX_OPENGL_22_SHADER_H_
 
 #include <string>
-#include "opengl_glfw.h"
+#include <gl_app/gl.h>
 
 class Shader {
 public:

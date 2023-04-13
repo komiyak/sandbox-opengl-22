@@ -1,16 +1,16 @@
 #include <iostream>
 #include <cstdio>
 
-#include "application.h"
-#include "../debug.h"
-#include "../opengl_debug.h"
-#include "../key_callback_singleton.h"
-#include "scene.h"
+#include "include/gl_app/application.h"
+#include "include/gl_app/debug.h"
+#include "include/gl_app/debug_util.h"
+#include "include/gl_app/key_callback_singleton.h"
+#include "include/gl_app/scene.h"
 
-void Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
+void gl_app::Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
     if (created_) return;
 
-    DEBUG_ASSERT_MESSAGE(scene_method, "scene_method is required.");
+    GL_APP_DEBUG_ASSERT_MESSAGE(scene_method, "scene_method is required.");
 
     glfwSetErrorCallback(ErrorCallback);
 
@@ -23,7 +23,7 @@ void Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, kOpenGLDebugContext);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, gl_app::kOpenGLDebugContext);
 
     glfw_window_ = glfwCreateWindow(
             application_context_->GetWindowScreenWidth(),
@@ -63,7 +63,7 @@ void Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
     if (gl_context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(opengl_debug::DebugMessageCallback, nullptr);
+        glDebugMessageCallback(gl_app::DebugMessageCallbackForGl, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 
@@ -74,13 +74,13 @@ void Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
     // 初回起動の Activity を登録する
     std::shared_ptr<Scene> scene = scene_method();
     scenes_stack_.push(scene);
-    KeyCallbackSingleton::GetInstance().SetActivity(scene);
+    gl_app::KeyCallbackSingleton::GetInstance().SetActivity(scene);
     scene->OnAttach(application_context_);
 
     created_ = true;
 }
 
-void Application::Destroy() {
+void gl_app::Application::Destroy() {
     if (created_) {
         // glfwDestroyWindow を実行する前に、すべての scene を削除する
         while (!scenes_stack_.empty()) {
@@ -94,9 +94,9 @@ void Application::Destroy() {
     created_ = false;
 }
 
-void Application::RunLoop() {
-    DEBUG_ASSERT(created_);
-    DEBUG_ASSERT(glfw_window_);
+void gl_app::Application::RunLoop() {
+    GL_APP_DEBUG_ASSERT(created_);
+    GL_APP_DEBUG_ASSERT(glfw_window_);
 
     // 最初の scene を開始する
     scenes_stack_.top()->OnStart();
@@ -120,7 +120,7 @@ void Application::RunLoop() {
                 PopScene();
 
                 scenes_stack_.push(next_scene);
-                KeyCallbackSingleton::GetInstance().SetActivity(next_scene);
+                gl_app::KeyCallbackSingleton::GetInstance().SetActivity(next_scene);
                 next_scene->OnAttach(application_context_);
                 next_scene->OnStart();
             } else {
@@ -130,34 +130,34 @@ void Application::RunLoop() {
     }
 }
 
-void Application::ErrorCallback([[maybe_unused]] int error, const char *description) {
+void gl_app::Application::ErrorCallback([[maybe_unused]] int error, const char *description) {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void Application::KeyCallback(
+void gl_app::Application::KeyCallback(
         [[maybe_unused]] GLFWwindow *window,
         int key,
         [[maybe_unused]] int scancode,
         int action,
         [[maybe_unused]] int mods) {
 
-    std::weak_ptr<Scene> scene = KeyCallbackSingleton::GetInstance().GetActivity();
+    std::weak_ptr<Scene> scene = gl_app::KeyCallbackSingleton::GetInstance().GetActivity();
     if (auto p = scene.lock()) {
         p->OnKey(key, action);
     }
 }
 
-void Application::PopScene() {
+void gl_app::Application::PopScene() {
     std::shared_ptr<Scene> scene = scenes_stack_.top();
     scene->OnDestroy();
     scenes_stack_.pop(); // shared_ptr なので pop によって自動的に delete される
 
     if (!scenes_stack_.empty()) {
-        KeyCallbackSingleton::GetInstance().SetActivity(scenes_stack_.top());
+        gl_app::KeyCallbackSingleton::GetInstance().SetActivity(scenes_stack_.top());
     }
 }
 
-Application::~Application() {
+gl_app::Application::~Application() {
     try {
         Destroy();
     } catch (...) {

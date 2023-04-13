@@ -1,8 +1,8 @@
 #include <utility>
 #include <iostream>
+#include <gl_app/debug.h>
 
 #include "bitmap_font_render.h"
-#include "debug.h"
 #include "vertex_render_object.h"
 #include "game_data.h"
 #include "vertex_specification/texture_2d_vertex_specification.h"
@@ -63,7 +63,7 @@ BitmapFontRender::RenderBlackAsciiText(const std::string &ascii_text, int x, int
 
 void
 BitmapFontRender::RenderAsciiText(const std::string &ascii_text, int x, int y, int font_size, const glm::vec3 &color) {
-    DEBUG_ASSERT(font_size > 0);
+    GL_APP_DEBUG_ASSERT(font_size > 0);
 
     if (!created_) return;
 

@@ -1,8 +1,8 @@
+#include <gl_app/application.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "learn_open_gl_lighting_multiple_lights_scene.h"
-#include "../application/application.h"
 #include "../game_data.h"
 #include "../vertex_specification/color_vertex_specification.h"
 #include "../vertex_specification/position_and_normal_and_texcoord_vertex_specification.h"

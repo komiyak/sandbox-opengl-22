@@ -1,7 +1,7 @@
+#include <gl_app/debug_util.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "learnopengl_lighting_multiple_lights_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void LearnopenglLightingMultipleLightsShaderUniform::Transfer() const {
     glUniformMatrix4fv(Location("projection_mat"), 1, GL_FALSE, glm::value_ptr(projection_mat_));

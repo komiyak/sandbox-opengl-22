@@ -1,10 +1,10 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <gl_app/debug_util.h>
+#include <gl_app/debug.h>
 
 #include "shader.h"
-#include "opengl_debug.h"
-#include "debug.h"
 #include "cstring_util.h"
 
 std::string Shader::LoadShaderSourceFromFile(const std::string& filepath) {
@@ -26,10 +26,10 @@ void Shader::BuildFromFile(
     }
 
     // FIXME: std::string style の文字列比較に変更する
-    DEBUG_ASSERT_MESSAGE(
+    GL_APP_DEBUG_ASSERT_MESSAGE(
             cstring_util::EqualLast(vertex_shader_filepath.c_str(), ".vert"),
             "Vertex shader file must be with '.vert' extension.");
-    DEBUG_ASSERT_MESSAGE(
+    GL_APP_DEBUG_ASSERT_MESSAGE(
             cstring_util::EqualLast(fragment_shader_filepath.c_str(), ".frag"),
             "Vertex shader file must be with '.frag' extension.");
 
@@ -49,7 +49,7 @@ void Shader::BuildFromFile(
     glAttachShader(program_object_, fragment_shader_);
     glBindFragDataLocation(program_object_, 0, fragment_data_location_name.c_str());
     glLinkProgram(program_object_);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     built_ = true;
 }
@@ -59,11 +59,11 @@ GLuint Shader::BuildShader(GLenum shader_type, const std::string& shader_source)
     GLuint result = glCreateShader(shader_type);
     glShaderSource(result, 1, &shader_source_c_str, nullptr);
     glCompileShader(result);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     GLint status;
     glGetShaderiv(result, GL_COMPILE_STATUS, &status);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
     if (!status) {
         std::string shader_type_name;
 
@@ -104,7 +104,7 @@ void Shader::UseProgram() const {
     if (!built_) return;
 
     glUseProgram(program_object_);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 }
 
 #pragma clang diagnostic push
@@ -117,9 +117,9 @@ GLint Shader::GetUniformVariableLocationFromProgramObject(
         const std::string& fragment_shader_filepath) {
 
     const GLint location = glGetUniformLocation(program_object, name.c_str());
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
-    if (kRuntimeAssertion && location == -1) {
+    if (gl_app::kRuntimeAssertion && location == -1) {
         fprintf(stderr, "The uniform variable location '%s' is not found in '%s' or '%s'.\n",
                 name.c_str(),
                 vertex_shader_filepath.c_str(),
@@ -141,9 +141,9 @@ GLint Shader::GetAttribVariableLocationFromProgramObject(
         const std::string& fragment_shader_filepath) {
 
     const GLint location = glGetAttribLocation(program_object, name.c_str());
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
-    if (kRuntimeAssertion && location == -1) {
+    if (gl_app::kRuntimeAssertion && location == -1) {
         fprintf(stderr, "The attribute variable location '%s' is not found in '%s' or '%s'.\n",
                 name.c_str(),
                 vertex_shader_filepath.c_str(),

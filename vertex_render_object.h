@@ -2,7 +2,7 @@
 #define SANDBOX_OPENGL_22_VERTEX_RENDER_OBJECT_H_
 
 #include <memory>
-#include "opengl_glfw.h"
+#include <gl_app/gl.h>
 
 class VertexSpecification;
 

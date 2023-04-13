@@ -7,7 +7,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 #include "shader_uniform.h"
 
 class BasicShaderUniform : public ShaderUniform {

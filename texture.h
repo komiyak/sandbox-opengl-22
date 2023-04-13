@@ -2,7 +2,7 @@
 #define SANDBOX_OPENGL_22_TEXTURE_H_
 
 #include <string>
-#include "opengl_glfw.h"
+#include <gl_app/gl.h>
 
 // 簡単な Texture 管理クラス
 class Texture {

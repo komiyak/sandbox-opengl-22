@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 #include "shader_uniform.h"
 
 class LearnopenglLightingDirectionalLightShaderUniform : public ShaderUniform {

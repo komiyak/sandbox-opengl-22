@@ -1,9 +1,9 @@
+#include <gl_app/application.h>
+#include <gl_app/debug_util.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "sandbox_scene.h"
-#include "../application/application.h"
-#include "../opengl_debug.h"
 #include "../vertex_specification/position_vertex_specification.h"
 #include "../vertex_specification/color_vertex_specification.h"
 #include "../vertex_specification/texture_vertex_specification.h"

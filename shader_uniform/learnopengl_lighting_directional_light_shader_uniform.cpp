@@ -1,7 +1,7 @@
+#include <gl_app/debug_util.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "learnopengl_lighting_directional_light_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void LearnopenglLightingDirectionalLightShaderUniform::Transfer() const {
     glUniformMatrix4fv(Location("projection_mat"), 1, GL_FALSE, glm::value_ptr(projection_mat_));
@@ -15,5 +15,5 @@ void LearnopenglLightingDirectionalLightShaderUniform::Transfer() const {
     glUniform1i(Location("material.specular"), material_specular_);
     glUniform1f(Location("material.shininess"), material_shininess_);
     glUniform3f(Location("viewPosition"), view_position_.x, view_position_.y, view_position_.z);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 }

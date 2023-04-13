@@ -1,8 +1,8 @@
+#include <gl_app/application.h>
+#include <gl_app/debug_util.h>
 #include <glm/glm.hpp>
 
 #include "starting_scene.h"
-#include "../application/application.h"
-#include "../opengl_debug.h"
 #include "sandbox_scene.h"
 #include "learn_open_gl_lighting_scene.h"
 #include "learn_open_gl_lighting_light_casters_scene.h"

@@ -1,7 +1,7 @@
 #ifndef SANDBOX_OPENGL_22_TEXTURE_VERTEX_SPECIFICATION_H_
 #define SANDBOX_OPENGL_22_TEXTURE_VERTEX_SPECIFICATION_H_
 
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 #include "vertex_specification.h"
 
 class TextureVertexSpecification : public VertexSpecification {
