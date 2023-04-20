@@ -1,7 +1,3 @@
-//
-// Created by komiyak on 22/11/22.
-//
-
 #include "color_vertex_specification.h"
 #include "../shader.h"
 

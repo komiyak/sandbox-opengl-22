@@ -1,6 +1,10 @@
 #ifndef SANDBOX_OPENGL_22_TEXTURE_2D_SHADER_UNIFORM_H_
 #define SANDBOX_OPENGL_22_TEXTURE_2D_SHADER_UNIFORM_H_
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "OCUnusedStructInspection"
+#pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
+
 #include <glm/glm.hpp>
 
 #include <gl_app/gl.h>
@@ -18,7 +22,7 @@ public:
               uniform_translation_vec_(uniform_translation_vec),
               uniform_scaling_vec_(uniform_scaling_vec),
               uniform_texcoord_translation_vec_(uniform_texcoord_translation_vec),
-              uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) { }
+              uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) {}
     //uniform_texcoord_scaling_vec_(uniform_texcoord_scaling_vec) { Activate(); }
 
     void Transfer() const override;
@@ -56,5 +60,7 @@ private:
     GLint uniform_texcoord_translation_vec_{-1};
     GLint uniform_texcoord_scaling_vec_{-1};
 };
+
+#pragma clang diagnostic pop
 
 #endif //SANDBOX_OPENGL_22_TEXTURE_2D_SHADER_UNIFORM_H_

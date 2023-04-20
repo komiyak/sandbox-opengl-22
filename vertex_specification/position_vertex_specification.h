@@ -10,7 +10,7 @@ class PositionVertexSpecification : public VertexSpecification {
 public:
     void Specify(const Shader &shader) const override;
 
-    static void UseSpecification(const Shader& shader) {
+    static void UseSpecification(const Shader &shader) {
         PositionVertexSpecification{}.Specify(shader);
     }
 };

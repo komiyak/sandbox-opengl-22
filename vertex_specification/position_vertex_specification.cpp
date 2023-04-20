@@ -1,7 +1,3 @@
-//
-// Created by komiyak on 22/11/22.
-//
-
 #include "position_vertex_specification.h"
 
 void PositionVertexSpecification::Specify(const Shader &shader) const {

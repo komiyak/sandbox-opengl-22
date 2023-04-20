@@ -21,6 +21,10 @@ public:
 
     void OnKey(int glfw_key, int glfw_action) override;
 
+    static std::shared_ptr<Scene> Factory() {
+        return std::shared_ptr<Scene>{new StartingScene()};
+    }
+
 private:
     float count_{};
 

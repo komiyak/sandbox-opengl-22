@@ -1,7 +1,3 @@
-//
-// Created by komiyak on 22/11/25.
-//
-
 #ifndef SANDBOX_OPENGL_22_BASIC_SHADER_UNIFORM_H_
 #define SANDBOX_OPENGL_22_BASIC_SHADER_UNIFORM_H_
 

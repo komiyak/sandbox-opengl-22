@@ -1,5 +1,4 @@
 #include <gl_app/debug.h>
-#include <gl_app/application_context.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -111,6 +110,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_spotlight_shader_uniform_->SetLightLinear(0.027f);
     container_spotlight_shader_uniform_->SetLightQuadratic(0.0028f);
 }
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
 
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
 
@@ -255,6 +257,8 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
         }
     }
 }
+
+#pragma clang diagnostic pop
 
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
 }

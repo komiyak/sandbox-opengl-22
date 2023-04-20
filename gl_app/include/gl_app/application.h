@@ -7,8 +7,6 @@
 #include "application_context.h"
 #include "scene.h"
 
-class Scene;
-
 namespace gl_app {
     // アプリケーション統合クラス、実装として GLFW を利用しています
     class Application {
