@@ -1,9 +1,8 @@
+#include <gl_app/debug_util.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "learn_open_gl_lighting_scene.h"
-#include "../application/application.h"
-#include "../opengl_debug.h"
 #include "../game_data.h"
 #include "../vertex_specification/position_vertex_specification.h"
 #include "../vertex_specification/position_with_normal_vector_vertex_specification.h"

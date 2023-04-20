@@ -5,8 +5,8 @@
 #include <execinfo.h>
 #include <unistd.h>
 
-#include "opengl_debug.h"
-#include "preference.h"
+#include "include/gl_app/debug_util.h"
+#include "include/gl_app/preference.h"
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "OCUnusedGlobalDeclarationInspection"
@@ -15,8 +15,8 @@
 #pragma ide diagnostic ignored "Simplify"
 #pragma ide diagnostic ignored "UnreachableCode"
 
-[[maybe_unused]] void opengl_debug::CheckError(const char *file, int line) {
-    if (kOpenGLDebugLogging == false) { return; }
+[[maybe_unused]] void gl_app::CheckGlError(const char *file, int line) {
+    if (gl_app::kOpenGLDebugLogging == false) { return; }
 
     GLenum errorCode;
     while ((errorCode = glGetError()) != GL_NO_ERROR) {
@@ -45,7 +45,7 @@
                 break;
             default:; // nothing
         }
-        std::cout << "opengl_debug::CheckError | " << error << " | " << file << " (" << line << ")" << std::endl;
+        std::cout << "opengl_debug::CheckGlError | " << error << " | " << file << " (" << line << ")" << std::endl;
 
         // For linux platform, to get and print stacktrace.
         const int kBacktraceSize = 10;
@@ -57,7 +57,7 @@
 
 #pragma clang diagnostic pop
 
-[[maybe_unused]] void APIENTRY opengl_debug::DebugMessageCallback(
+[[maybe_unused]] void APIENTRY gl_app::DebugMessageCallbackForGl(
         GLenum source,
         GLenum type,
         unsigned int id,
@@ -69,7 +69,7 @@
     // ignore non-significant error/warning codes
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-    std::cout << "opengl_debug::DebugMessageCallback" << std::endl;
+    std::cout << "opengl_debug::DebugMessageCallbackForGl" << std::endl;
     std::cout << "Debug message (" << id << "): " << message << std::endl;
 
     switch (source) {

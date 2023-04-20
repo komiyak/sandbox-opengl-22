@@ -2,15 +2,16 @@
 #define SANDBOX_OPENGL_22_STARTING_SCENE_H_
 
 #include <memory>
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
+#include <gl_app/scene.h>
 #include "../texture.h"
 #include "../bitmap_font_render.h"
 
-#include "../application/scene.h"
+#include <gl_app/scene.h>
 #include "../shader.h"
 
 // 起動時のナビゲーション等を提供するシーン
-class StartingScene : public Scene {
+class StartingScene : public gl_app::Scene {
 public:
     void OnStart() override;
 
@@ -19,6 +20,10 @@ public:
     void OnDestroy() override;
 
     void OnKey(int glfw_key, int glfw_action) override;
+
+    static std::shared_ptr<Scene> Factory() {
+        return std::shared_ptr<Scene>{new StartingScene()};
+    }
 
 private:
     float count_{};

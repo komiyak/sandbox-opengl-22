@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 
 class Shader;
 
@@ -32,10 +32,10 @@ public:
     }
 
 protected:
-    [[nodiscard]] GLint GetUniformVariableLocation(const std::string& name) const;
+    [[nodiscard]] GLint GetUniformVariableLocation(const std::string &name) const;
 
     // Short name of GetUniformVariableLocation()
-    [[nodiscard]] GLint Location(const std::string& name) const {
+    [[nodiscard]] GLint Location(const std::string &name) const {
         return GetUniformVariableLocation(name);
     }
 

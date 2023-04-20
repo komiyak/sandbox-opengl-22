@@ -1,13 +1,9 @@
-//
-// Created by komiyak on 22/11/25.
-//
-
 #ifndef SANDBOX_OPENGL_22_BASIC_SHADER_UNIFORM_H_
 #define SANDBOX_OPENGL_22_BASIC_SHADER_UNIFORM_H_
 
 #include <glm/glm.hpp>
 
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
 #include "shader_uniform.h"
 
 class BasicShaderUniform : public ShaderUniform {

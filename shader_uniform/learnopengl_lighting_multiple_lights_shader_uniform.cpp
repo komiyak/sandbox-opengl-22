@@ -1,7 +1,7 @@
+#include <gl_app/debug_util.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "learnopengl_lighting_multiple_lights_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void LearnopenglLightingMultipleLightsShaderUniform::Transfer() const {
     glUniformMatrix4fv(Location("projection_mat"), 1, GL_FALSE, glm::value_ptr(projection_mat_));
@@ -20,20 +20,20 @@ void LearnopenglLightingMultipleLightsShaderUniform::Transfer() const {
     glUniform3fv(Location("directional_light.specular"), 1, glm::value_ptr(directional_light_.specular));
 
     for (int i = 0; i < 4; i++) {
-        glUniform3fv(Location(MakeName("point_lights", i, "position").c_str()), 1,
+        glUniform3fv(Location(MakeName("point_lights", i, "position")), 1,
                      glm::value_ptr(point_light_[i].position));
-        glUniform3fv(Location(MakeName("point_lights", i, "ambient").c_str()), 1,
+        glUniform3fv(Location(MakeName("point_lights", i, "ambient")), 1,
                      glm::value_ptr(point_light_[i].ambient));
-        glUniform3fv(Location(MakeName("point_lights", i, "diffuse").c_str()), 1,
+        glUniform3fv(Location(MakeName("point_lights", i, "diffuse")), 1,
                      glm::value_ptr(point_light_[i].diffuse));
-        glUniform3fv(Location(MakeName("point_lights", i, "specular").c_str()), 1,
+        glUniform3fv(Location(MakeName("point_lights", i, "specular")), 1,
                      glm::value_ptr(point_light_[i].specular));
 
-        glUniform1f(Location(MakeName("point_lights", i, "attenuation_constant").c_str()),
+        glUniform1f(Location(MakeName("point_lights", i, "attenuation_constant")),
                     point_light_[i].attenuation_constant);
-        glUniform1f(Location(MakeName("point_lights", i, "attenuation_linear").c_str()),
+        glUniform1f(Location(MakeName("point_lights", i, "attenuation_linear")),
                     point_light_[i].attenuation_linear);
-        glUniform1f(Location(MakeName("point_lights", i, "attenuation_quadratic").c_str()),
+        glUniform1f(Location(MakeName("point_lights", i, "attenuation_quadratic")),
                     point_light_[i].attenuation_quadratic);
     }
 

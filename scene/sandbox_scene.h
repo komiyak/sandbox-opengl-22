@@ -2,16 +2,16 @@
 #define SANDBOX_OPENGL_22_SANDBOX_SCENE_H_
 
 #include <memory>
-#include "../opengl_glfw.h"
+#include <gl_app/gl.h>
+#include <gl_app/scene.h>
 
-#include "../application/scene.h"
 #include "../texture.h"
 #include "../shader.h"
 #include "../vertex_render_object.h"
 #include "../shader_uniform/basic_shader_uniform.h"
 #include "../shader_uniform/texture_shader_uniform.h"
 
-class SandboxScene : public Scene {
+class SandboxScene : public gl_app::Scene {
 public:
     void OnFrame() override;
 

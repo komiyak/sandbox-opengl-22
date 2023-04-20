@@ -2,8 +2,8 @@
 
 #include <utility>
 #include <iostream>
-#include "opengl_debug.h"
-#include "debug.h"
+#include <gl_app/debug_util.h>
+#include <gl_app/debug.h>
 #include "shader.h"
 #include "shader_uniform/shader_uniform.h"
 
@@ -29,14 +29,14 @@ void VertexRenderObject::Create(
     // Create a VAO
     glGenVertexArrays(1, &vao_);
     glBindVertexArray(vao_);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     // Create a VBO
     glGenBuffers(1, &vbo_);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
     glBufferData(GL_ARRAY_BUFFER, vertex_data_size, vertex_data, usage);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 
     // Specify the layout of the vertex data.
     if (auto p = shader_.lock()) {
@@ -72,22 +72,22 @@ void VertexRenderObject::Render() const {
 
             // shader uniform の設定は正しいのに、activate を忘れているときがあるので、
             // activate されてない場合は停止する。
-            DEBUG_ASSERT_MESSAGE(shader_uniform->IsActivated(),
-                                 "Found a not activated shader uniform. It must be activated.");
+            GL_APP_DEBUG_ASSERT_MESSAGE(shader_uniform->IsActivated(),
+                                        "Found a not activated shader uniform. It must be activated.");
         }
 
         // draw 実行
         glBindVertexArray(vao_);
-        OPENGL_DEBUG_CHECK();
+        GL_APP_CHECK_GL_ERROR();
         glDrawArrays(draw_mode_, draw_count_first_, draw_count_);
-        OPENGL_DEBUG_CHECK();
+        GL_APP_CHECK_GL_ERROR();
     }
 }
 
 void VertexRenderObject::ChangeShader(
         std::weak_ptr<Shader> shader,
         std::weak_ptr<ShaderUniform> shader_uniform) {
-    DEBUG_ASSERT(created_);
+    GL_APP_DEBUG_ASSERT(created_);
     if (!created_) return;
 
     shader_ = std::move(shader);

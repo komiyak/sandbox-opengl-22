@@ -1,7 +1,7 @@
-#include "../opengl_glfw.h"
-#include "frame.h"
+#include "include/gl_app/gl.h"
+#include "include/gl_app/frame.h"
 
-void Frame::StartFrame() {
+void gl_app::Frame::StartFrame() {
     const double time = glfwGetTime();
 
     // 初回実行時の初期設定
@@ -22,7 +22,7 @@ void Frame::StartFrame() {
     frame_begin_time_ = time;
 }
 
-void Frame::EndFrame() {
+void gl_app::Frame::EndFrame() {
     frame_end_time_ = glfwGetTime();
     frame_count_++;
 }

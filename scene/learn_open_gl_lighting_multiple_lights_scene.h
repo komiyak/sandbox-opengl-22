@@ -2,8 +2,8 @@
 #define SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_MULTIPLE_LIGHTS_SCENE_H_
 
 #include <memory>
-#include "../opengl_glfw.h"
-#include "../application/scene.h"
+#include <gl_app/gl.h>
+#include <gl_app/scene.h>
 #include "../shader.h"
 #include "../texture.h"
 #include "../vertex_render_object.h"
@@ -12,7 +12,7 @@
 
 // LearnOpenGL.com の lighting / Multiple lights の学習用のシーン
 // https://learnopengl.com/Lighting/Multiple-lights
-class LearnOpenGlLightingMultipleLightsScene : public Scene {
+class LearnOpenGlLightingMultipleLightsScene : public gl_app::Scene {
 public:
     void OnStart() override;
 

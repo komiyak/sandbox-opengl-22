@@ -1,7 +1,7 @@
+#include <gl_app/debug_util.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "practice_lighting_phong_shading_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void PracticeLightingPhongShadingShaderUniform::Transfer() const {
     glUniformMatrix4fv(Location("projection_mat"), 1, GL_FALSE, glm::value_ptr(projection_mat_));
@@ -16,5 +16,5 @@ void PracticeLightingPhongShadingShaderUniform::Transfer() const {
     glUniform3f(Location("material.diffuse"), material_diffuse_.x, material_diffuse_.y, material_diffuse_.z);
     glUniform3f(Location("material.specular"), material_specular_.x, material_specular_.y, material_specular_.z);
     glUniform1f(Location("material.shininess"), material_shininess_);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 }

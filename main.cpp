@@ -1,15 +1,9 @@
-#include <memory>
-#include "application/application.h"
+#include <gl_app/application.h>
 #include "scene/starting_scene.h"
 
-// 最初に実行する Scene
-static std::shared_ptr<Scene> FirstSceneFactory() {
-    return std::shared_ptr<Scene>{new StartingScene()};
-}
-
 int main() {
-    Application application;
-    application.CreateWindow(FirstSceneFactory);
+    gl_app::Application application;
+    application.CreateWindow(StartingScene::Factory);
     application.RunLoop();
     application.Destroy();
     return 0;

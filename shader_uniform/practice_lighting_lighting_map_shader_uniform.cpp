@@ -1,7 +1,7 @@
+#include <gl_app/debug_util.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "practice_lighting_lighting_map_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void PracticeLightingLightingMapShaderUniform::Transfer() const {
     glUniformMatrix4fv(Location("projection_mat"), 1, GL_FALSE, glm::value_ptr(projection_mat_));
@@ -16,5 +16,5 @@ void PracticeLightingLightingMapShaderUniform::Transfer() const {
     glUniform1i(Location("material.emission"), emission_);
     glUniform1f(Location("material.shininess"), material_shininess_);
     glUniform3f(Location("viewPosition"), view_position_.x, view_position_.y, view_position_.z);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 }

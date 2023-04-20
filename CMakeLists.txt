@@ -11,8 +11,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS -rdynamic)
 
 
-add_subdirectory(external_lib/glfw-3.3.8)
-add_library(glad STATIC external_lib/glad-opengl-version-4-6/src/glad.c)
+add_subdirectory(glfw_wrap)
+add_subdirectory(gl_app)
+#add_subdirectory(google_tests)
+
 
 # Add glm library
 include(FetchContent)
@@ -22,11 +24,9 @@ FetchContent_Declare(
         GIT_TAG 0.9.9.8)
 FetchContent_MakeAvailable(glm)
 
-
 include_directories(
-        external_lib/glfw-3.3.8/include
-        external_lib/glad-opengl-version-4-6/include
         ${glm_SOURCE_DIR})
+
 
 add_executable(
         sandbox_opengl_22
@@ -45,7 +45,6 @@ add_executable(
         shader_uniform/learnopengl_lighting_point_light_shader_uniform.cpp
         shader_uniform/learnopengl_lighting_spotlight_shader_uniform.cpp
         bitmap_font_render.cpp
-        application/frame.cpp
         png_load.cpp
         game_math.cpp
         vertex_specification/vertex_specification.cpp
@@ -56,24 +55,20 @@ add_executable(
         vertex_specification/color_vertex_specification.cpp
         vertex_specification/texture_vertex_specification.cpp
         vertex_specification/texture_2d_vertex_specification.cpp
-        opengl_debug.cpp
         cstring_util.cpp
         texture.cpp
-        key_callback_singleton.cpp
         scene/starting_scene.cpp
         scene/sandbox_scene.cpp
         scene/learn_open_gl_lighting_scene.cpp
         scene/learn_open_gl_lighting_light_casters_scene.cpp
-        scene/learn_open_gl_lighting_multiple_lights_scene.cpp
-        application/application.cpp)
+        scene/learn_open_gl_lighting_multiple_lights_scene.cpp)
 
 target_link_libraries(
         sandbox_opengl_22
-        glfw
-        glad
+        LINK_PUBLIC
+        gl_app
         png)
 
-add_subdirectory(google_tests)
 
 # Copy updated shader files and texture files to the binary directory when the project is built.
 # See: https://stackoverflow.com/a/34800230

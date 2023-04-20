@@ -1,9 +1,9 @@
+#include <gl_app/debug_util.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "sandbox_scene.h"
-#include "../application/application.h"
-#include "../opengl_debug.h"
+#include "starting_scene.h"
 #include "../vertex_specification/position_vertex_specification.h"
 #include "../vertex_specification/color_vertex_specification.h"
 #include "../vertex_specification/texture_vertex_specification.h"
@@ -183,6 +183,6 @@ void SandboxScene::OnDestroy() {}
 void SandboxScene::OnKey(int glfw_key, int glfw_action) {
     // ESC の場合はとりあえずアプリケーションを終了する
     if (glfw_key == GLFW_KEY_ESCAPE && glfw_action == GLFW_PRESS) {
-        SendToDestroy();
+        LaunchNextScene(StartingScene::Factory);
     }
 }

@@ -2,8 +2,8 @@
 #define SANDBOX_OPENGL_22_LEARN_OPEN_GL_LIGHTING_SCENE_H_
 
 #include <memory>
-#include "../opengl_glfw.h"
-#include "../application/scene.h"
+#include <gl_app/gl.h>
+#include <gl_app/scene.h>
 #include "../texture.h"
 #include "../shader.h"
 #include "../vertex_render_object.h"
@@ -14,7 +14,7 @@
 
 // LearnOpenGL.com の lighting のチャプターを学習するためのシーン
 // https://learnopengl.com/Lighting/Colors
-class LearnOpenGlLightingScene : public Scene {
+class LearnOpenGlLightingScene : public gl_app::Scene {
 public:
     void OnFrame() override;
 

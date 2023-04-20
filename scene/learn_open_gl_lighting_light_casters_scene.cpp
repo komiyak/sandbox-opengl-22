@@ -1,12 +1,11 @@
+#include <gl_app/debug.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "learn_open_gl_lighting_light_casters_scene.h"
-#include "../application/application_context.h"
 #include "../game_data.h"
 #include "../vertex_specification/position_with_normal_and_texcoord_vertex_specification.h"
 #include "../vertex_specification/color_vertex_specification.h"
-#include "../debug.h"
 
 void LearnOpenGlLightingLightCastersScene::OnStart() {
     // Preparing shaders
@@ -112,6 +111,9 @@ void LearnOpenGlLightingLightCastersScene::OnStart() {
     container_spotlight_shader_uniform_->SetLightQuadratic(0.0028f);
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
+
 void LearnOpenGlLightingLightCastersScene::OnFrame() {
 
     constexpr static struct ContainerLocation {
@@ -158,7 +160,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                 container_shader_uniform_->SetLightDirection(glm::vec3(-0.1, 1, -0.1)); // 下からの光
                 break;
             default:
-                DEBUG_ABORT_MESSAGE("Not reached");
+                GL_APP_DEBUG_ABORT_MESSAGE("Not reached");
         }
     }
 
@@ -228,7 +230,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                         current_sub_mode = "Directional light mode is: C";
                         break;
                     default:
-                        DEBUG_ABORT_MESSAGE("Not reached");
+                        GL_APP_DEBUG_ABORT_MESSAGE("Not reached");
                 }
                 break;
             case kPointLight:
@@ -238,7 +240,7 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
                 current_mode = "Current mode is: Spotlight";
                 break;
             default:
-                DEBUG_ABORT_MESSAGE("Not reached");
+                GL_APP_DEBUG_ABORT_MESSAGE("Not reached");
         }
         bitmap_font_render_.RenderWhiteAsciiText(current_mode, 40, 40, 20);
         bitmap_font_render_.RenderAsciiText(
@@ -255,6 +257,8 @@ void LearnOpenGlLightingLightCastersScene::OnFrame() {
         }
     }
 }
+
+#pragma clang diagnostic pop
 
 void LearnOpenGlLightingLightCastersScene::OnDestroy() {
 }

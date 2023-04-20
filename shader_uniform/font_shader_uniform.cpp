@@ -1,5 +1,5 @@
+#include <gl_app/debug_util.h>
 #include "font_shader_uniform.h"
-#include "../opengl_debug.h"
 
 void FontShaderUniform::Transfer() const {
     glUniform1i(Location("tex"), texture_unit_);
@@ -8,5 +8,5 @@ void FontShaderUniform::Transfer() const {
     glUniform2f(Location("texcoord_translation_vec"), texcoord_translation_.x, texcoord_translation_.y);
     glUniform2f(Location("texcoord_scaling_vec"), texcoord_scaling_.x, texcoord_scaling_.y);
     glUniform3f(Location("color"), color_.x, color_.y, color_.z);
-    OPENGL_DEBUG_CHECK();
+    GL_APP_CHECK_GL_ERROR();
 }
