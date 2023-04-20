@@ -1,5 +1,5 @@
 #include <gl_app/application.h>
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include <glm/glm.hpp>
 
 #include "starting_scene.h"

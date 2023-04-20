@@ -3,9 +3,10 @@
 
 #include <memory>
 
-#include "gl.h"
 #include "application_context.h"
 #include "scene.h"
+
+struct GLFWwindow;
 
 namespace gl_app {
     // アプリケーション統合クラス、実装として GLFW を利用しています

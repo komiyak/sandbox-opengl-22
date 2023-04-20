@@ -1,4 +1,4 @@
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "learnopengl_lighting_multiple_lights_shader_uniform.h"

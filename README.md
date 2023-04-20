@@ -34,6 +34,7 @@ These words can be abbreviated as another one.
 | Vector (Math) | Vec |
 | Vertex array object (OpenGL) | VAO, Vao |
 | Vertex buffer object (OpenGL) | VBO, Vbo |
+| GL_ELEMENT_ARRAY_BUFFER's object (OpenGL) | EBO, Ebo |
 
 ### NGs
 

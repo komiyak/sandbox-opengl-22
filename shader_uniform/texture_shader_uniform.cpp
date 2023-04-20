@@ -1,4 +1,4 @@
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "texture_shader_uniform.h"

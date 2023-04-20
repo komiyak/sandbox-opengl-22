@@ -1,4 +1,4 @@
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include "texture_2d_shader_uniform.h"
 
 void Texture2dShaderUniform::Transfer() const {

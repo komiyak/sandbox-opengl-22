@@ -1,11 +1,112 @@
 #include <iostream>
 #include <cstdio>
 
+#include <execinfo.h>
+#include <unistd.h>
+
+#include "include/gl_app/gl.h"
 #include "include/gl_app/application.h"
 #include "include/gl_app/debug.h"
-#include "include/gl_app/debug_util.h"
 #include "include/gl_app/key_callback_singleton.h"
 #include "include/gl_app/scene.h"
+
+// OpenGL debug context 有効時に呼び出される glDebugMessageCallback 用の実装
+static void APIENTRY DebugMessageCallbackForGl_(
+        GLenum source,
+        GLenum type,
+        unsigned int id,
+        GLenum severity,
+        [[maybe_unused]] GLsizei length,
+        const char *message,
+        [[maybe_unused]] const void *userParam) {
+
+    // ignore non-significant error/warning codes
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+
+    std::cout << "opengl_debug::DebugMessageCallbackForGl" << std::endl;
+    std::cout << "Debug message (" << id << "): " << message << std::endl;
+
+    switch (source) {
+        case GL_DEBUG_SOURCE_API:
+            std::cout << "  Source: API(GL_DEBUG_SOURCE_API)";
+            break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+            std::cout << "  Source: Window System(GL_DEBUG_SOURCE_WINDOW_SYSTEM)";
+            break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER:
+            std::cout << "  Source: Shader Compiler(GL_DEBUG_SOURCE_SHADER_COMPILER)";
+            break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+            std::cout << "  Source: Third Party(GL_DEBUG_SOURCE_THIRD_PARTY)";
+            break;
+        case GL_DEBUG_SOURCE_APPLICATION:
+            std::cout << "  Source: Application(GL_DEBUG_SOURCE_APPLICATION)";
+            break;
+        case GL_DEBUG_SOURCE_OTHER:
+            std::cout << "  Source: Other(GL_DEBUG_SOURCE_OTHER)";
+            break;
+        default:; // nothing
+    }
+    std::cout << ", ";
+
+    switch (type) {
+        case GL_DEBUG_TYPE_ERROR:
+            std::cout << "Type: Error(GL_DEBUG_TYPE_ERROR)";
+            break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+            std::cout << "Type: Deprecated Behaviour(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR)";
+            break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+            std::cout << "Type: Undefined Behaviour(GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR)";
+            break;
+        case GL_DEBUG_TYPE_PORTABILITY:
+            std::cout << "Type: Portability(GL_DEBUG_TYPE_PORTABILITY)";
+            break;
+        case GL_DEBUG_TYPE_PERFORMANCE:
+            std::cout << "Type: Performance(GL_DEBUG_TYPE_PERFORMANCE)";
+            break;
+        case GL_DEBUG_TYPE_MARKER:
+            std::cout << "Type: Marker(GL_DEBUG_TYPE_MARKER)";
+            break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:
+            std::cout << "Type: Push Group(GL_DEBUG_TYPE_PUSH_GROUP)";
+            break;
+        case GL_DEBUG_TYPE_POP_GROUP:
+            std::cout << "Type: Pop Group(GL_DEBUG_TYPE_POP_GROUP)";
+            break;
+        case GL_DEBUG_TYPE_OTHER:
+            std::cout << "Type: Other(GL_DEBUG_TYPE_OTHER)";
+            break;
+        default:; // nothing
+    }
+    std::cout << ", ";
+
+    switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH:
+            std::cout << "Severity: high(GL_DEBUG_SEVERITY_HIGH)";
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            std::cout << "Severity: medium(GL_DEBUG_SEVERITY_MEDIUM)";
+            break;
+        case GL_DEBUG_SEVERITY_LOW:
+            std::cout << "Severity: low(GL_DEBUG_SEVERITY_LOW)";
+            break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
+            std::cout << "Severity: notification(GL_DEBUG_SEVERITY_NOTIFICATION)";
+            break;
+        default:; // nothing
+    }
+    std::cout << std::endl;
+
+    // For linux platform, to get and print stacktrace.
+    const int kBacktraceSize = 10;
+    void *backtrace_array[kBacktraceSize];
+    const int backtrace_size = backtrace(backtrace_array, kBacktraceSize);
+    backtrace_symbols_fd(backtrace_array, backtrace_size, STDOUT_FILENO);
+
+    std::cout << std::endl;
+}
+
 
 void gl_app::Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)()) {
     if (created_) return;
@@ -63,7 +164,7 @@ void gl_app::Application::CreateWindow(std::shared_ptr<Scene> (*scene_method)())
     if (gl_context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(gl_app::DebugMessageCallbackForGl, nullptr);
+        glDebugMessageCallback(DebugMessageCallbackForGl_, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 

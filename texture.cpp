@@ -1,6 +1,6 @@
 #include <iostream>
 #include <gl_app/debug.h>
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 
 #include "texture.h"
 #include "png_load.h"

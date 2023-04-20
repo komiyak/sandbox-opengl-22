@@ -18,14 +18,24 @@ add_subdirectory(gl_app)
 
 # Add glm library
 include(FetchContent)
+
+# glm that is a math library for OpenGL.
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
         GIT_TAG 0.9.9.8)
 FetchContent_MakeAvailable(glm)
 
+# assimp that is 3D model importer library.
+FetchContent_Declare(
+        assimp
+        GIT_REPOSITORY git@github.com:assimp/assimp.git
+        GIT_TAG v5.2.5)
+FetchContent_MakeAvailable(assimp)
+
 include_directories(
-        ${glm_SOURCE_DIR})
+        ${glm_SOURCE_DIR}
+        ${assimp_SOURCE_DIR})
 
 
 add_executable(
@@ -61,7 +71,8 @@ add_executable(
         scene/sandbox_scene.cpp
         scene/learn_open_gl_lighting_scene.cpp
         scene/learn_open_gl_lighting_light_casters_scene.cpp
-        scene/learn_open_gl_lighting_multiple_lights_scene.cpp)
+        scene/learn_open_gl_lighting_multiple_lights_scene.cpp
+        assimp_mesh.cpp)
 
 target_link_libraries(
         sandbox_opengl_22

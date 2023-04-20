@@ -1,7 +1,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include <gl_app/debug.h>
 
 #include "shader.h"

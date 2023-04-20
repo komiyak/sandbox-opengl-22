@@ -1,6 +1,6 @@
 add_library(
         gl_app
-        debug_util.cpp
+        gl_debug.cpp
         key_callback_singleton.cpp
         frame.cpp
         application.cpp)

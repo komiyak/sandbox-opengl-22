@@ -1,4 +1,4 @@
-#include <gl_app/debug_util.h>
+#include <gl_app/gl_debug.h>
 #include "font_shader_uniform.h"
 
 void FontShaderUniform::Transfer() const {
