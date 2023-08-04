@@ -77,6 +77,7 @@ add_executable(
 target_link_libraries(
         sandbox_opengl_22
         LINK_PUBLIC
+        assimp
         gl_app
         png)
 

@@ -2,9 +2,14 @@
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include <gl_app/gl.h>
 #include <gl_app/gl_debug.h>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "assimp_mesh.h"
 
@@ -21,9 +26,11 @@ struct Texture_ {
 
 class Mesh_ {
 public:
-    Mesh_(const std::vector<Vertex_> &vertices, const std::vector<unsigned int> &indices,
+    Mesh_(const std::vector<Vertex_> &vertices,
+          const std::vector<unsigned int> &indices,
           const std::vector<Texture_> &textures) : vertices_(vertices), indices_(indices), textures_(textures) {
-        setupMesh();
+
+        SetupMesh();
     }
 
 private:
@@ -35,7 +42,7 @@ private:
     GLuint vbo_{};
     GLuint ebo_{};
 
-    void setupMesh() {
+    void SetupMesh() {
         glGenVertexArrays(1, &vao_);
         glBindVertexArray(vao_);
         GL_APP_CHECK_GL_ERROR();
@@ -62,6 +69,70 @@ private:
                 GL_STATIC_DRAW);
         GL_APP_CHECK_GL_ERROR();
 
-        // FIXME: need vertex specification
+        // todo: to need vertex specifications
     }
+
+    // todo: to need a shader reference.
+    void Draw(/*Shader shader*/) {
+        unsigned int diffuse_number = 1;
+        unsigned int specular_number = 1;
+
+        for (int i = 0; i < textures_.size(); i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+
+            std::string number;
+            std::string name = textures_[i].type;
+            if (name == "texture_diffuse") {
+                number = std::to_string(diffuse_number);
+            } else if (name == "texture_specular") {
+                number = std::to_string(specular_number);
+            }
+
+            // shader.SetInt(("material." + name + number), i);
+            glBindTexture(GL_TEXTURE_2D, textures_[i].id);
+        }
+
+        // ?: いったん影響を 0 にしてるのかな？
+        glActiveTexture(GL_TEXTURE0);
+
+        // draw meshes
+        glBindVertexArray(vao_);
+        glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0); // ?: これも影響を消すための対応？
+    }
+};
+
+class Model_ {
+public:
+    Model_(std::string &path) {
+        LoadModel(path);
+    }
+
+    void Draw(/* shader */) {
+        // loop
+        //    meshes[i].Draw(shader)
+    }
+
+private:
+    std::string directory;
+
+    void LoadModel(const std::string &path) {
+        Assimp::Importer importer;
+        const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+            return;
+        }
+
+        directory = path.substr(0, path.find_last_of('/'));
+
+        ProcessNode(scene->mRootNode, scene);
+    }
+    
+    void ProcessNode(aiNode *mesh, const aiScene *scene) {
+
+    }
+
+
 };
